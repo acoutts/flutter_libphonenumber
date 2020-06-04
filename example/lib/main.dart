@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   final phoneController = TextEditingController();
-  final countryController = TextEditingController();
+  final countryController = TextEditingController(text: '+44');
   final manualFormatController = TextEditingController();
   String parsedData;
 
@@ -124,12 +124,19 @@ class _MyAppState extends State<MyApp> {
                       RaisedButton(
                         child: Text('Manually format'),
                         onPressed: () async {
-                          setState(() => manualFormatController.text =
-                              FlutterLibphonenumber()
-                                  .formatPhone(manualFormatController.text));
+                          // Asynchronous formatting with native call into libphonenumber
+                          final res = await FlutterLibphonenumber().format(
+                            manualFormatController.text,
+                            'US',
+                          );
+                          print(res);
+                          setState(() =>
+                              manualFormatController.text = res['formatted']);
 
-                          // print(res['US']['phoneMask']);
-                          // print(res['GB']['phoneMask']);
+                          /// Uncomment below to do the formatting synchronously with masking
+                          // setState(() => manualFormatController.text =
+                          //     FlutterLibphonenumber()
+                          //         .formatPhone(manualFormatController.text));
                         },
                       ),
 

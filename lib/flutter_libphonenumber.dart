@@ -39,6 +39,14 @@ class FlutterLibphonenumber {
         .invokeMapMethod<String, dynamic>("get_all_supported_regions");
   }
 
+  /// Formats a phone number using libphonenumber. Will return the parsed number.
+  ///
+  /// Example response:
+  /// ```
+  /// {
+  ///   formatted: "1 (414) 444-4444",
+  /// }
+  /// ```
   Future<Map<String, dynamic>> format(String phone, String region) {
     return _channel.invokeMapMethod<String, dynamic>("format", {
       "phone": phone,
@@ -66,8 +74,7 @@ class FlutterLibphonenumber {
     });
   }
 
-  /// Given a phone number, format it automatically using the masks we have
-  /// from libphonenumber's example numbers.
+  /// Given a phone number, format it automatically using the masks we have from libphonenumber's example numbers.
   String formatPhone(String phone) {
     return LibPhonenumberTextFormatter()
         .formatEditUpdate(

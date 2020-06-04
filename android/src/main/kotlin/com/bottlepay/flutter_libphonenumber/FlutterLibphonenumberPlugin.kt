@@ -145,8 +145,8 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
 
   private fun format(call: MethodCall, result: Result) {
     val region = call.argument<String>("region")
-    val number = call.argument<String>("string")
-    if (number == null) {
+    val phone = call.argument<String>("phone")
+    if (phone == null) {
       result.error("InvalidParameters", "Invalid 'string' parameter.", null)
       return
     }
@@ -155,14 +155,14 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
       val formatter = util.getAsYouTypeFormatter(region)
       var formatted = ""
       formatter.clear()
-      for (character in number.toCharArray()) {
+      for (character in phone.toCharArray()) {
         formatted = formatter.inputDigit(character)
       }
       val res = HashMap<String, String>()
       res["formatted"] = formatted
       result.success(res)
     } catch (exception: Exception) {
-      result.error("InvalidNumber", "Number $number is invalid", null)
+      result.error("InvalidNumber", "Number $phone is invalid", null)
     }
   }
 

@@ -30,8 +30,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_libphonenumber/src/country_data.dart';
 
 class LibPhonenumberTextFormatter extends TextInputFormatter {
-  LibPhonenumberTextFormatter(
-      {this.onCountrySelected, this.useSeparators = true});
+  LibPhonenumberTextFormatter({
+    this.onCountrySelected,
+    this.useSeparators = true,
+  });
   final ValueChanged<CountryWithPhoneCode> onCountrySelected;
   final bool useSeparators;
   CountryWithPhoneCode _countryData;
@@ -47,7 +49,6 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
       return newValue;
     }
     final onlyNumbers = toNumericString(newValue.text);
-    print('onlyNumbers: [$onlyNumbers]');
     String maskedValue = _applyMask(onlyNumbers);
 
     var endOffset = max(oldValue.text.length - oldValue.selection.end, 0);
