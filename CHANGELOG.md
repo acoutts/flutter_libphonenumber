@@ -1,3 +1,6 @@
+## 0.1.4
+- Fixed bugs in the way masking is applied which caused numbers to be formatted incorrectly to their mask.
+
 ## 0.1.3
 - Removed print statements
 - Countries list in CountryManager is now read-only outside of the lib
