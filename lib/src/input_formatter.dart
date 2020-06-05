@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -33,11 +34,13 @@ import 'package:flutter_libphonenumber/src/country_data.dart';
 class LibPhonenumberTextFormatter extends TextInputFormatter {
   LibPhonenumberTextFormatter({
     this.onCountrySelected,
-    this.useSeparators = true,
     this.overrideSkipCountryCode,
+    this.onFormatFinished,
   });
+
+  /// Will be called with the selected country once the formatter determines the country
+  /// from the leading country code that was inputted.
   final ValueChanged<CountryWithPhoneCode> onCountrySelected;
-  final bool useSeparators;
 
   /// When this is supplied then we will format the number using the
   /// supplied country code and mask with the country code removed.
@@ -45,6 +48,9 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
   /// in another text box and just need to format the number without
   /// its country code in it.
   final String overrideSkipCountryCode;
+
+  /// Optional function to execute after we are finished formatting the number
+  final FutureOr Function(String val) onFormatFinished;
 
   CountryWithPhoneCode _countryData;
 
@@ -56,6 +62,11 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
       if (newValue.text.isEmpty) {
         _clearCountry();
       }
+
+      /// Optionally pass the formatted value to the supplied callback
+      if (onFormatFinished != null) {
+        onFormatFinished(newValue.text);
+      }
       return newValue;
     }
     final onlyNumbers = toNumericString(newValue.text);
@@ -63,6 +74,12 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
 
     var endOffset = max(oldValue.text.length - oldValue.selection.end, 0);
     var selectionEnd = maskedValue.length - endOffset;
+
+    /// Optionally pass the formatted value to the supplied callback
+    if (onFormatFinished != null) {
+      onFormatFinished(maskedValue);
+    }
+
     return TextEditingValue(
         selection: TextSelection.collapsed(offset: selectionEnd),
         text: maskedValue);
@@ -87,11 +104,17 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     if (overrideSkipCountryCode != null && overrideSkipCountryCode.isNotEmpty) {
       /// If the user specified the country code, we will use that one directly.
       countryData = CountryManager().countries.firstWhere(
-          (element) => element.countryCode == overrideSkipCountryCode);
+          (element) => element.countryCode == overrideSkipCountryCode,
+          orElse: () => null);
 
-      if (countryData != null) {}
+      if (countryData != null) {
+        return _formatByMask(
+            numericString,
+            countryData.phoneMask
+                .substring(overrideSkipCountryCode.length + 1));
+      }
     } else {
-      /// Otherwise we will determine it from the nubmer input
+      /// Otherwise we will try to determine the country from the nubmer input so far
       if (numericString.isEmpty) {
         _updateCountryData(null);
       } else {

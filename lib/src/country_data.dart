@@ -112,10 +112,10 @@ class CountryManager {
 
       /// Now order it so the user's default locale country is on top
       countries = [
-        // parsedCountriesList.firstWhere(
-        //   (element) => element.countryCode == deviceLocaleCountryCode,
-        //   orElse: () => CountryWithPhoneCode.gb(),
-        // ),
+        parsedCountriesList.firstWhere(
+          (element) => element.countryCode == deviceLocaleCountryCode,
+          orElse: () => CountryWithPhoneCode.gb(),
+        ),
         ...parsedCountriesList
             .where((element) => element.countryCode != deviceLocaleCountryCode),
       ];

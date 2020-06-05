@@ -58,9 +58,10 @@ class FlutterLibphonenumber {
     });
   }
 
-  /// Parse a single string and return a map in the format below.
+  /// Parse a single string and return a map in the format below. Throws an error if the
+  /// number is not a valid e164 phone number.
   ///
-  /// Given a passed [string] or '+4930123123123', the response will be:
+  /// Given a passed [phone] like '+4930123123123', the response will be:
   /// ```
   /// {
   ///   country_code: 49,
@@ -79,7 +80,7 @@ class FlutterLibphonenumber {
   }
 
   /// Given a phone number, format it automatically using the masks we have from libphonenumber's example numbers.
-  String formatPhonenumberSync(String phone) {
+  String formatNumberSync(String phone) {
     return LibPhonenumberTextFormatter()
         .formatEditUpdate(
             TextEditingValue(text: ''), TextEditingValue(text: phone))
@@ -87,14 +88,15 @@ class FlutterLibphonenumber {
   }
 
   /// Asynchronously formats a phone number with libphonenumber. Will return the formatted number
-  /// and if it's a valid/complete number, will return the e164 value as well.
-  Future<_FormatPhoneResult> formatPhoneWithCountry(
+  /// and if it's a valid/complete number, will return the e164 value as well. Uses libphonenumber's
+  /// parse function to verify if it's a valid number or not.
+  Future<FormatPhoneResult> formatParsePhonenumberAsync(
       String phoneNumber, CountryWithPhoneCode country) async {
     print(
         '[formatPhoneWithCountry] phoneNumber: \'$phoneNumber\' | country: ${country.countryCode}');
 
     /// What we will return
-    final returnResult = _FormatPhoneResult();
+    final returnResult = FormatPhoneResult();
 
     /// Format the number with AsYouType
     final formattedResult = await FlutterLibphonenumber()
@@ -117,7 +119,7 @@ class FlutterLibphonenumber {
   }
 }
 
-class _FormatPhoneResult {
+class FormatPhoneResult {
   String formattedNumber;
   String e164;
 }
