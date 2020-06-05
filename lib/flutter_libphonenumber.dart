@@ -93,22 +93,24 @@ class FlutterLibphonenumber {
   Future<FormatPhoneResult> formatParsePhonenumberAsync(
       String phoneNumber, CountryWithPhoneCode country) async {
     // print(
-    //     '[formatPhoneWithCountry] phoneNumber: \'$phoneNumber\' | country: ${country.countryCode}');
+    //     '[formatParsePhonenumberAsync] phoneNumber: \'$phoneNumber\' | country: ${country.countryCode}');
 
     /// What we will return
     final returnResult = FormatPhoneResult();
 
-    /// Format the number with AsYouType
-    final formattedResult = await FlutterLibphonenumber()
-        .format(toNumericString(phoneNumber), country.countryCode);
-    returnResult.formattedNumber = formattedResult['formatted'];
-    // print('formatted: ${formattedResult['formatted']}');
+    /// Format the number with appropriate mask
+    final formattedResult = LibPhonenumberTextFormatter(
+            overrideSkipCountryCode: country.countryCode)
+        .formatEditUpdate(
+            TextEditingValue(text: ''), TextEditingValue(text: phoneNumber))
+        .text;
+    returnResult.formattedNumber = formattedResult;
 
     /// Try to parse the number to update our e164
     try {
       final parsedResult =
-          await parse('+${country.phoneCode}${toNumericString(phoneNumber)}');
-      // print('parsedResult: $parsedResult');
+          await parse('+${country.phoneCode}${onlyDigits(phoneNumber)}');
+      // print('[formatParsePhonenumberAsync] parsedResult: $parsedResult');
       returnResult.e164 = parsedResult['e164'];
       returnResult.formattedNumber = parsedResult['national'];
     } catch (e) {
@@ -122,6 +124,11 @@ class FlutterLibphonenumber {
 class FormatPhoneResult {
   String formattedNumber;
   String e164;
+
+  @override
+  String toString() {
+    return 'FormatPhoneResult[formattedNumber: $formattedNumber, e164: $e164]';
+  }
 }
 
 /// Ensure phone number has a leading `+` in it

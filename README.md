@@ -45,10 +45,11 @@ final formattedNumber = FlutterLibphonenumber().formatPhone(rawNumber); // +1 (4
 When you call init, this lib will store a list of the countries and phone metadata with the following class:
 ```dart
 class CountryWithPhoneCode {
-  final String phoneCode;   // '1'
-  final String phoneMask;   // '+0 (000) 000-0000
-  final String name;        // United States
-  final String countryCode; // US
+  final String phoneCode;     // '1'
+  final String phoneMask;     // '+0 (000) 000-0000
+  final String name;          // United States
+  final String countryCode;   // US
+  final String exampleNumber; // (201) 555-0123
 }
 ```
 

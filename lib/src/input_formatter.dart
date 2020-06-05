@@ -108,10 +108,20 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
           orElse: () => null);
 
       if (countryData != null) {
-        return _formatByMask(
-            numericString,
-            countryData.phoneMask
-                .substring(overrideSkipCountryCode.length + 1));
+        /// Since the source isn't going to have a country code in it, add the right country
+        /// code, run it through the mask, and then take the result and return it with the
+        /// country code removed.
+        final numericStringWithCountryCode =
+            '${countryData.phoneCode}$numericString';
+        final maskedResult =
+            _formatByMask(numericStringWithCountryCode, countryData.phoneMask);
+
+        /// In case the masked result is empty,
+        final trimmedResultNoCountryCode =
+            maskedResult.length > countryData.phoneCode.length + 2
+                ? maskedResult.substring(countryData.phoneCode.length + 2)
+                : maskedResult;
+        return trimmedResultNoCountryCode;
       }
     } else {
       /// Otherwise we will try to determine the country from the nubmer input so far
@@ -172,3 +182,5 @@ bool isDigit(String character) {
   }
   return _digitRegex.stringMatch(character) != null;
 }
+
+String onlyDigits(String input) => input.replaceAll(RegExp(r'[^\d]+'), '');

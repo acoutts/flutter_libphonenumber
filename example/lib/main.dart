@@ -88,7 +88,8 @@ class _MyAppState extends State<MyApp> {
 
                           final res = await FlutterLibphonenumber()
                               .getAllSupportedRegions();
-                          print(res);
+                          print(res['GB']);
+                          print(res['US']);
                         },
                       ),
 
@@ -191,7 +192,7 @@ class _MyAppState extends State<MyApp> {
                               // Asynchronous formatting with native call into libphonenumber
                               final res = await FlutterLibphonenumber().format(
                                 manualFormatController.text,
-                                'US',
+                                'US', // TODO: how can we not have to set this manually?
                               );
                               print(res);
                               setState(() => manualFormatController.text =

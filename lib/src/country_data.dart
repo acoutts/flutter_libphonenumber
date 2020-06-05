@@ -39,6 +39,7 @@ class CountryManager {
                 name: data['countryName'],
                 phoneCode: data['phoneCode'],
                 phoneMask: data['phoneMask'],
+                exampleNumber: data['exampleNumber'],
               )));
 
       _initialized = true;
@@ -54,6 +55,7 @@ class CountryWithPhoneCode {
     this.phoneMask,
     this.name,
     this.countryCode,
+    this.exampleNumber,
   });
 
   /// GB locale, useful for dummy values
@@ -61,6 +63,7 @@ class CountryWithPhoneCode {
       : phoneCode = '44',
         phoneMask = '+00 0000 000000',
         name = 'United Kingdom',
+        exampleNumber = '0121 234 5678',
         countryCode = 'GB';
 
   /// US locale, useful for dummy values
@@ -68,12 +71,14 @@ class CountryWithPhoneCode {
       : phoneCode = '1',
         phoneMask = '+0 (000) 000-0000',
         name = 'United States',
+        exampleNumber = '(201) 555-0123',
         countryCode = 'US';
 
   final String phoneCode;
   final String phoneMask;
   final String name;
   final String countryCode;
+  final String exampleNumber;
 
   @override
   String toString() =>
