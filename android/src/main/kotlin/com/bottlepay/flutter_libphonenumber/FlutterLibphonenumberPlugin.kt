@@ -6,6 +6,7 @@ import androidx.annotation.NonNull
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberType
+import com.google.i18n.phonenumbers.Phonenumber
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -100,10 +101,12 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
 
 
         // Get a formatted example number
-        val exampleNumber = PhoneNumberUtil.getInstance().getExampleNumber(region)
-        val formattedExampleNumber = PhoneNumberUtil.getInstance().format(exampleNumber, PhoneNumberUtil.PhoneNumberFormat.NATIONAL)
-        itemMap["phoneMask"] = "+${phoneCode} ${formattedExampleNumber.toString()}".replace(Regex("""[\d]"""), "0")
-        itemMap["exampleNumber"] = formattedExampleNumber
+        val exampleNumberMobile = PhoneNumberUtil.getInstance().getExampleNumberForType(region, PhoneNumberType.MOBILE) ?: Phonenumber.PhoneNumber()
+        val exampleNumberFixedLine = PhoneNumberUtil.getInstance().getExampleNumberForType(region, PhoneNumberType.FIXED_LINE) ?: Phonenumber.PhoneNumber()
+        itemMap["exampleNumberMobile"] = formatNational(exampleNumberMobile).toString()
+        itemMap["exampleNumberFixedLine"] = formatNational(exampleNumberFixedLine).toString()
+        itemMap["phoneMaskMobile"] = maskNumber(formatNational(exampleNumberMobile).toString(), phoneCode)
+        itemMap["phoneMaskFixedLine"] = maskNumber(formatNational(exampleNumberFixedLine).toString(), phoneCode)
         itemMap["countryName"] = Locale("",region).displayCountry
 
                 // Save this map into the return map
@@ -114,6 +117,10 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
       })
     }).start()
   }
+
+  // Masks a phone number by replacing all digits with 0s
+  private fun maskNumber(phoneNumber: String, phoneCode: String) = "+$phoneCode $phoneNumber".replace(Regex("""[\d]"""), "0")
+  private fun formatNational(phoneNumber: Phonenumber.PhoneNumber) = PhoneNumberUtil.getInstance().format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.NATIONAL)
 
   private fun parseStringAndRegion(string: String, region: String?,
                                    util: PhoneNumberUtil): HashMap<String, String>? {

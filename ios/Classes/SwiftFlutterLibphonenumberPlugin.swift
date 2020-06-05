@@ -38,9 +38,14 @@ public class SwiftFlutterLibphonenumberPlugin: NSObject, FlutterPlugin {
                 if let phoneCode = self.kit.countryCode(for: regionCode) {
                     itemMap["phoneCode"] = String(phoneCode)
                     
-                    if let formattedExampleNumber = self.kit.getFormattedExampleNumber(forCountry: regionCode, withFormat: .national) {
-                        itemMap["phoneMask"] = "+\(phoneCode) \(formattedExampleNumber)".replacingOccurrences(of: "[\\d]", with: "0", options: .regularExpression)
-                        itemMap["exampleNumber"] = formattedExampleNumber
+                    if let formattedExampleNumberMobile = self.kit.getFormattedExampleNumber(forCountry: regionCode, ofType: .mobile, withFormat: .national) {
+                        itemMap["phoneMaskMobile"] = self.maskNumber(phoneNumber: formattedExampleNumberMobile, phoneCode: phoneCode)
+                        itemMap["exampleNumberMobile"] = formattedExampleNumberMobile
+                    }
+                    
+                    if let formattedExampleNumberFixedLine = self.kit.getFormattedExampleNumber(forCountry: regionCode, ofType: .fixedLine, withFormat: .national) {
+                        itemMap["phoneMaskFixedLine"] = self.maskNumber(phoneNumber: formattedExampleNumberFixedLine, phoneCode: phoneCode)
+                        itemMap["exampleNumberFixedLine"] = formattedExampleNumberFixedLine
                     }
                 }
                 if let countryName = self.countryName(from: regionCode) {
@@ -54,6 +59,10 @@ public class SwiftFlutterLibphonenumberPlugin: NSObject, FlutterPlugin {
                 result(regionsMap)
             }
         }
+    }
+    
+    private func maskNumber(phoneNumber: String, phoneCode: UInt64) -> String {
+        return "+\(phoneCode) \(phoneNumber)".replacingOccurrences(of: "[\\d]", with: "0", options: .regularExpression)
     }
     
     private func format(_ call: FlutterMethodCall, result: FlutterResult) {

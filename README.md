@@ -21,7 +21,7 @@ The main advantage to this lib is it lets you optionally format a phone number s
 ## Getting Started
 First you need to call the `init` function. This will load all of the available regions available on the device from libphonenumber to build a formatting mask for each country using its example number from libphonenumber.
 
-If you don't run the init function then none of the synchronous mask formatting functions will work.
+If you don't run the init function then `formatNumberSync` will simply return the same thing passed into it without formatting anything as there won't be any masks to utilize.
 
 We use the same approach from `flutter_multi_formatter` for masking but instead of statically defining all of our country masks, we pull them on the fly from libphonenubmer so that the masks will be automatically maintained over time.
 
@@ -45,11 +45,13 @@ final formattedNumber = FlutterLibphonenumber().formatPhone(rawNumber); // +1 (4
 When you call init, this lib will store a list of the countries and phone metadata with the following class:
 ```dart
 class CountryWithPhoneCode {
-  final String phoneCode;     // '1'
-  final String phoneMask;     // '+0 (000) 000-0000
-  final String name;          // United States
-  final String countryCode;   // US
-  final String exampleNumber; // (201) 555-0123
+  final String phoneCode;               // '44'
+  final String phoneMaskMobile;         // '+00 00000 000000'  
+  final String phoneMaskFixedLine;      // '+00 0000 000 0000'
+  final String name;                    // 'United Kingdom'
+  final String countryCode;             // 'GB'
+  final String exampleNumberMobile;     // '07400 123456'
+  final String exampleNumberFixedLine;  // '0121 234 5678'
 }
 ```
 
@@ -66,21 +68,26 @@ Here is a reference of all of the available functions.
 Must be called before we can format anything. This loads all available countries on the device and calls `getAllSupportedRegions()` to then cross-reference and combine everything and save a `List<CountryWithPhoneCode>` of every available country with its phone code / mask.
 
 ### `Future<Map<String, dynamic>> getAllSupportedRegions()`
-Returns all of the available regions on the device in a map with each key as the region code, and the value as a map containing the `phoneMask` and `phoneCode`.
+Returns all of the available regions on the device in a map with each key as the region code, and the value as a map containing the mobile and landline phone masks / example numbers, phone code, region code, and country name.
 
 Example response:
 ```dart
 {
-    "US": {
-        "phoneCode": "1",
-        "phoneMask": "+0 (000) 000-0000"
+    "BR": {
+        "phoneCode": "55",
+        "exampleNumberMobile": "(11) 96123-4567",
+        "exampleNumberFixedLine": "(11) 2345-6789",
+        "phoneMaskMobile": " +00 (00) 00000-0000",
+        "phoneMaskFixedLine": "+00 (00) 0000-0000",
+        "countryName": "Brazil"
     }
 }
 ```
 
 ### `Future<Map<String, String>> format(String phone, String region)`
-Formats a number using libphonenumber. Will return the parsed / formatted number like this:
+Formats a number using libphonenumber. Under the hood this is using the AsYouType formatter. Depending on your result, you might want to use `formatNumberSync()` to utilize the phone number masks.
 
+Will return the parsed / formatted number like this:
 ```dart
 {
     formatted: "1 (414) 444-4444",
@@ -88,7 +95,9 @@ Formats a number using libphonenumber. Will return the parsed / formatted number
 ```
 
 ### `Future<Map<String, dynamic>> parse(String phone, {String region})`
-Parses a number and if it is full and complete, returns some metadata associated with the number. The number must be a valid and compelte e164 formatted number to be considered valid.  Will throw an error if the number isn't valid.
+Parses a number and if it is full and complete, returns some metadata associated with the number. The number must be a valid and compelte e164 formatted number to be considered valid.
+
+Will throw an error if the number isn't valid.
 
 Example response:
 ```dart
@@ -102,20 +111,22 @@ Example response:
 }
 ```
 
-### `String formatNumberSync(String phone)`
-Format a number synchronously using masks to format it. Must have ran the `init()` function to pre-populate the mask data.
+### `String formatNumberSync(String phone, {PhoneNumberType phoneNumberType = PhoneNumberType.mobile})`
+Format a number synchronously using masks to format it. Must have ran the `init()` function to pre-populate the mask data or else the original `phone` value will be returned.
 
-If you have not run init yet, this will just return the value passed in with no changes to it.
+Optionally specify the phone number type to format it as (`mobile` vs `fixedLine`). This is useful when a country has more than one phone number format and you want to format it to either fit the fixed line or mobile pattern.
 
 Example response:
 ```dart
 "1 (414) 444-4444"
 ```
 
-### `Future<FormatPhoneResult> formatParsePhonenumberAsync(String phoneNumber, CountryWithPhoneCode country)`
-Asynchronously formats a phone number with libphonenumber. Will return the formatted number and if it's a valid/complete number, will return the e164 value as well in the `e164` field. Uses libphonenumber's parse function to verify if it's a valid number or not.
+### `Future<FormatPhoneResult> formatParsePhonenumberAsync(String phoneNumber, CountryWithPhoneCode country, {phoneNumberType = PhoneNumberType.mobile})`
+Asynchronously formats a phone number with libphonenumber. Will return the formatted number and if it's a valid/complete number, will return the e164 value as well in the `e164` field. Uses libphonenumber's parse function to verify if it's a valid number or not. This is useful if you want to format a number and also check if it's valid, in one step.
 
-This is useful if you want to format a number and also check if it's valid, in one step.
+Optionally pass a `PhoneNumberType` to format the number using either the mobile (default) or fixed line mask.
+
+`e164` will be null if the number is not valid.
 
 ```dart
 class FormatPhoneResult {
@@ -129,6 +140,8 @@ The text formatter takes 3 optional arguments:
 * `ValueChanged<CountryWithPhoneCode> onCountrySelected` is a callback that will be called when the formatter has automatically determined the country/region from the phone number. Could be useful if you want to parse a phone number input in realtime and save the detected country from it once available.
 * `String overrideSkipCountryCode`  When this is supplied then we will format the number using the supplied country code and mask with the country code removed. This is useful if you have the country code being selected in another text box and just need to format the number without its country code in it.
 * `FutureOr Function(String val) onFormatFinished` Optionally get a notification at this callback of the final formatted value once all formatting is completed. This is useful if you want to do something else that is triggered after formatting is done.
+* `PhoneNumberType phoneNumberType` specify whether to format the phone number in the mobile format using the mask for mobile numbers, or the fixed line format. Can either be `PhoneNumberType.mobile` or `PhoneNumberType.fixedLine`.
+
 
 You should specify `overrideSkipCountryCode` when you have a country picker somewhere else and just want your text field to format the number without the country code in it. This is useful if you have a dropdown to select the country code and a text field next to it to enter the number.
 
@@ -137,6 +150,7 @@ To use it, simply add `LibPhonenumberTextFormatter()` to your `TextField`'s `inp
 TextField(inputFormatters: [LibPhonenumberTextFormatter(
     onCountrySelected: (country) => print('onCountrySelected: $country'),
     onFormatFinished: (formattedVal) => print('onCountrySelected: $formattedVal')
-    // overrideSkipCountryCode: 'GB' // Optionally override to GB and return the number w/o +44
+    phoneNumberType = PhoneNumberType.fixedLine // Optionally format the nubmer as something other than mobile
+    overrideSkipCountryCode: 'GB' // Optionally override country to GB and return the number w/o +44. Disabled auto-detection of country and forces using the mask of the provided country.
 )])
 ```

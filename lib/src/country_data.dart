@@ -38,8 +38,10 @@ class CountryManager {
                 countryCode: region,
                 name: data['countryName'],
                 phoneCode: data['phoneCode'],
-                phoneMask: data['phoneMask'],
-                exampleNumber: data['exampleNumber'],
+                phoneMaskMobile: data['phoneMaskMobile'],
+                phoneMaskFixedLine: data['phoneMaskFixedLine'],
+                exampleNumberMobile: data['exampleNumberMobile'],
+                exampleNumberFixedLine: data['exampleNumberFixedLine'],
               )));
 
       _initialized = true;
@@ -52,37 +54,45 @@ class CountryManager {
 class CountryWithPhoneCode {
   CountryWithPhoneCode({
     this.phoneCode,
-    this.phoneMask,
+    this.phoneMaskFixedLine,
+    this.phoneMaskMobile,
     this.name,
     this.countryCode,
-    this.exampleNumber,
+    this.exampleNumberFixedLine,
+    this.exampleNumberMobile,
   });
 
   /// GB locale, useful for dummy values
   const CountryWithPhoneCode.gb()
       : phoneCode = '44',
-        phoneMask = '+00 0000 000000',
+        phoneMaskMobile = '+00 00000 000000',
+        phoneMaskFixedLine = '+00 0000 000 0000',
         name = 'United Kingdom',
-        exampleNumber = '0121 234 5678',
+        exampleNumberMobile = '07400 123456',
+        exampleNumberFixedLine = '0121 234 5678',
         countryCode = 'GB';
 
   /// US locale, useful for dummy values
   const CountryWithPhoneCode.us()
       : phoneCode = '1',
-        phoneMask = '+0 (000) 000-0000',
+        phoneMaskMobile = '+0 (000) 000-0000',
+        phoneMaskFixedLine = '+0 (000) 000-0000',
         name = 'United States',
-        exampleNumber = '(201) 555-0123',
+        exampleNumberMobile = '(201) 555-0123',
+        exampleNumberFixedLine = '(201) 555-0123',
         countryCode = 'US';
 
   final String phoneCode;
-  final String phoneMask;
+  final String phoneMaskMobile;
+  final String phoneMaskFixedLine;
   final String name;
   final String countryCode;
-  final String exampleNumber;
+  final String exampleNumberMobile;
+  final String exampleNumberFixedLine;
 
   @override
   String toString() =>
-      '[CountryWithPhoneCode(name: $name, countryCode: $countryCode, phoneCode: $phoneCode, phoneMask: $phoneMask)]';
+      '[CountryWithPhoneCode(name: $name, countryCode: $countryCode, phoneCode: $phoneCode, phoneMaskMobile: $phoneMaskMobile, phoneMaskFixedLine: $phoneMaskFixedLine, exampleNumberMobile: $exampleNumberMobile, exampleNumberMobile: $exampleNumberMobile)]';
 
   static CountryWithPhoneCode getCountryDataByPhone(String phone,
       {int subscringLength}) {
@@ -101,3 +111,6 @@ class CountryWithPhoneCode {
     return getCountryDataByPhone(phone, subscringLength: subscringLength - 1);
   }
 }
+
+/// Used for phone masks to know how to format numbers
+enum PhoneNumberType { mobile, fixedLine }

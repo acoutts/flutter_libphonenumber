@@ -80,8 +80,9 @@ class FlutterLibphonenumber {
   }
 
   /// Given a phone number, format it automatically using the masks we have from libphonenumber's example numbers.
-  String formatNumberSync(String phone) {
-    return LibPhonenumberTextFormatter()
+  String formatNumberSync(String phone,
+      {PhoneNumberType phoneNumberType = PhoneNumberType.mobile}) {
+    return LibPhonenumberTextFormatter(phoneNumberType: phoneNumberType)
         .formatEditUpdate(
             TextEditingValue(text: ''), TextEditingValue(text: phone))
         .text;
@@ -91,7 +92,8 @@ class FlutterLibphonenumber {
   /// and if it's a valid/complete number, will return the e164 value as well. Uses libphonenumber's
   /// parse function to verify if it's a valid number or not.
   Future<FormatPhoneResult> formatParsePhonenumberAsync(
-      String phoneNumber, CountryWithPhoneCode country) async {
+      String phoneNumber, CountryWithPhoneCode country,
+      {phoneNumberType = PhoneNumberType.mobile}) async {
     // print(
     //     '[formatParsePhonenumberAsync] phoneNumber: \'$phoneNumber\' | country: ${country.countryCode}');
 
@@ -100,7 +102,9 @@ class FlutterLibphonenumber {
 
     /// Format the number with appropriate mask
     final formattedResult = LibPhonenumberTextFormatter(
-            overrideSkipCountryCode: country.countryCode)
+      overrideSkipCountryCode: country.countryCode,
+      phoneNumberType: phoneNumberType,
+    )
         .formatEditUpdate(
             TextEditingValue(text: ''), TextEditingValue(text: phoneNumber))
         .text;

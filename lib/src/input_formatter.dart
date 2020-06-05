@@ -36,7 +36,11 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     this.onCountrySelected,
     this.overrideSkipCountryCode,
     this.onFormatFinished,
+    this.phoneNumberType = PhoneNumberType.mobile,
   });
+
+  /// Specify if the number should be formatted as a mobile or land line number. Will default to [PhoneNumberType.mobile]
+  final PhoneNumberType phoneNumberType;
 
   /// Will be called with the selected country once the formatter determines the country
   /// from the leading country code that was inputted.
@@ -113,8 +117,12 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         /// country code removed.
         final numericStringWithCountryCode =
             '${countryData.phoneCode}$numericString';
-        final maskedResult =
-            _formatByMask(numericStringWithCountryCode, countryData.phoneMask);
+        final maskedResult = _formatByMask(
+          numericStringWithCountryCode,
+          phoneNumberType == PhoneNumberType.mobile
+              ? countryData.phoneMaskMobile
+              : countryData.phoneMaskFixedLine,
+        );
 
         /// In case the masked result is empty,
         final trimmedResultNoCountryCode =
@@ -135,7 +143,12 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         }
       }
       if (_countryData != null) {
-        return _formatByMask(numericString, _countryData.phoneMask);
+        return _formatByMask(
+          numericString,
+          phoneNumberType == PhoneNumberType.mobile
+              ? _countryData.phoneMaskMobile
+              : _countryData.phoneMaskFixedLine,
+        );
       }
     }
 

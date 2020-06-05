@@ -25,6 +25,9 @@ class _MyAppState extends State<MyApp> {
   final manualFormatController = TextEditingController();
   String parsedData;
 
+  /// Used to format numbers as mobile or land line
+  PhoneNumberType globalPhoneType = PhoneNumberType.mobile;
+
   final initFuture = FlutterLibphonenumber().init();
   // final initFuture = Future.delayed(Duration(milliseconds: 1500));
 
@@ -81,17 +84,50 @@ class _MyAppState extends State<MyApp> {
                       SizedBox(height: 10),
 
                       /// Get all region codes
-                      RaisedButton(
-                        child: Text('Print all region data'),
-                        onPressed: () async {
-                          // await FlutterLibphonenumber().init();
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RaisedButton(
+                              child: Text('Print all region data'),
+                              onPressed: () async {
+                                // await FlutterLibphonenumber().init();
 
-                          final res = await FlutterLibphonenumber()
-                              .getAllSupportedRegions();
-                          print(res['GB']);
-                          print(res['US']);
-                        },
-                      ),
+                                final res = await FlutterLibphonenumber()
+                                    .getAllSupportedRegions();
+                                print(res['GB']);
+                                print(res['US']);
+                                print(res['BR']);
+                              },
+                            ),
+
+                            /// Spacer
+                            SizedBox(width: 20),
+
+                            /// Mobile or land line toggle
+                            Switch(
+                              value: globalPhoneType == PhoneNumberType.mobile
+                                  ? true
+                                  : false,
+                              onChanged: (val) {
+                                print(val);
+                                setState(
+                                  () => globalPhoneType = (val == false
+                                      ? PhoneNumberType.fixedLine
+                                      : PhoneNumberType.mobile),
+                                );
+                              },
+                            ),
+
+                            /// Spacer
+                            SizedBox(width: 5),
+
+                            Container(
+                              width: 130,
+                              child: globalPhoneType == PhoneNumberType.mobile
+                                  ? Text('Format as Mobile')
+                                  : Text('Format as FixedLine'),
+                            ),
+                          ]),
 
                       /// Spacer
                       SizedBox(height: 10),
@@ -135,6 +171,7 @@ class _MyAppState extends State<MyApp> {
                               ),
                               inputFormatters: [
                                 LibPhonenumberTextFormatter(
+                                  phoneNumberType: globalPhoneType,
                                   overrideSkipCountryCode: overrideCountryCode,
                                   onCountrySelected: (val) {
                                     print('Detected country: ${val?.name}');
@@ -168,7 +205,7 @@ class _MyAppState extends State<MyApp> {
 
                       /// Manual Phone input
                       Container(
-                        width: 160,
+                        width: 180,
                         child: TextField(
                           keyboardType: TextInputType.phone,
                           textAlign: TextAlign.center,
@@ -215,6 +252,7 @@ class _MyAppState extends State<MyApp> {
                                 () => manualFormatController.text =
                                     FlutterLibphonenumber().formatNumberSync(
                                   manualFormatController.text,
+                                  phoneNumberType: globalPhoneType,
                                 ),
                               );
                             },

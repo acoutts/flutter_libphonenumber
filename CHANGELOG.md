@@ -1,3 +1,6 @@
+## 0.2.0
+- Added ability to format numbers as either mobile or fixed line, while defaulting to mobile.
+
 ## 0.1.5
 - Cleanup
 
