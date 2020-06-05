@@ -59,10 +59,10 @@ class CountryManager {
 
   List<CountryWithPhoneCode> countries = [];
   String deviceLocaleCountryCode;
-  var initialized = false;
+  var _initialized = false;
 
   Future<void> loadCountries() async {
-    if (initialized) {
+    if (_initialized) {
       return;
     }
 
@@ -86,7 +86,7 @@ class CountryManager {
                 phoneMask: data['phoneMask'],
               )));
 
-      initialized = true;
+      _initialized = true;
     } catch (err) {
       print('Error loading countries: $err');
     }
