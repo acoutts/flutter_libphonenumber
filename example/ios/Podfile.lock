@@ -2,13 +2,19 @@ PODS:
   - Flutter (1.0.0)
   - flutter_libphonenumber (0.0.1):
     - Flutter
+    - PhoneNumberKit/PhoneNumberKitCore (~> 3.2.0)
   - iso_countries (0.0.1):
     - Flutter
+  - PhoneNumberKit/PhoneNumberKitCore (3.2.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_libphonenumber (from `.symlinks/plugins/flutter_libphonenumber/ios`)
   - iso_countries (from `.symlinks/plugins/iso_countries/ios`)
+
+SPEC REPOS:
+  trunk:
+    - PhoneNumberKit
 
 EXTERNAL SOURCES:
   Flutter:
@@ -20,8 +26,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_libphonenumber: 309a7f581e8c2c49ec6897015a15e8b2dbe659c6
+  flutter_libphonenumber: 0fbc1f33175beeec800ffd3e6a242db058171c10
   iso_countries: eb09d40f388e4c65e291e0bb36a701dfe7de6c74
+  PhoneNumberKit: df411d46177d1492da84e10b6c093846dd861452
 
 PODFILE CHECKSUM: c34e2287a9ccaa606aeceab922830efb9a6ff69a
 

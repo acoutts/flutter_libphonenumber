@@ -3,21 +3,22 @@
 # Run `pod lib lint flutter_libphonenumber.podspec' to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'flutter_libphonenumber'
-  s.version          = '0.0.1'
-  s.summary          = 'A new flutter plugin project.'
-  s.description      = <<-DESC
-A new flutter plugin project.
+  s.name = "flutter_libphonenumber"
+  s.version = "0.0.1"
+  s.summary = "Leverages libphonenumber to allow for asynchronous and synchronous formatting of phone numbers in Flutter apps. Includes a TextInputFormatter to allow real-time AsYouType formatting."
+  s.description = <<-DESC
+  Leverages libphonenumber to allow for asynchronous and synchronous formatting of phone numbers in Flutter apps. Includes a TextInputFormatter to allow real-time AsYouType formatting.
                        DESC
-  s.homepage         = 'http://example.com'
-  s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
-  s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
-  s.dependency 'Flutter'
-  s.platform = :ios, '8.0'
+  s.homepage = "https://github.com/bottlepay/flutter_libphonenumber"
+  s.license = { :file => "../LICENSE" }
+  s.author = { "Bottlepay" => "andrew.coutts@bottlepay.com" }
+  s.source = { :path => "." }
+  s.source_files = "Classes/**/*"
+  s.dependency "Flutter"
+  s.dependency "PhoneNumberKit/PhoneNumberKitCore", "~> 3.2.0"
+  s.platform = :ios, "8.0"
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'VALID_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }
-  s.swift_version = '5.0'
+  s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES", "VALID_ARCHS[sdk=iphonesimulator*]" => "x86_64" }
+  s.swift_version = "5.0"
 end

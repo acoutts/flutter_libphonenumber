@@ -24,7 +24,8 @@ class _MyAppState extends State<MyApp> {
   final manualFormatController = TextEditingController();
   String parsedData;
 
-  final initFuture = FlutterLibphonenumber().init();
+  // final initFuture = FlutterLibphonenumber().init();
+  final initFuture = Future.delayed(Duration(milliseconds: 100), () {});
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +60,11 @@ class _MyAppState extends State<MyApp> {
                       RaisedButton(
                         child: Text('Print all region codes'),
                         onPressed: () async {
+                          await FlutterLibphonenumber().init();
+
                           final res = await FlutterLibphonenumber()
                               .getAllSupportedRegions();
-                          print(res['GB']);
+                          print(res);
                         },
                       ),
 
@@ -93,7 +96,7 @@ class _MyAppState extends State<MyApp> {
 
                           /// Phone input
                           Container(
-                            width: 120,
+                            width: 160,
                             child: TextField(
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.phone,
