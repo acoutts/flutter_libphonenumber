@@ -1,3 +1,6 @@
+## 0.1.5
+- Cleanup
+
 ## 0.1.4
 - Fixed bugs in the way masking is applied which caused numbers to be formatted incorrectly to their mask.
 
