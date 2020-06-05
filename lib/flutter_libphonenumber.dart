@@ -92,8 +92,8 @@ class FlutterLibphonenumber {
   /// parse function to verify if it's a valid number or not.
   Future<FormatPhoneResult> formatParsePhonenumberAsync(
       String phoneNumber, CountryWithPhoneCode country) async {
-    print(
-        '[formatPhoneWithCountry] phoneNumber: \'$phoneNumber\' | country: ${country.countryCode}');
+    // print(
+    //     '[formatPhoneWithCountry] phoneNumber: \'$phoneNumber\' | country: ${country.countryCode}');
 
     /// What we will return
     final returnResult = FormatPhoneResult();
@@ -102,13 +102,13 @@ class FlutterLibphonenumber {
     final formattedResult = await FlutterLibphonenumber()
         .format(toNumericString(phoneNumber), country.countryCode);
     returnResult.formattedNumber = formattedResult['formatted'];
-    print('formatted: ${formattedResult['formatted']}');
+    // print('formatted: ${formattedResult['formatted']}');
 
     /// Try to parse the number to update our e164
     try {
       final parsedResult =
           await parse('+${country.phoneCode}${toNumericString(phoneNumber)}');
-      print('parsedResult: $parsedResult');
+      // print('parsedResult: $parsedResult');
       returnResult.e164 = parsedResult['e164'];
       returnResult.formattedNumber = parsedResult['national'];
     } catch (e) {

@@ -1,6 +1,52 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
+
+/// Manages countries by code and name
+class CountryManager {
+  static final CountryManager _instance = CountryManager._internal();
+  factory CountryManager() => _instance;
+  CountryManager._internal();
+
+  List<CountryWithPhoneCode> _countries = [];
+  String deviceLocaleCountryCode;
+  var _initialized = false;
+
+  /// List of all supported countries on the device with phone code metadata
+  List<CountryWithPhoneCode> get countries => _countries;
+
+  Future<void> loadCountries() async {
+    if (_initialized) {
+      return;
+    }
+
+    try {
+      final phoneCodesList =
+          await FlutterLibphonenumber().getAllSupportedRegions();
+
+      /// Get the device locale
+      try {
+        deviceLocaleCountryCode = Platform.localeName.split('_').last;
+      } catch (e) {
+        print('Error detecting deviceLocaleCountryCode, setting default GB');
+        deviceLocaleCountryCode = 'GB';
+      }
+
+      phoneCodesList
+          .forEach((region, data) => _countries.add(CountryWithPhoneCode(
+                countryCode: region,
+                name: data['countryName'],
+                phoneCode: data['phoneCode'],
+                phoneMask: data['phoneMask'],
+              )));
+
+      _initialized = true;
+    } catch (err) {
+      log('[CountryManager] Error loading countries: $err');
+    }
+  }
+}
 
 class CountryWithPhoneCode {
   CountryWithPhoneCode({
@@ -48,47 +94,5 @@ class CountryWithPhoneCode {
       return rawData;
     }
     return getCountryDataByPhone(phone, subscringLength: subscringLength - 1);
-  }
-}
-
-/// Manages countries by code and name
-class CountryManager {
-  static final CountryManager _instance = CountryManager._internal();
-  factory CountryManager() => _instance;
-  CountryManager._internal();
-
-  List<CountryWithPhoneCode> countries = [];
-  String deviceLocaleCountryCode;
-  var _initialized = false;
-
-  Future<void> loadCountries() async {
-    if (_initialized) {
-      return;
-    }
-
-    try {
-      final phoneCodesList =
-          await FlutterLibphonenumber().getAllSupportedRegions();
-
-      /// Get the device locale
-      try {
-        deviceLocaleCountryCode = Platform.localeName.split('_').last;
-      } catch (e) {
-        print('Error detecting deviceLocaleCountryCode, setting default GB');
-        deviceLocaleCountryCode = 'GB';
-      }
-
-      phoneCodesList
-          .forEach((region, data) => countries.add(CountryWithPhoneCode(
-                countryCode: region,
-                name: data['countryName'],
-                phoneCode: data['phoneCode'],
-                phoneMask: data['phoneMask'],
-              )));
-
-      _initialized = true;
-    } catch (err) {
-      print('Error loading countries: $err');
-    }
   }
 }
