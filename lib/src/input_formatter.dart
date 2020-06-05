@@ -27,15 +27,25 @@ THE SOFTWARE.
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 import 'package:flutter_libphonenumber/src/country_data.dart';
 
 class LibPhonenumberTextFormatter extends TextInputFormatter {
   LibPhonenumberTextFormatter({
     this.onCountrySelected,
     this.useSeparators = true,
+    this.overrideSkipCountryCode,
   });
   final ValueChanged<CountryWithPhoneCode> onCountrySelected;
   final bool useSeparators;
+
+  /// When this is supplied then we will format the number using the
+  /// supplied country code and mask with the country code removed.
+  /// This is useful if you have the country code being selected
+  /// in another text box and just need to format the number without
+  /// its country code in it.
+  final String overrideSkipCountryCode;
+
   CountryWithPhoneCode _countryData;
 
   @override
@@ -72,18 +82,30 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
   }
 
   String _applyMask(String numericString) {
-    if (numericString.isEmpty) {
-      _updateCountryData(null);
+    CountryWithPhoneCode countryData;
+
+    if (overrideSkipCountryCode != null && overrideSkipCountryCode.isNotEmpty) {
+      /// If the user specified the country code, we will use that one directly.
+      countryData = CountryManager().countries.firstWhere(
+          (element) => element.countryCode == overrideSkipCountryCode);
+
+      if (countryData != null) {}
     } else {
-      var countryData =
-          CountryWithPhoneCode.getCountryDataByPhone(numericString);
-      if (countryData != null) {
-        _updateCountryData(countryData);
+      /// Otherwise we will determine it from the nubmer input
+      if (numericString.isEmpty) {
+        _updateCountryData(null);
+      } else {
+        final countryData =
+            CountryWithPhoneCode.getCountryDataByPhone(numericString);
+        if (countryData != null) {
+          _updateCountryData(countryData);
+        }
+      }
+      if (_countryData != null) {
+        return _formatByMask(numericString, _countryData.phoneMask);
       }
     }
-    if (_countryData != null) {
-      return _formatByMask(numericString, _countryData.phoneMask);
-    }
+
     return numericString;
   }
 }

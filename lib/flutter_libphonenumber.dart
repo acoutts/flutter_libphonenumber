@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_libphonenumber/src/country_data.dart';
 import 'package:flutter_libphonenumber/src/input_formatter.dart';
+
 export 'package:flutter_libphonenumber/src/input_formatter.dart';
+export 'package:flutter_libphonenumber/src/country_data.dart';
 
 class FlutterLibphonenumber {
   static final FlutterLibphonenumber _instance =
@@ -13,6 +15,8 @@ class FlutterLibphonenumber {
 
   /// Method channel
   MethodChannel _channel = const MethodChannel('flutter_libphonenumber');
+
+  // List<CountryWithPhoneCode> get countries => CountryManager().countries;
 
   /// Must call this before anything else so the countries data is populated
   Future<void> init() async {
@@ -75,10 +79,45 @@ class FlutterLibphonenumber {
   }
 
   /// Given a phone number, format it automatically using the masks we have from libphonenumber's example numbers.
-  String formatPhone(String phone) {
+  String formatPhonenumberSync(String phone) {
     return LibPhonenumberTextFormatter()
         .formatEditUpdate(
             TextEditingValue(text: ''), TextEditingValue(text: phone))
         .text;
   }
+
+  /// Asynchronously formats a phone number with libphonenumber. Will return the formatted number
+  /// and if it's a valid/complete number, will return the e164 value as well.
+  Future<_FormatPhoneResult> formatPhoneWithCountry(
+      String phoneNumber, CountryWithPhoneCode country) async {
+    print(
+        '[formatPhoneWithCountry] phoneNumber: \'$phoneNumber\' | country: ${country.countryCode}');
+
+    /// What we will return
+    final returnResult = _FormatPhoneResult();
+
+    /// Format the number with AsYouType
+    final formattedResult = await FlutterLibphonenumber()
+        .format(toNumericString(phoneNumber), country.countryCode);
+    returnResult.formattedNumber = formattedResult['formatted'];
+    print('formatted: ${formattedResult['formatted']}');
+
+    /// Try to parse the number to update our e164
+    try {
+      final parsedResult =
+          await parse('+${country.phoneCode}${toNumericString(phoneNumber)}');
+      print('parsedResult: $parsedResult');
+      returnResult.e164 = parsedResult['e164'];
+      returnResult.formattedNumber = parsedResult['national'];
+    } catch (e) {
+      // print(e);
+    }
+
+    return returnResult;
+  }
+}
+
+class _FormatPhoneResult {
+  String formattedNumber;
+  String e164;
 }

@@ -62,7 +62,7 @@ Example response:
 }
 ```
 
-### `Future<Map<String, dynamic>> format(String phone, String region)`
+### `Future<Map<String, dynamic>> formatPhonenumberSync(String phone, String region)`
 Format a number asynchronously by calling into libphonenumber on the device.
 
 Example response:
