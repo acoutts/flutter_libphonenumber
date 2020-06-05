@@ -1,0 +1,28 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_libphonenumber (0.0.1):
+    - Flutter
+  - iso_countries (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_libphonenumber (from `.symlinks/plugins/flutter_libphonenumber/ios`)
+  - iso_countries (from `.symlinks/plugins/iso_countries/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_libphonenumber:
+    :path: ".symlinks/plugins/flutter_libphonenumber/ios"
+  iso_countries:
+    :path: ".symlinks/plugins/iso_countries/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_libphonenumber: 309a7f581e8c2c49ec6897015a15e8b2dbe659c6
+  iso_countries: eb09d40f388e4c65e291e0bb36a701dfe7de6c74
+
+PODFILE CHECKSUM: c34e2287a9ccaa606aeceab922830efb9a6ff69a
+
+COCOAPODS: 1.9.3

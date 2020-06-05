@@ -1,5 +1,5 @@
 name: flutter_libphonenumber
-description: A new flutter plugin project.
+description: Leverages libphonenumber to allow for asynchronous and synchronous formatting of phone numbers in Flutter apps. Includes a TextInputFormatter to allow real-time AsYouType formatting.
 version: 0.0.1
 author:
 homepage:

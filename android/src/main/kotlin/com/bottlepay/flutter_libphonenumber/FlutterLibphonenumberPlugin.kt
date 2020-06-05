@@ -98,12 +98,14 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
         val phoneCode = PhoneNumberUtil.getInstance().getCountryCodeForRegion(region).toString()
         itemMap["phoneCode"] = phoneCode
 
+
         // Get a formatted example number
         val exampleNumber = PhoneNumberUtil.getInstance().getExampleNumber(region)
         val formattedExampleNumber = PhoneNumberUtil.getInstance().format(exampleNumber, PhoneNumberUtil.PhoneNumberFormat.NATIONAL)
         itemMap["phoneMask"] = "+${phoneCode} ${formattedExampleNumber.toString()}".replace(Regex("""[\d]"""), "0")
+        itemMap["exampleNumber"] = formattedExampleNumber
 
-        // Save this map into the return map
+                // Save this map into the return map
         regionsMap[region] = itemMap
       }
       Handler(Looper.getMainLooper()).post(Runnable {

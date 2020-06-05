@@ -59,8 +59,9 @@ class _MyAppState extends State<MyApp> {
                       RaisedButton(
                         child: Text('Print all region codes'),
                         onPressed: () async {
-                          print(await FlutterLibphonenumber()
-                              .getAllSupportedRegions());
+                          final res = await FlutterLibphonenumber()
+                              .getAllSupportedRegions();
+                          print(res['GB']);
                         },
                       ),
 
@@ -76,9 +77,13 @@ class _MyAppState extends State<MyApp> {
                             width: 50,
                             child: TextField(
                               controller: countryController,
+                              keyboardType: TextInputType.phone,
                               decoration: InputDecoration(
                                 hintText: '+44',
                               ),
+                              onChanged: (v) {
+                                setState(() {});
+                              },
                               inputFormatters: [],
                             ),
                           ),
@@ -88,14 +93,30 @@ class _MyAppState extends State<MyApp> {
 
                           /// Phone input
                           Container(
-                            width: 200,
+                            width: 120,
                             child: TextField(
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.phone,
                               controller: phoneController,
                               decoration: InputDecoration(
                                 hintText: '7777-777777',
                               ),
                               inputFormatters: [
                                 LibPhonenumberTextFormatter(
+                                  overrideSkipCountryCode:
+                                      countryController.text.isNotEmpty
+                                          ? CountryManager()
+                                              .countries
+                                              .firstWhere(
+                                                  (element) =>
+                                                      element.phoneCode ==
+                                                      countryController.text
+                                                          .replaceAll(
+                                                              RegExp(r'[^\d]+'),
+                                                              ''),
+                                                  orElse: () => null)
+                                              ?.countryCode
+                                          : null,
                                   onCountrySelected: (val) {
                                     print('Detected country: ${val?.name}');
                                   },
@@ -111,8 +132,9 @@ class _MyAppState extends State<MyApp> {
 
                       /// Manual Phone input
                       Container(
-                        width: 200,
+                        width: 160,
                         child: TextField(
+                          textAlign: TextAlign.center,
                           controller: manualFormatController,
                           decoration: InputDecoration(
                             hintText: '7777-777777',
