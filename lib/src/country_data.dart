@@ -1,16 +1,33 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
-import 'package:iso_countries/iso_countries.dart';
 
-class CountryWithPhoneCode extends Country {
+class CountryWithPhoneCode {
   CountryWithPhoneCode({
     this.phoneCode,
     this.phoneMask,
-    String name,
-    String countryCode,
-  }) : super(name: name, countryCode: countryCode);
+    this.name,
+    this.countryCode,
+  });
+
+  /// GB locale, useful for dummy values
+  const CountryWithPhoneCode.gb()
+      : phoneCode = '44',
+        phoneMask = '+00 0000 000000',
+        name = 'United Kingdom',
+        countryCode = 'GB';
+
+  /// US locale, useful for dummy values
+  const CountryWithPhoneCode.us()
+      : phoneCode = '1',
+        phoneMask = '+0 (000) 000-0000',
+        name = 'United States',
+        countryCode = 'US';
+
+  final String phoneCode;
+  final String phoneMask;
+  final String name;
+  final String countryCode;
 
   @override
   String toString() =>
@@ -32,27 +49,6 @@ class CountryWithPhoneCode extends Country {
     }
     return getCountryDataByPhone(phone, subscringLength: subscringLength - 1);
   }
-
-  /// GB locale, useful for dummy values
-  const CountryWithPhoneCode.gb()
-      : phoneCode = '44',
-        phoneMask = '+00 0000 000000',
-        super(
-          name: 'United Kingdom',
-          countryCode: 'GB',
-        );
-
-  /// US locale, useful for dummy values
-  const CountryWithPhoneCode.us()
-      : phoneCode = '1',
-        phoneMask = '+0 (000) 000-0000',
-        super(
-          name: 'United States',
-          countryCode: 'US',
-        );
-
-  final String phoneCode;
-  final String phoneMask;
 }
 
 /// Manages countries by code and name
@@ -71,15 +67,8 @@ class CountryManager {
     }
 
     try {
-      Map<String, dynamic> phoneCodesList;
-      List<Country> countriesList;
-
-      await Future.wait(<Future>[
-        FlutterLibphonenumber()
-            .getAllSupportedRegions()
-            .then((e) => phoneCodesList = e),
-        IsoCountries.iso_countries.then((e) => countriesList = e),
-      ]);
+      final phoneCodesList =
+          await FlutterLibphonenumber().getAllSupportedRegions();
 
       /// Get the device locale
       try {
@@ -89,36 +78,13 @@ class CountryManager {
         deviceLocaleCountryCode = 'GB';
       }
 
-      /// Create our countries list and use the phone lib library to
-      /// piece together the country phone code with it.
-      final phoneCodeMap = phoneCodesList
-          .map((key, value) => MapEntry(key.toUpperCase(), value));
-
-      final parsedCountriesList = countriesList
-          .map((country) {
-            // This is sometimes null which means there's no phone conde for that country
-            final phoneCodeEntry = Map<String, String>.from(
-                phoneCodeMap[country.countryCode] ?? {});
-
-            return CountryWithPhoneCode(
-              countryCode: country.countryCode.toUpperCase(),
-              name: country.name,
-              phoneCode: (phoneCodeEntry ?? {})['phoneCode'],
-              phoneMask: (phoneCodeEntry ?? {})['phoneMask'],
-            );
-          })
-          .where((f) => f.phoneCode != null) // Skip any null phone codes
-          .toList();
-
-      /// Now order it so the user's default locale country is on top
-      countries = [
-        parsedCountriesList.firstWhere(
-          (element) => element.countryCode == deviceLocaleCountryCode,
-          orElse: () => CountryWithPhoneCode.gb(),
-        ),
-        ...parsedCountriesList
-            .where((element) => element.countryCode != deviceLocaleCountryCode),
-      ];
+      phoneCodesList
+          .forEach((region, data) => countries.add(CountryWithPhoneCode(
+                countryCode: region,
+                name: data['countryName'],
+                phoneCode: data['phoneCode'],
+                phoneMask: data['phoneMask'],
+              )));
 
       initialized = true;
     } catch (err) {

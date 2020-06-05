@@ -6,6 +6,9 @@ import PhoneNumberKit
 
 
 public class SwiftFlutterLibphonenumberPlugin: NSObject, FlutterPlugin {
+    let dispQueue = DispatchQueue(label: "com.bottlepay.flutter_libphonenumber")
+    
+    
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "flutter_libphonenumber", binaryMessenger: registrar.messenger())
         let instance = SwiftFlutterLibphonenumberPlugin()
@@ -24,23 +27,33 @@ public class SwiftFlutterLibphonenumberPlugin: NSObject, FlutterPlugin {
     
     private let kit = PhoneNumberKit()
     
-    private func getAllSupportedRegions(result: FlutterResult) {
-        var regionsMap: [String: [String: String]] = [:]
-        kit.allCountries().forEach { (regionCode) in
-            var itemMap: [String: String] = [:]
-            
-            if let phoneCode = kit.countryCode(for: regionCode) {
-                itemMap["phoneCode"] = String(phoneCode)
+    // Get all regions and assemble their phone mask data.
+    private func getAllSupportedRegions(result: @escaping FlutterResult) {
+        // Runs on a separate thread to prevent locking up the UI in flutter.
+        dispQueue.async {
+            var regionsMap: [String: [String: String]] = [:]
+            self.kit.allCountries().forEach { (regionCode) in
+                var itemMap: [String: String] = [:]
                 
-                if let formattedExampleNumber = kit.getFormattedExampleNumber(forCountry: regionCode, withFormat: .national) {
-                    itemMap["phoneMask"] = "+\(phoneCode) \(formattedExampleNumber)".replacingOccurrences(of: "[\\d]", with: "0", options: .regularExpression)
-                    itemMap["exampleNumber"] = formattedExampleNumber
+                if let phoneCode = self.kit.countryCode(for: regionCode) {
+                    itemMap["phoneCode"] = String(phoneCode)
+                    
+                    if let formattedExampleNumber = self.kit.getFormattedExampleNumber(forCountry: regionCode, withFormat: .national) {
+                        itemMap["phoneMask"] = "+\(phoneCode) \(formattedExampleNumber)".replacingOccurrences(of: "[\\d]", with: "0", options: .regularExpression)
+                        itemMap["exampleNumber"] = formattedExampleNumber
+                    }
                 }
+                if let countryName = self.countryName(from: regionCode) {
+                    itemMap["countryName"] = countryName
+                }
+                
+                regionsMap[regionCode] = itemMap
             }
-
-            regionsMap[regionCode] = itemMap
+            
+            DispatchQueue.main.async {
+                result(regionsMap)
+            }
         }
-        result(regionsMap)
     }
     
     private func format(_ call: FlutterMethodCall, result: FlutterResult) {
@@ -137,6 +150,17 @@ public class SwiftFlutterLibphonenumberPlugin: NSObject, FlutterPlugin {
         }
         
         result(res)
+    }
+    
+    // Returns country name from a given country code like 'US' or 'GB'
+    private func countryName(from countryCode: String) -> String? {
+        if let name = (Locale.current as NSLocale).displayName(forKey: .countryCode, value: countryCode) {
+            // Country name was found
+            return name
+        } else {
+            // Country name cannot be found
+            return nil
+        }
     }
 }
 

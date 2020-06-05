@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,8 +25,23 @@ class _MyAppState extends State<MyApp> {
   final manualFormatController = TextEditingController();
   String parsedData;
 
-  // final initFuture = FlutterLibphonenumber().init();
-  final initFuture = Future.delayed(Duration(milliseconds: 100), () {});
+  final initFuture = FlutterLibphonenumber().init();
+  // final initFuture = Future.delayed(Duration(milliseconds: 1500));
+
+  /// Will try to parse the country from the override country code field
+  String get overrideCountryCode {
+    final res = countryController.text.isNotEmpty
+        ? CountryManager()
+            .countries
+            .firstWhere(
+                (element) =>
+                    element.phoneCode ==
+                    countryController.text.replaceAll(RegExp(r'[^\d]+'), ''),
+                orElse: () => null)
+            ?.countryCode
+        : null;
+    return res;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,24 +70,36 @@ class _MyAppState extends State<MyApp> {
                   title: const Text('flutter_libphonenumber'),
                 ),
                 body: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: max(
+                      0,
+                      24 - MediaQuery.of(context).padding.bottom,
+                    ),
+                  ),
                   child: Column(
                     children: [
+                      SizedBox(height: 10),
+
                       /// Get all region codes
                       RaisedButton(
                         child: Text('Print all region codes'),
                         onPressed: () async {
-                          await FlutterLibphonenumber().init();
+                          // await FlutterLibphonenumber().init();
 
                           final res = await FlutterLibphonenumber()
                               .getAllSupportedRegions();
-                          print(res);
+                          print(res['GB']);
                         },
                       ),
 
                       /// Spacer
-                      SizedBox(height: 30),
+                      SizedBox(height: 10),
+                      Divider(),
+                      SizedBox(height: 10),
 
                       /// Format as you type
+                      Text('Format as you type (synchronous using masks)'),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -106,20 +134,7 @@ class _MyAppState extends State<MyApp> {
                               ),
                               inputFormatters: [
                                 LibPhonenumberTextFormatter(
-                                  overrideSkipCountryCode:
-                                      countryController.text.isNotEmpty
-                                          ? CountryManager()
-                                              .countries
-                                              .firstWhere(
-                                                  (element) =>
-                                                      element.phoneCode ==
-                                                      countryController.text
-                                                          .replaceAll(
-                                                              RegExp(r'[^\d]+'),
-                                                              ''),
-                                                  orElse: () => null)
-                                              ?.countryCode
-                                          : null,
+                                  overrideSkipCountryCode: overrideCountryCode,
                                   onCountrySelected: (val) {
                                     print('Detected country: ${val?.name}');
                                   },
@@ -131,12 +146,30 @@ class _MyAppState extends State<MyApp> {
                       ),
 
                       /// Spacer
-                      SizedBox(height: 50),
+                      SizedBox(height: 10),
+
+                      Text(
+                        'If country code is not empty, phone number will format expecting no country code.',
+                        style: TextStyle(fontSize: 12),
+                        textAlign: TextAlign.center,
+                      ),
+
+                      /// Spacer
+                      SizedBox(height: 20),
+                      Divider(),
+                      SizedBox(height: 20),
+
+                      Text(
+                        'Manually format / parse the phone number.\nAsync uses FlutterLibphonenumber().format().\nSync uses FlutterLibphonenumber().formatPhone.',
+                        style: TextStyle(fontSize: 12),
+                        textAlign: TextAlign.center,
+                      ),
 
                       /// Manual Phone input
                       Container(
                         width: 160,
                         child: TextField(
+                          keyboardType: TextInputType.phone,
                           textAlign: TextAlign.center,
                           controller: manualFormatController,
                           decoration: InputDecoration(
@@ -145,46 +178,71 @@ class _MyAppState extends State<MyApp> {
                         ),
                       ),
 
-                      /// Manually format the phone input
-                      RaisedButton(
-                        child: Text('Manually format'),
-                        onPressed: () async {
-                          // Asynchronous formatting with native call into libphonenumber
-                          final res = await FlutterLibphonenumber().format(
-                            manualFormatController.text,
-                            'US',
-                          );
-                          print(res);
-                          setState(() =>
-                              manualFormatController.text = res['formatted']);
-
-                          /// Uncomment below to do the formatting synchronously with masking
-                          // setState(() => manualFormatController.text =
-                          //     FlutterLibphonenumber()
-                          //         .formatPhone(manualFormatController.text));
-                        },
-                      ),
-
                       /// Spacer
                       SizedBox(height: 10),
 
-                      /// Manually format the phone input
-                      RaisedButton(
-                        child: Text('Parse number'),
-                        onPressed: () async {
-                          try {
-                            final res = await FlutterLibphonenumber()
-                                .parse(manualFormatController.text);
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          /// Manually format the phone input
+                          RaisedButton(
+                            child: Text('Format (Async)'),
+                            onPressed: () async {
+                              // Asynchronous formatting with native call into libphonenumber
+                              final res = await FlutterLibphonenumber().format(
+                                manualFormatController.text,
+                                'US',
+                              );
+                              print(res);
+                              setState(() => manualFormatController.text =
+                                  res['formatted']);
+                            },
+                          ),
 
-                            print(res);
-                            JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                          /// Spacer
+                          SizedBox(width: 10),
 
-                            setState(() => parsedData = encoder.convert(res));
-                          } catch (e) {
-                            print(e);
-                            setState(() => parsedData = null);
-                          }
-                        },
+                          RaisedButton(
+                            child: Text('Format (Sync)'),
+                            onPressed: () async {
+                              if (CountryManager().countries.isEmpty) {
+                                print(
+                                    'Warning: countries list is empty which means init hs not be run yet. Can\'t format synchronously until init has been executed.');
+                              }
+                              // Synchronous formatting with no native call into libphonenumber, just a dart call to mask the input
+                              setState(
+                                () => manualFormatController.text =
+                                    FlutterLibphonenumber().formatNumberSync(
+                                  manualFormatController.text,
+                                ),
+                              );
+                            },
+                          ),
+
+                          /// Spacer
+                          SizedBox(width: 10),
+
+                          /// Manually format the phone input
+                          RaisedButton(
+                            child: Text('Parse'),
+                            onPressed: () async {
+                              try {
+                                final res = await FlutterLibphonenumber()
+                                    .parse(manualFormatController.text);
+
+                                print(res);
+                                JsonEncoder encoder =
+                                    JsonEncoder.withIndent('  ');
+
+                                setState(
+                                    () => parsedData = encoder.convert(res));
+                              } catch (e) {
+                                print(e);
+                                setState(() => parsedData = null);
+                              }
+                            },
+                          ),
+                        ],
                       ),
 
                       /// Spacer

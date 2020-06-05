@@ -51,9 +51,9 @@ class FlutterLibphonenumber {
   ///   formatted: "1 (414) 444-4444",
   /// }
   /// ```
-  Future<Map<String, dynamic>> format(String phone, String region) {
-    return _channel.invokeMapMethod<String, dynamic>("format", {
-      "phone": phone,
+  Future<Map<String, String>> format(String phone, String region) {
+    return _channel.invokeMapMethod<String, String>("format", {
+      "phone": _ensureLeadingPlus(phone),
       "region": region,
     });
   }
@@ -74,7 +74,7 @@ class FlutterLibphonenumber {
   /// ```
   Future<Map<String, dynamic>> parse(String phone, {String region}) {
     return _channel.invokeMapMethod<String, dynamic>("parse", {
-      "phone": phone,
+      "phone": _ensureLeadingPlus(phone),
       "region": region,
     });
   }
@@ -122,4 +122,13 @@ class FlutterLibphonenumber {
 class FormatPhoneResult {
   String formattedNumber;
   String e164;
+}
+
+/// Ensure phone number has a leading `+` in it
+String _ensureLeadingPlus(String phoneNumber) {
+  var fixedNum = phoneNumber;
+  if (fixedNum.isNotEmpty && fixedNum[0] != '+') {
+    fixedNum = '+$fixedNum';
+  }
+  return fixedNum;
 }

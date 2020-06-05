@@ -104,6 +104,7 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
         val formattedExampleNumber = PhoneNumberUtil.getInstance().format(exampleNumber, PhoneNumberUtil.PhoneNumberFormat.NATIONAL)
         itemMap["phoneMask"] = "+${phoneCode} ${formattedExampleNumber.toString()}".replace(Regex("""[\d]"""), "0")
         itemMap["exampleNumber"] = formattedExampleNumber
+        itemMap["countryName"] = Locale("",region).displayCountry
 
                 // Save this map into the return map
         regionsMap[region] = itemMap

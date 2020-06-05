@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
                        DESC
   s.homepage = "https://github.com/bottlepay/flutter_libphonenumber"
   s.license = { :file => "../LICENSE" }
-  s.author = { "Bottlepay" => "andrew.coutts@bottlepay.com" }
+  s.author = { "Andrew Coutts" => "andrew.coutts@bottlepay.com" }
   s.source = { :path => "." }
   s.source_files = "Classes/**/*"
   s.dependency "Flutter"

@@ -5,22 +5,30 @@ A wrapper around libphonenumber with added functionality merged from the followi
 * https://github.com/anoop4real/flutter_iso_countries
 * https://github.com/caseyryan/flutter_multi_formatter
 
-## Getting Started
-First you need to call the `init` function. This will load all of the available regions available on the device, and then cross-reference them with libphonenumber to build a formatting mask for each region using an example number from libphonenumber.
+Uses the following native libraries:
+|Platform|Library|Version|
+|--|--|--|
+|Android|libphonenumber|`8.12.5`|
+|iOS|PhoneNumberKit|`3.2.0`|
 
-This is an improvement on the approach in `flutter_multi_formatter` because we simply pull all of the phone pattern mask data from libphonenumber and don't need to manage it manually.
+## Getting Started
+First you need to call the `init` function. This will load all of the available regions available on the device from libphonenumber to build a formatting mask for each country using its example number from libphonenumber.
+
+If you don't run the init function then none of the synchronous mask formatting functions will work.
+
+We use the same approach from `flutter_multi_formatter` for masking but instead of statically defining all of our country masks, we pull them on the fly from libphonenubmer so that the masks will be automatically maintained over time.
+
+You can either do this during your app init before calling `RunApp`, or with a `FutureBuilder` as the example app demonstrates.
 
 ```dart
 await FlutterLibphonenumber().init();
 ```
 
-You can either do this during your app init before calling `RunApp`, or with a `FutureBuilder` as the example app demonstrates.
-
 ## Formatting a number synchronously
 Normally calls to libphonenumber's format function are asynchronous, and you might not want
-your UI to have to rebuild every time you need to format a phone number. The effect here might be you need loading indicators or the UI will change after a second when the async format call returns.
+your UI rebuilding every time you need to format a phone number.
 
-To get around this, we loaded a mask of every supported phone region during the `init()` call. We can use this to format an e164 phone number **synchronously** like this:
+To get around this, we load a mask of every supported phone region's example number from libphonenumber during the `init()` call. We can then use this mask to format an e164 phone number **synchronously** like this:
 ```dart
 final rawNumber = '+14145556666';
 final formattedNumber = FlutterLibphonenumber().formatPhone(rawNumber); // +1 (414) 555-6666
@@ -45,7 +53,7 @@ Example response:
 }
 ```
 
-### `Future<Map<String, dynamic>> format(String phone, String region)`
+### `Future<Map<String, String>> format(String phone, String region)`
 Formats a number using libphonenumber. Will return the parsed / formatted number like this:
 
 ```dart
@@ -69,8 +77,10 @@ Example response:
 }
 ```
 
-### `Future<Map<String, dynamic>> formatNumberSync(String phone, String region)`
-Format a number synchronously using masks to format it.
+### `String formatNumberSync(String phone)`
+Format a number synchronously using masks to format it. Must have ran the `init()` function to pre-populate the mask data.
+
+If you have not run init yet, this will just return the value passed in with no changes to it.
 
 Example response:
 ```dart
@@ -82,10 +92,10 @@ Asynchronously formats a phone number with libphonenumber. Will return the forma
 
 This is useful if you want to format a number and also check if it's valid, in one step.
 
-Example response:
 ```dart
-{
-    formatted: "1 (414) 444-4444",
+class FormatPhoneResult {
+  String formattedNumber; // 1 (414) 444-4444
+  String e164; // +14144444444
 }
 ```
 
