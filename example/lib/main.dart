@@ -82,13 +82,13 @@ class _MyAppState extends State<MyApp> {
 
                       /// Get all region codes
                       RaisedButton(
-                        child: Text('Print all region codes'),
+                        child: Text('Print all region data'),
                         onPressed: () async {
                           // await FlutterLibphonenumber().init();
 
                           final res = await FlutterLibphonenumber()
                               .getAllSupportedRegions();
-                          print(res['GB']);
+                          print(res);
                         },
                       ),
 

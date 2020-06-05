@@ -2,16 +2,21 @@
 
 A wrapper around libphonenumber with added functionality merged from the following libs:
 * https://github.com/nashfive/phone_number
-* https://github.com/anoop4real/flutter_iso_countries
 * https://github.com/caseyryan/flutter_multi_formatter
 
 Uses the following native libraries:
+
 | Platform | Library        | Version |
 |----------|----------------|---------|
 | Android  | libphonenumber | 8.12.5  |
 | iOS      | PhoneNumberKit | 3.2.0   |
 
 The main advantage to this lib is it lets you optionally format a phone number synchronously without making calls into libphonenumber with platform calls.
+
+![AsYouType real-time formatting](https://media.giphy.com/media/XHk6PTxbJ5wRW6ChDz/source.gif)
+
+![Format and parse](https://media.giphy.com/media/XGgnYYeo2YS7elAPRQ/source.gif)
+
 
 ## Getting Started
 First you need to call the `init` function. This will load all of the available regions available on the device from libphonenumber to build a formatting mask for each country using its example number from libphonenumber.
