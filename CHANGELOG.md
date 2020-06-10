@@ -1,4 +1,4 @@
-# 0.3.1
+## 0.3.1
 - Fixes to documentation.
 
 ## 0.3.0
