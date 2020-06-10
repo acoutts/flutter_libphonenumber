@@ -1,3 +1,6 @@
+# 0.3.1
+- Fixes to documentation.
+
 ## 0.3.0
 - Can now format based on the national or international format of a country's phone number.
 
