@@ -26,7 +26,10 @@ class _MyAppState extends State<MyApp> {
   String parsedData;
 
   /// Used to format numbers as mobile or land line
-  PhoneNumberType globalPhoneType = PhoneNumberType.mobile;
+  var globalPhoneType = PhoneNumberType.mobile;
+
+  /// Use international or national phone format
+  var globalPhoneFormat = PhoneNumberFormat.international;
 
   final initFuture = FlutterLibphonenumber().init();
   // final initFuture = Future.delayed(Duration(milliseconds: 1500));
@@ -103,29 +106,69 @@ class _MyAppState extends State<MyApp> {
                             /// Spacer
                             SizedBox(width: 20),
 
-                            /// Mobile or land line toggle
-                            Switch(
-                              value: globalPhoneType == PhoneNumberType.mobile
-                                  ? true
-                                  : false,
-                              onChanged: (val) {
-                                print(val);
-                                setState(
-                                  () => globalPhoneType = (val == false
-                                      ? PhoneNumberType.fixedLine
-                                      : PhoneNumberType.mobile),
-                                );
-                              },
-                            ),
+                            Column(
+                              children: [
+                                /// Mobile or land line toggle
+                                Row(
+                                  children: [
+                                    Switch(
+                                      value: globalPhoneType ==
+                                              PhoneNumberType.mobile
+                                          ? true
+                                          : false,
+                                      onChanged: (val) {
+                                        setState(
+                                          () => globalPhoneType = (val == false
+                                              ? PhoneNumberType.fixedLine
+                                              : PhoneNumberType.mobile),
+                                        );
+                                      },
+                                    ),
 
-                            /// Spacer
-                            SizedBox(width: 5),
+                                    /// Spacer
+                                    SizedBox(width: 5),
 
-                            Container(
-                              width: 130,
-                              child: globalPhoneType == PhoneNumberType.mobile
-                                  ? Text('Format as Mobile')
-                                  : Text('Format as FixedLine'),
+                                    Container(
+                                      width: 130,
+                                      child: globalPhoneType ==
+                                              PhoneNumberType.mobile
+                                          ? Text('Format as Mobile')
+                                          : Text('Format as FixedLine'),
+                                    ),
+                                  ],
+                                ),
+
+                                /// National or international line toggle
+                                Row(
+                                  children: [
+                                    Switch(
+                                      value: globalPhoneFormat ==
+                                              PhoneNumberFormat.national
+                                          ? true
+                                          : false,
+                                      onChanged: (val) {
+                                        setState(
+                                          () => globalPhoneFormat = (val ==
+                                                  false
+                                              ? PhoneNumberFormat.international
+                                              : PhoneNumberFormat.national),
+                                        );
+                                      },
+                                    ),
+
+                                    /// Spacer
+                                    SizedBox(width: 5),
+
+                                    Container(
+                                      width: 130,
+                                      child: globalPhoneFormat ==
+                                              PhoneNumberFormat.national
+                                          ? Text('National')
+                                          : Text('International'),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
                           ]),
 
@@ -172,9 +215,11 @@ class _MyAppState extends State<MyApp> {
                               inputFormatters: [
                                 LibPhonenumberTextFormatter(
                                   phoneNumberType: globalPhoneType,
+                                  phoneNumberFormat: globalPhoneFormat,
                                   overrideSkipCountryCode: overrideCountryCode,
                                   onCountrySelected: (val) {
-                                    print('Detected country: ${val?.name}');
+                                    print(
+                                        'Detected country: ${val?.countryName}');
                                   },
                                 ),
                               ],
@@ -231,7 +276,6 @@ class _MyAppState extends State<MyApp> {
                                 manualFormatController.text,
                                 'US', // TODO: how can we not have to set this manually?
                               );
-                              print(res);
                               setState(() => manualFormatController.text =
                                   res['formatted']);
                             },
@@ -253,6 +297,7 @@ class _MyAppState extends State<MyApp> {
                                     FlutterLibphonenumber().formatNumberSync(
                                   manualFormatController.text,
                                   phoneNumberType: globalPhoneType,
+                                  phoneNumberFormat: globalPhoneFormat,
                                 ),
                               );
                             },
@@ -269,7 +314,6 @@ class _MyAppState extends State<MyApp> {
                                 final res = await FlutterLibphonenumber()
                                     .parse(manualFormatController.text);
 
-                                print(res);
                                 JsonEncoder encoder =
                                     JsonEncoder.withIndent('  ');
 

@@ -1,3 +1,6 @@
+## 0.3.0
+- Can now format based on the national or international format of a country's phone number.
+
 ## 0.2.0
 - Added ability to format numbers as either mobile or fixed line, while defaulting to mobile.
 

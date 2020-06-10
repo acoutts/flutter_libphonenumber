@@ -103,10 +103,14 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
         // Get a formatted example number
         val exampleNumberMobile = PhoneNumberUtil.getInstance().getExampleNumberForType(region, PhoneNumberType.MOBILE) ?: Phonenumber.PhoneNumber()
         val exampleNumberFixedLine = PhoneNumberUtil.getInstance().getExampleNumberForType(region, PhoneNumberType.FIXED_LINE) ?: Phonenumber.PhoneNumber()
-        itemMap["exampleNumberMobile"] = formatNational(exampleNumberMobile).toString()
-        itemMap["exampleNumberFixedLine"] = formatNational(exampleNumberFixedLine).toString()
-        itemMap["phoneMaskMobile"] = maskNumber(formatNational(exampleNumberMobile).toString(), phoneCode)
-        itemMap["phoneMaskFixedLine"] = maskNumber(formatNational(exampleNumberFixedLine).toString(), phoneCode)
+        itemMap["exampleNumberMobileNational"] = formatNational(exampleNumberMobile).toString()
+        itemMap["exampleNumberFixedLineNational"] = formatNational(exampleNumberFixedLine).toString()
+        itemMap["phoneMaskMobileNational"] = maskNumber(formatNational(exampleNumberMobile).toString(), phoneCode)
+        itemMap["phoneMaskFixedLineNational"] = maskNumber(formatNational(exampleNumberFixedLine).toString(), phoneCode)
+        itemMap["exampleNumberMobileInternational"] = formatInternational(exampleNumberMobile).toString()
+        itemMap["exampleNumberFixedLineInternational"] = formatInternational(exampleNumberFixedLine).toString()
+        itemMap["phoneMaskMobileInternational"] = maskNumber(formatInternational(exampleNumberMobile).toString(), phoneCode)
+        itemMap["phoneMaskFixedLineInternational"] = maskNumber(formatInternational(exampleNumberFixedLine).toString(), phoneCode)
         itemMap["countryName"] = Locale("",region).displayCountry
 
                 // Save this map into the return map
@@ -119,8 +123,9 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
   }
 
   // Masks a phone number by replacing all digits with 0s
-  private fun maskNumber(phoneNumber: String, phoneCode: String) = "+$phoneCode $phoneNumber".replace(Regex("""[\d]"""), "0")
+  private fun maskNumber(phoneNumber: String, phoneCode: String) = phoneNumber.replace(Regex("""[\d]"""), "0")
   private fun formatNational(phoneNumber: Phonenumber.PhoneNumber) = PhoneNumberUtil.getInstance().format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.NATIONAL)
+  private fun formatInternational(phoneNumber: Phonenumber.PhoneNumber) = PhoneNumberUtil.getInstance().format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL)
 
   private fun parseStringAndRegion(string: String, region: String?,
                                    util: PhoneNumberUtil): HashMap<String, String>? {

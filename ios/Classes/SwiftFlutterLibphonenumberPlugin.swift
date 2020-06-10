@@ -38,14 +38,24 @@ public class SwiftFlutterLibphonenumberPlugin: NSObject, FlutterPlugin {
                 if let phoneCode = self.kit.countryCode(for: regionCode) {
                     itemMap["phoneCode"] = String(phoneCode)
                     
-                    if let formattedExampleNumberMobile = self.kit.getFormattedExampleNumber(forCountry: regionCode, ofType: .mobile, withFormat: .national) {
-                        itemMap["phoneMaskMobile"] = self.maskNumber(phoneNumber: formattedExampleNumberMobile, phoneCode: phoneCode)
-                        itemMap["exampleNumberMobile"] = formattedExampleNumberMobile
+                    if let formattedExampleNumberMobileNational = self.kit.getFormattedExampleNumber(forCountry: regionCode, ofType: .mobile, withFormat: .national) {
+                        itemMap["phoneMaskMobileNational"] = self.maskNumber(phoneNumber: formattedExampleNumberMobileNational, phoneCode: phoneCode)
+                        itemMap["exampleNumberMobileNational"] = formattedExampleNumberMobileNational
                     }
                     
-                    if let formattedExampleNumberFixedLine = self.kit.getFormattedExampleNumber(forCountry: regionCode, ofType: .fixedLine, withFormat: .national) {
-                        itemMap["phoneMaskFixedLine"] = self.maskNumber(phoneNumber: formattedExampleNumberFixedLine, phoneCode: phoneCode)
-                        itemMap["exampleNumberFixedLine"] = formattedExampleNumberFixedLine
+                    if let formattedExampleNumberMobileInternational = self.kit.getFormattedExampleNumber(forCountry: regionCode, ofType: .mobile, withFormat: .international) {
+                        itemMap["phoneMaskMobileInternational"] = self.maskNumber(phoneNumber: formattedExampleNumberMobileInternational, phoneCode: phoneCode)
+                        itemMap["exampleNumberMobileInternational"] = formattedExampleNumberMobileInternational
+                    }
+                    
+                    if let formattedExampleNumberFixedLineNational = self.kit.getFormattedExampleNumber(forCountry: regionCode, ofType: .fixedLine, withFormat: .national) {
+                        itemMap["phoneMaskFixedLineNational"] = self.maskNumber(phoneNumber: formattedExampleNumberFixedLineNational, phoneCode: phoneCode)
+                        itemMap["exampleNumberFixedLineNational"] = formattedExampleNumberFixedLineNational
+                    }
+                    
+                    if let formattedExampleNumberFixedLineInternational = self.kit.getFormattedExampleNumber(forCountry: regionCode, ofType: .fixedLine, withFormat: .international) {
+                        itemMap["phoneMaskFixedLineInternational"] = self.maskNumber(phoneNumber: formattedExampleNumberFixedLineInternational, phoneCode: phoneCode)
+                        itemMap["exampleNumberFixedLineInternational"] = formattedExampleNumberFixedLineInternational
                     }
                 }
                 if let countryName = self.countryName(from: regionCode) {
@@ -62,7 +72,7 @@ public class SwiftFlutterLibphonenumberPlugin: NSObject, FlutterPlugin {
     }
     
     private func maskNumber(phoneNumber: String, phoneCode: UInt64) -> String {
-        return "+\(phoneCode) \(phoneNumber)".replacingOccurrences(of: "[\\d]", with: "0", options: .regularExpression)
+        return phoneNumber.replacingOccurrences(of: "[\\d]", with: "0", options: .regularExpression)
     }
     
     private func format(_ call: FlutterMethodCall, result: FlutterResult) {

@@ -26,21 +26,47 @@ class FlutterLibphonenumber {
   /// Return all available regions with their country code, phone code, and formatted
   /// example number as a mask. Useful to later format phone numbers using a mask.
   ///
-  /// The response will be:
-  /// ```
-  /// {
-  ///   "US": {
-  ///     "phoneCode": "1",
-  ///     "phoneMask": "+0 (000) 000-0000"
-  ///   }
-  /// }
-  /// ```
+  /// The response will be a [CountryWithPhoneCode]:
   ///
   /// There are some performance considerations for this so you might want to cache the
-  /// result and re-use it in the future.
-  Future<Map<String, dynamic>> getAllSupportedRegions() async {
-    return await _channel
+  /// result and re-use it elsewhere. There's a lot of data to iterate over.
+  Future<Map<String, CountryWithPhoneCode>> getAllSupportedRegions() async {
+    /// Here is what will return from the platform call:
+    /// ```
+    /// {
+    ///   "UK": {
+    ///     "phoneCode": 44,
+    ///     "exampleNumberMobileNational": "07400 123456",
+    ///     "exampleNumberFixedLineNational": "0121 234 5678",
+    ///     "phoneMaskMobileNational": "+00 00000 000000",
+    ///     "phoneMaskFixedLineNational": "+00 0000 000 0000",
+    ///     "exampleNumberMobileInternational": "+44 7400 123456",
+    ///     "exampleNumberFixedLineInternational": "+44 121 234 5678",
+    ///     "phoneMaskMobileInternational": "+00 +00 0000 000000",
+    ///     "phoneMaskFixedLineInternational": "+00 +00 000 000 0000",
+    ///     "countryName": "United Kingdom"
+    ///   }
+    /// }
+    /// ```
+    final result = await _channel
         .invokeMapMethod<String, dynamic>("get_all_supported_regions");
+    final returnMap = <String, CountryWithPhoneCode>{};
+    result.forEach((k, v) => returnMap[k] = CountryWithPhoneCode(
+          countryName: v['countryName'],
+          phoneCode: v['phoneCode'],
+          countryCode: k,
+          exampleNumberMobileNational: v['exampleNumberMobileNational'],
+          exampleNumberFixedLineNational: v['exampleNumberFixedLineNational'],
+          phoneMaskMobileNational: v['phoneMaskMobileNational'],
+          phoneMaskFixedLineNational: v['phoneMaskFixedLineNational'],
+          exampleNumberMobileInternational:
+              v['exampleNumberMobileInternational'],
+          exampleNumberFixedLineInternational:
+              v['exampleNumberFixedLineInternational'],
+          phoneMaskMobileInternational: v['phoneMaskMobileInternational'],
+          phoneMaskFixedLineInternational: v['phoneMaskFixedLineInternational'],
+        ));
+    return returnMap;
   }
 
   /// Formats a phone number using libphonenumber. Will return the parsed number.
@@ -80,9 +106,15 @@ class FlutterLibphonenumber {
   }
 
   /// Given a phone number, format it automatically using the masks we have from libphonenumber's example numbers.
-  String formatNumberSync(String phone,
-      {PhoneNumberType phoneNumberType = PhoneNumberType.mobile}) {
-    return LibPhonenumberTextFormatter(phoneNumberType: phoneNumberType)
+  String formatNumberSync(
+    String phone, {
+    phoneNumberType = PhoneNumberType.mobile,
+    phoneNumberFormat = PhoneNumberFormat.international,
+  }) {
+    return LibPhonenumberTextFormatter(
+      phoneNumberType: phoneNumberType,
+      phoneNumberFormat: phoneNumberFormat,
+    )
         .formatEditUpdate(
             TextEditingValue(text: ''), TextEditingValue(text: phone))
         .text;
@@ -92,8 +124,11 @@ class FlutterLibphonenumber {
   /// and if it's a valid/complete number, will return the e164 value as well. Uses libphonenumber's
   /// parse function to verify if it's a valid number or not.
   Future<FormatPhoneResult> formatParsePhonenumberAsync(
-      String phoneNumber, CountryWithPhoneCode country,
-      {phoneNumberType = PhoneNumberType.mobile}) async {
+    String phoneNumber,
+    CountryWithPhoneCode country, {
+    phoneNumberType = PhoneNumberType.mobile,
+    phoneNumberFormat = PhoneNumberFormat.international,
+  }) async {
     // print(
     //     '[formatParsePhonenumberAsync] phoneNumber: \'$phoneNumber\' | country: ${country.countryCode}');
 

@@ -37,10 +37,14 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     this.overrideSkipCountryCode,
     this.onFormatFinished,
     this.phoneNumberType = PhoneNumberType.mobile,
+    this.phoneNumberFormat = PhoneNumberFormat.international,
   });
 
   /// Specify if the number should be formatted as a mobile or land line number. Will default to [PhoneNumberType.mobile]
   final PhoneNumberType phoneNumberType;
+
+  /// Specify if the number should be formatted to its national or international pattern. Will default to [PhoneNumberFormat.international]
+  final PhoneNumberFormat phoneNumberFormat;
 
   /// Will be called with the selected country once the formatter determines the country
   /// from the leading country code that was inputted.
@@ -115,21 +119,30 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         /// Since the source isn't going to have a country code in it, add the right country
         /// code, run it through the mask, and then take the result and return it with the
         /// country code removed.
-        final numericStringWithCountryCode =
-            '${countryData.phoneCode}$numericString';
+        String numericStringWithCountryCode;
+        if (phoneNumberFormat == PhoneNumberFormat.international) {
+          numericStringWithCountryCode =
+              '${countryData.phoneCode}$numericString';
+        } else {
+          numericStringWithCountryCode = numericString;
+        }
+
+        var mask = countryData.getPhoneMask(
+            format: phoneNumberFormat, type: phoneNumberType);
+
+        if (phoneNumberFormat == PhoneNumberFormat.national) {
+          mask = '+${countryData.phoneCode} $mask';
+        }
+
         final maskedResult = _formatByMask(
           numericStringWithCountryCode,
-          phoneNumberType == PhoneNumberType.mobile
-              ? countryData.phoneMaskMobile
-              : countryData.phoneMaskFixedLine,
+          mask,
         );
 
-        /// In case the masked result is empty,
-        final trimmedResultNoCountryCode =
-            maskedResult.length > countryData.phoneCode.length + 2
-                ? maskedResult.substring(countryData.phoneCode.length + 2)
-                : maskedResult;
-        return trimmedResultNoCountryCode;
+        /// Since we are overriding the country code, trim off the country code. We
+        /// trim it by the length of the phone code + 1 for the leading plus sign and
+        /// then trim off any leading/trailing spaces if necessary.
+        return maskedResult.substring(countryData.phoneCode.length + 1).trim();
       }
     } else {
       /// Otherwise we will try to determine the country from the nubmer input so far
@@ -143,11 +156,19 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         }
       }
       if (_countryData != null) {
+        var mask = _countryData.getPhoneMask(
+            format: phoneNumberFormat, type: phoneNumberType);
+
+        if (phoneNumberFormat == PhoneNumberFormat.national) {
+          mask = '+${_countryData.phoneCode} $mask';
+        }
+
         return _formatByMask(
-          numericString,
-          phoneNumberType == PhoneNumberType.mobile
-              ? _countryData.phoneMaskMobile
-              : _countryData.phoneMaskFixedLine,
+          numericString.substring(
+              phoneNumberFormat == PhoneNumberFormat.national
+                  ? _countryData.phoneCode.length
+                  : 0),
+          mask,
         );
       }
     }
