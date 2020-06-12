@@ -1,3 +1,6 @@
+## 0.3.2
+- Fixed formatParsePhonenumberAsync to return the correct phone number international/national format based on what was requested.
+
 ## 0.3.1
 - Fixes to documentation.
 

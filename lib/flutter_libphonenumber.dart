@@ -126,8 +126,8 @@ class FlutterLibphonenumber {
   Future<FormatPhoneResult> formatParsePhonenumberAsync(
     String phoneNumber,
     CountryWithPhoneCode country, {
-    phoneNumberType = PhoneNumberType.mobile,
-    phoneNumberFormat = PhoneNumberFormat.international,
+    PhoneNumberType phoneNumberType = PhoneNumberType.mobile,
+    PhoneNumberFormat phoneNumberFormat = PhoneNumberFormat.international,
   }) async {
     // print(
     //     '[formatParsePhonenumberAsync] phoneNumber: \'$phoneNumber\' | country: ${country.countryCode}');
@@ -149,9 +149,17 @@ class FlutterLibphonenumber {
     try {
       final parsedResult =
           await parse('+${country.phoneCode}${onlyDigits(phoneNumber)}');
-      // print('[formatParsePhonenumberAsync] parsedResult: $parsedResult');
+      print('[formatParsePhonenumberAsync] parsedResult: $parsedResult');
       returnResult.e164 = parsedResult['e164'];
-      returnResult.formattedNumber = parsedResult['national'];
+
+      /// Return the international number with no country code if requested
+      if (phoneNumberFormat == PhoneNumberFormat.international) {
+        returnResult.formattedNumber = parsedResult['international']
+            .toString()
+            .substring(country.phoneCode.length + 2);
+      } else {
+        returnResult.formattedNumber = parsedResult['national'];
+      }
     } catch (e) {
       // print(e);
     }
