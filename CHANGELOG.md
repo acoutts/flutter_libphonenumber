@@ -1,3 +1,6 @@
+## 0.3.3
+- Fixed bug where realtime formatter didn't ignore leading country code if present while overrideSkipCountryCode was provided.
+
 ## 0.3.2
 - Fixed formatParsePhonenumberAsync to return the correct phone number international/national format based on what was requested.
 

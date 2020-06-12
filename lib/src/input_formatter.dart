@@ -119,8 +119,12 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         /// Since the source isn't going to have a country code in it, add the right country
         /// code, run it through the mask, and then take the result and return it with the
         /// country code removed.
+        ///
+        /// If the number coming in already starts with the country code then don't add the
+        /// country code in again.
         String numericStringWithCountryCode;
-        if (phoneNumberFormat == PhoneNumberFormat.international) {
+        if (phoneNumberFormat == PhoneNumberFormat.international &&
+            !numericString.startsWith(countryData.phoneCode)) {
           numericStringWithCountryCode =
               '${countryData.phoneCode}$numericString';
         } else {
