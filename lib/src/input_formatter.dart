@@ -80,16 +80,13 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     final onlyNumbers = toNumericString(newValue.text);
     String maskedValue = _applyMask(onlyNumbers);
 
-    var endOffset = max(oldValue.text.length - oldValue.selection.end, 0);
-    var selectionEnd = maskedValue.length - endOffset;
-
     /// Optionally pass the formatted value to the supplied callback
     if (onFormatFinished != null) {
       onFormatFinished(maskedValue);
     }
 
     return TextEditingValue(
-        selection: TextSelection.collapsed(offset: selectionEnd),
+        selection: TextSelection.collapsed(offset: maskedValue.length),
         text: maskedValue);
   }
 

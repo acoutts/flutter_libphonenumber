@@ -1,3 +1,6 @@
+## 0.3.4
+- Fixed bug when formatting the very first number where it wouldn't move the text selection to the very end.
+
 ## 0.3.3
 - Fixed bug where realtime formatter didn't ignore leading country code if present when overrideSkipCountryCode was provided.
 
