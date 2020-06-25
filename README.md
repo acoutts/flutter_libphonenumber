@@ -68,8 +68,10 @@ final defaultLocale = CountryManager().deviceLocaleCountryCode // US
 # API Reference
 Here is a reference of all of the available functions.
 
-### `Future<void> init()`
+### `Future<void> init({Map<String, CountryWithPhoneCode> overrides})`
 Must be called before we can format anything. This loads all available countries on the device and calls `getAllSupportedRegions()` to then cross-reference and combine everything and save a `List<CountryWithPhoneCode>` of every available country with its phone code / mask.
+
+Optionally provide a map of overrides where the key is the country code (ex: `GB` or `US`) and the value is a `CountryWithPhoneCode` object that should replace the data pulled from libphonenumber. This is useful if you want to customize the mask data for a given country.
 
 ### `Future<Map<String, CountryWithPhoneCode>> getAllSupportedRegions()`
 Returns all of the available regions on the device in a map with each key as the region code, and the value as a `CountryWithPhoneCode` object containing all of the mobile and landline phone masks / example numbers for national / international format, phone code, region code, and country name.

@@ -19,8 +19,8 @@ class FlutterLibphonenumber {
   // List<CountryWithPhoneCode> get countries => CountryManager().countries;
 
   /// Must call this before anything else so the countries data is populated
-  Future<void> init() async {
-    return CountryManager().loadCountries();
+  Future<void> init({Map<String, CountryWithPhoneCode> overrides}) async {
+    return CountryManager().loadCountries(overrides: overrides);
   }
 
   /// Return all available regions with their country code, phone code, and formatted

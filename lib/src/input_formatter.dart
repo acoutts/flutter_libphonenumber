@@ -128,6 +128,15 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
           numericStringWithCountryCode = numericString;
         }
 
+        /// Fix to remove leading zero on UK international numbers so the mask will work.
+        /// An example UK mobile international number is `+44 7400 123456` but generally
+        /// people express national numbers like this: `07400 123456`. So anyone who pastes
+        /// in a national format to an international field, the number will be truncated.
+        if (countryData.countryCode == 'GB' && numericString.length > 2) {
+          numericStringWithCountryCode =
+              numericStringWithCountryCode.replaceFirst('440', '44', 0);
+        }
+
         var mask = countryData.getPhoneMask(
             format: phoneNumberFormat, type: phoneNumberType);
 

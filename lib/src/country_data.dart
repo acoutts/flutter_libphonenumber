@@ -17,7 +17,8 @@ class CountryManager {
   /// List of all supported countries on the device with phone code metadata
   List<CountryWithPhoneCode> get countries => _countries;
 
-  Future<void> loadCountries() async {
+  Future<void> loadCountries(
+      {Map<String, CountryWithPhoneCode> overrides}) async {
     if (_initialized) {
       return;
     }
@@ -26,11 +27,17 @@ class CountryManager {
       final phoneCodesMap =
           await FlutterLibphonenumber().getAllSupportedRegions();
 
+      /// Apply any overrides to masks / country data
+      (overrides ?? {}).forEach((key, value) {
+        phoneCodesMap[key] = value;
+        // print('Applied override for $key');
+      });
+
       /// Get the device locale
       try {
         deviceLocaleCountryCode = Platform.localeName.split('_').last;
       } catch (e) {
-        print('Error detecting deviceLocaleCountryCode, setting default GB');
+        // print('Error detecting deviceLocaleCountryCode, setting default GB');
         deviceLocaleCountryCode = 'GB';
       }
 
@@ -39,7 +46,7 @@ class CountryManager {
 
       _initialized = true;
     } catch (err) {
-      log('[CountryManager] Error loading countries: $err');
+      // log('[CountryManager] Error loading countries: $err');
     }
   }
 }

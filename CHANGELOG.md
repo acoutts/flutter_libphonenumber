@@ -1,3 +1,6 @@
+## 0.3.5
+- Added ability to override country mask/phone data. Added fix for UK international numbers when someone pastes in a national format.
+
 ## 0.3.4
 - Fixed bug when formatting the very first number where it wouldn't move the text selection to the very end.
 
