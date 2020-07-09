@@ -1,3 +1,6 @@
+# 0.3.6
+- Hide debug printing.
+
 ## 0.3.5
 - Added ability to override country mask/phone data. Added fix for UK international numbers when someone pastes in a national format.
 

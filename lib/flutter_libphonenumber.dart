@@ -149,7 +149,7 @@ class FlutterLibphonenumber {
     try {
       final parsedResult =
           await parse('+${country.phoneCode}${onlyDigits(phoneNumber)}');
-      print('[formatParsePhonenumberAsync] parsedResult: $parsedResult');
+      // print('[formatParsePhonenumberAsync] parsedResult: $parsedResult');
       returnResult.e164 = parsedResult['e164'];
 
       /// Return the international number with no country code if requested
