@@ -1,3 +1,6 @@
+# 0.3.7
+- Fixed bug where device locale was not correctly detected on iOS.
+
 # 0.3.6
 - Hide debug printing.
 

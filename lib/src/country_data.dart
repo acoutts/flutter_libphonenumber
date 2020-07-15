@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:devicelocale/devicelocale.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 
@@ -35,7 +36,8 @@ class CountryManager {
 
       /// Get the device locale
       try {
-        deviceLocaleCountryCode = Platform.localeName.split('_').last;
+        final locale = await Devicelocale.currentLocale;
+        deviceLocaleCountryCode = locale.substring(locale.length - 2);
       } catch (e) {
         // print('Error detecting deviceLocaleCountryCode, setting default GB');
         deviceLocaleCountryCode = 'GB';
