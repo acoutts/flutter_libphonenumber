@@ -1,5 +1,8 @@
+# 0.3.9
+- Bump android compileSdkVersion to 29.
+
 # 0.3.8
-  - Downgrade Android minSdkVersion version from 21 to 18 and bump libphonenumber version from 8.12.5 to 8.12.10 via [#3](https://github.com/bottlepay/flutter_libphonenumber/pull/3).
+- Downgrade Android minSdkVersion version from 21 to 18 and bump libphonenumber version from 8.12.5 to 8.12.10 via [#3](https://github.com/bottlepay/flutter_libphonenumber/pull/3).
 
 # 0.3.7
 - Fixed bug where device locale was not correctly detected on iOS.
