@@ -75,19 +75,21 @@ class _MyAppState extends State<MyApp> {
                 appBar: AppBar(
                   title: const Text('flutter_libphonenumber'),
                 ),
-                body: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    bottom: max(
-                      0,
-                      24 - MediaQuery.of(context).padding.bottom,
+                body: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.only(
+                      bottom: max(
+                        0,
+                        24 - MediaQuery.of(context).padding.bottom,
+                      ),
                     ),
-                  ),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 10),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 10),
 
-                      /// Get all region codes
-                      Row(
+                        /// Get all region codes
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             RaisedButton(
@@ -106,233 +108,256 @@ class _MyAppState extends State<MyApp> {
                             /// Spacer
                             SizedBox(width: 20),
 
-                            Column(
-                              children: [
-                                /// Mobile or land line toggle
-                                Row(
-                                  children: [
-                                    Switch(
-                                      value: globalPhoneType ==
-                                              PhoneNumberType.mobile
-                                          ? true
-                                          : false,
-                                      onChanged: (val) {
-                                        setState(
-                                          () => globalPhoneType = (val == false
-                                              ? PhoneNumberType.fixedLine
-                                              : PhoneNumberType.mobile),
-                                        );
-                                      },
-                                    ),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  /// Mobile or land line toggle
+                                  Row(
+                                    children: [
+                                      Switch(
+                                        value: globalPhoneType ==
+                                                PhoneNumberType.mobile
+                                            ? true
+                                            : false,
+                                        onChanged: (val) {
+                                          setState(
+                                            () => globalPhoneType =
+                                                (val == false
+                                                    ? PhoneNumberType.fixedLine
+                                                    : PhoneNumberType.mobile),
+                                          );
+                                        },
+                                      ),
 
-                                    /// Spacer
-                                    SizedBox(width: 5),
+                                      /// Spacer
+                                      SizedBox(width: 5),
 
-                                    Container(
-                                      width: 130,
-                                      child: globalPhoneType ==
-                                              PhoneNumberType.mobile
-                                          ? Text('Format as Mobile')
-                                          : Text('Format as FixedLine'),
-                                    ),
-                                  ],
-                                ),
+                                      Flexible(
+                                        child: globalPhoneType ==
+                                                PhoneNumberType.mobile
+                                            ? Text('Format as Mobile')
+                                            : Text('Format as FixedLine'),
+                                      ),
+                                    ],
+                                  ),
 
-                                /// National or international line toggle
-                                Row(
-                                  children: [
-                                    Switch(
-                                      value: globalPhoneFormat ==
-                                              PhoneNumberFormat.national
-                                          ? true
-                                          : false,
-                                      onChanged: (val) {
-                                        setState(
-                                          () => globalPhoneFormat = (val ==
-                                                  false
-                                              ? PhoneNumberFormat.international
-                                              : PhoneNumberFormat.national),
-                                        );
-                                      },
-                                    ),
+                                  /// National or international line toggle
+                                  Row(
+                                    children: [
+                                      Switch(
+                                        value: globalPhoneFormat ==
+                                                PhoneNumberFormat.national
+                                            ? true
+                                            : false,
+                                        onChanged: (val) {
+                                          setState(
+                                            () => globalPhoneFormat = (val ==
+                                                    false
+                                                ? PhoneNumberFormat
+                                                    .international
+                                                : PhoneNumberFormat.national),
+                                          );
+                                        },
+                                      ),
 
-                                    /// Spacer
-                                    SizedBox(width: 5),
+                                      /// Spacer
+                                      SizedBox(width: 5),
 
-                                    Container(
-                                      width: 130,
-                                      child: globalPhoneFormat ==
-                                              PhoneNumberFormat.national
-                                          ? Text('National')
-                                          : Text('International'),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ]),
-
-                      /// Spacer
-                      SizedBox(height: 10),
-                      Divider(),
-                      SizedBox(height: 10),
-
-                      /// Format as you type
-                      Text('Format as you type (synchronous using masks)'),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          /// Country code input
-                          Container(
-                            width: 50,
-                            child: TextField(
-                              controller: countryController,
-                              keyboardType: TextInputType.phone,
-                              decoration: InputDecoration(
-                                hintText: '+44',
+                                      Flexible(
+                                        child: globalPhoneFormat ==
+                                                PhoneNumberFormat.national
+                                            ? Text('National')
+                                            : Text('International'),
+                                      ),
+                                    ],
+                                  )
+                                ],
                               ),
-                              onChanged: (v) {
-                                setState(() {});
-                              },
-                              inputFormatters: [],
                             ),
-                          ),
+                          ],
+                        ),
 
-                          /// Spacer
-                          SizedBox(width: 30),
+                        /// Spacer
+                        SizedBox(height: 10),
+                        Divider(),
+                        SizedBox(height: 10),
 
-                          /// Phone input
-                          Container(
-                            width: 160,
-                            child: TextField(
-                              textAlign: TextAlign.center,
-                              keyboardType: TextInputType.phone,
-                              controller: phoneController,
-                              decoration: InputDecoration(
-                                hintText: '7777-777777',
-                              ),
-                              inputFormatters: [
-                                LibPhonenumberTextFormatter(
-                                  phoneNumberType: globalPhoneType,
-                                  phoneNumberFormat: globalPhoneFormat,
-                                  overrideSkipCountryCode: overrideCountryCode,
-                                  onCountrySelected: (val) {
-                                    print(
-                                        'Detected country: ${val?.countryName}');
-                                  },
+                        /// Format as you type
+                        Text('Format as you type (synchronous using masks)'),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            /// Country code input
+                            Container(
+                              width: 50,
+                              child: TextField(
+                                controller: countryController,
+                                keyboardType: TextInputType.phone,
+                                decoration: InputDecoration(
+                                  hintText: '+44',
                                 ),
-                              ],
+                                onChanged: (v) {
+                                  setState(() {});
+                                },
+                                inputFormatters: [],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
 
-                      /// Spacer
-                      SizedBox(height: 10),
+                            /// Spacer
+                            SizedBox(width: 30),
 
-                      Text(
-                        'If country code is not empty, phone number will format expecting no country code.',
-                        style: TextStyle(fontSize: 12),
-                        textAlign: TextAlign.center,
-                      ),
+                            /// Phone input
+                            Container(
+                              width: 160,
+                              child: TextField(
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.phone,
+                                controller: phoneController,
+                                decoration: InputDecoration(
+                                  hintText: '7777-777777',
+                                ),
+                                inputFormatters: [
+                                  LibPhonenumberTextFormatter(
+                                    phoneNumberType: globalPhoneType,
+                                    phoneNumberFormat: globalPhoneFormat,
+                                    overrideSkipCountryCode:
+                                        overrideCountryCode,
+                                    onCountrySelected: (val) {
+                                      print(
+                                          'Detected country: ${val?.countryName}');
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
 
-                      /// Spacer
-                      SizedBox(height: 20),
-                      Divider(),
-                      SizedBox(height: 20),
+                        /// Spacer
+                        SizedBox(height: 10),
 
-                      Text(
-                        'Manually format / parse the phone number.\nAsync uses FlutterLibphonenumber().format().\nSync uses FlutterLibphonenumber().formatPhone.',
-                        style: TextStyle(fontSize: 12),
-                        textAlign: TextAlign.center,
-                      ),
-
-                      /// Manual Phone input
-                      Container(
-                        width: 180,
-                        child: TextField(
-                          keyboardType: TextInputType.phone,
+                        Text(
+                          'If country code is not empty, phone number will format expecting no country code.',
+                          style: TextStyle(fontSize: 12),
                           textAlign: TextAlign.center,
-                          controller: manualFormatController,
-                          decoration: InputDecoration(
-                            hintText: '7777-777777',
+                        ),
+
+                        /// Spacer
+                        SizedBox(height: 20),
+                        Divider(),
+                        SizedBox(height: 20),
+
+                        Text(
+                          'Manually format / parse the phone number.\nAsync uses FlutterLibphonenumber().format().\nSync uses FlutterLibphonenumber().formatPhone.',
+                          style: TextStyle(fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+
+                        /// Manual Phone input
+                        Container(
+                          width: 180,
+                          child: TextField(
+                            keyboardType: TextInputType.phone,
+                            textAlign: TextAlign.center,
+                            controller: manualFormatController,
+                            decoration: InputDecoration(
+                              hintText: '7777-777777',
+                            ),
                           ),
                         ),
-                      ),
 
-                      /// Spacer
-                      SizedBox(height: 10),
+                        /// Spacer
+                        SizedBox(height: 10),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          /// Manually format the phone input
-                          RaisedButton(
-                            child: Text('Format (Async)'),
-                            onPressed: () async {
-                              // Asynchronous formatting with native call into libphonenumber
-                              final res = await FlutterLibphonenumber().format(
-                                manualFormatController.text,
-                                'US', // TODO: how can we not have to set this manually?
-                              );
-                              setState(() => manualFormatController.text =
-                                  res['formatted']);
-                            },
-                          ),
-
-                          /// Spacer
-                          SizedBox(width: 10),
-
-                          RaisedButton(
-                            child: Text('Format (Sync)'),
-                            onPressed: () async {
-                              if (CountryManager().countries.isEmpty) {
-                                print(
-                                    'Warning: countries list is empty which means init hs not be run yet. Can\'t format synchronously until init has been executed.');
-                              }
-                              // Synchronous formatting with no native call into libphonenumber, just a dart call to mask the input
-                              setState(
-                                () => manualFormatController.text =
-                                    FlutterLibphonenumber().formatNumberSync(
-                                  manualFormatController.text,
-                                  phoneNumberType: globalPhoneType,
-                                  phoneNumberFormat: globalPhoneFormat,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            /// Manually format the phone input
+                            Flexible(
+                              child: RaisedButton(
+                                child: Text(
+                                  'Format (Async)',
+                                  textAlign: TextAlign.center,
                                 ),
-                              );
-                            },
-                          ),
+                                onPressed: () async {
+                                  // Asynchronous formatting with native call into libphonenumber
+                                  final res =
+                                      await FlutterLibphonenumber().format(
+                                    manualFormatController.text,
+                                    'US', // TODO: how can we not have to set this manually?
+                                  );
+                                  setState(() => manualFormatController.text =
+                                      res['formatted']);
+                                },
+                              ),
+                            ),
 
-                          /// Spacer
-                          SizedBox(width: 10),
+                            /// Spacer
+                            SizedBox(width: 10),
 
-                          /// Manually format the phone input
-                          RaisedButton(
-                            child: Text('Parse'),
-                            onPressed: () async {
-                              try {
-                                final res = await FlutterLibphonenumber()
-                                    .parse(manualFormatController.text);
+                            Flexible(
+                              child: RaisedButton(
+                                child: Text(
+                                  'Format (Sync)',
+                                  textAlign: TextAlign.center,
+                                ),
+                                onPressed: () async {
+                                  if (CountryManager().countries.isEmpty) {
+                                    print(
+                                        'Warning: countries list is empty which means init hs not be run yet. Can\'t format synchronously until init has been executed.');
+                                  }
+                                  // Synchronous formatting with no native call into libphonenumber, just a dart call to mask the input
+                                  setState(
+                                    () => manualFormatController.text =
+                                        FlutterLibphonenumber()
+                                            .formatNumberSync(
+                                      manualFormatController.text,
+                                      phoneNumberType: globalPhoneType,
+                                      phoneNumberFormat: globalPhoneFormat,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
 
-                                JsonEncoder encoder =
-                                    JsonEncoder.withIndent('  ');
+                            /// Spacer
+                            SizedBox(width: 10),
 
-                                setState(
-                                    () => parsedData = encoder.convert(res));
-                              } catch (e) {
-                                print(e);
-                                setState(() => parsedData = null);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
+                            /// Manually format the phone input
+                            Flexible(
+                              child: RaisedButton(
+                                child: Text(
+                                  'Parse',
+                                  textAlign: TextAlign.center,
+                                ),
+                                onPressed: () async {
+                                  try {
+                                    final res = await FlutterLibphonenumber()
+                                        .parse(manualFormatController.text);
 
-                      /// Spacer
-                      SizedBox(height: 10),
+                                    JsonEncoder encoder =
+                                        JsonEncoder.withIndent('  ');
 
-                      Text(parsedData == null ? 'Number invalid' : parsedData),
-                    ],
+                                    setState(() =>
+                                        parsedData = encoder.convert(res));
+                                  } catch (e) {
+                                    print(e);
+                                    setState(() => parsedData = null);
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        /// Spacer
+                        SizedBox(height: 10),
+
+                        Text(
+                            parsedData == null ? 'Number invalid' : parsedData),
+                      ],
+                    ),
                   ),
                 ),
               ),
