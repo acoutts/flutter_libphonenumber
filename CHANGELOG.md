@@ -1,3 +1,6 @@
+# 0.3.10
+- Bumped PhoneNumberKit to 3.3 (iOS) and libphonenumber to 8.12.11 (Android).
+
 # 0.3.9
 - Bump android compileSdkVersion to 29.
 
