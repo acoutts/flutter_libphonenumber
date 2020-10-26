@@ -38,7 +38,7 @@ your UI rebuilding every time you need to format a phone number.
 To get around this, we load a mask of every supported phone region's example number from libphonenumber during the `init()` call. We can then use this mask to format an e164 phone number **synchronously** like this:
 ```dart
 final rawNumber = '+14145556666';
-final formattedNumber = FlutterLibphonenumber().formatPhone(rawNumber); // +1 414-555-6666
+final formattedNumber = FlutterLibphonenumber().format(rawNumber); // +1 414-555-6666
 ```
 
 ## CountryManager
