@@ -150,9 +150,9 @@ To use it, simply add `LibPhonenumberTextFormatter()` to your `TextField`'s `inp
 ```dart
 TextField(inputFormatters: [LibPhonenumberTextFormatter(
     onCountrySelected: (country) => print('onCountrySelected: $country'),
-    onFormatFinished: (formattedVal) => print('onCountrySelected: $formattedVal')
-    overrideSkipCountryCode: 'GB' // Optionally override country to GB and return the number w/o +44. Disabled auto-detection of country and forces using the mask of the provided country.
-    phoneNumberType = PhoneNumberType.fixedLine // Optionally format the number as something other than mobile
-    phoneNumberFormat = PhoneNumberFormat.international // Optionally format the number in its international or national format pattern.
+    onFormatFinished: (formattedVal) => print('onCountrySelected: $formattedVal'),
+    overrideSkipCountryCode: 'GB', // Optionally override country to GB and return the number w/o +44. Disabled auto-detection of country and forces using the mask of the provided country.
+    phoneNumberType: PhoneNumberType.fixedLine, // Optionally format the number as something other than mobile
+    phoneNumberFormat: PhoneNumberFormat.international, // Optionally format the number in its international or national format pattern.
 )])
 ```
