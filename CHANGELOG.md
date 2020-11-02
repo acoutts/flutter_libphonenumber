@@ -1,3 +1,6 @@
+# 0.3.11
+- Update iOS minimum deployment to 9.0.
+
 # 0.3.10
 - Bumped PhoneNumberKit to 3.3 (iOS) and libphonenumber to 8.12.11 (Android).
 - Fixed overflows in example app on smaller devices.

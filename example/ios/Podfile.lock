@@ -27,7 +27,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   devicelocale: feebbe5e7a30adb8c4f83185de1b50ff19b44f00
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_libphonenumber: 1a0508d9b9282bc6354e554451e3412d590d7812
+  flutter_libphonenumber: 3221425e80517c03017ff0952472830d898172bd
   PhoneNumberKit: edd7d55c9bcf5b00cb7675c045b24c698a43c874
 
 PODFILE CHECKSUM: c34e2287a9ccaa606aeceab922830efb9a6ff69a
