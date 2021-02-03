@@ -1,3 +1,6 @@
+# 0.3.12
+- Bumped underlying native lib versions. PhoneNumberKit -> 3.3.3, libphonenumber -> 8.12.17.
+
 # 0.3.11
 - Update iOS minimum deployment to 9.0.
 

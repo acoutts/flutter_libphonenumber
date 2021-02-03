@@ -4,8 +4,8 @@ PODS:
   - Flutter (1.0.0)
   - flutter_libphonenumber (0.0.1):
     - Flutter
-    - PhoneNumberKit/PhoneNumberKitCore (~> 3.3)
-  - PhoneNumberKit/PhoneNumberKitCore (3.3.0)
+    - PhoneNumberKit/PhoneNumberKitCore (~> 3.3.3)
+  - PhoneNumberKit/PhoneNumberKitCore (3.3.3)
 
 DEPENDENCIES:
   - devicelocale (from `.symlinks/plugins/devicelocale/ios`)
@@ -27,9 +27,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   devicelocale: feebbe5e7a30adb8c4f83185de1b50ff19b44f00
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_libphonenumber: 3221425e80517c03017ff0952472830d898172bd
-  PhoneNumberKit: edd7d55c9bcf5b00cb7675c045b24c698a43c874
+  flutter_libphonenumber: 6a23afdf063b34d1e53e6dbd6c6bc905d18e8e46
+  PhoneNumberKit: 4ce83273551c4d2ae10b7361162f4283dd02835f
 
 PODFILE CHECKSUM: c34e2287a9ccaa606aeceab922830efb9a6ff69a
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1
