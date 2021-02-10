@@ -8,8 +8,8 @@ Uses the following native libraries:
 
 | Platform | Library        | Version |
 |----------|----------------|---------|
-| Android  | libphonenumber | 8.12.11  |
-| iOS      | PhoneNumberKit | 3.3   |
+| Android  | libphonenumber | 8.12.11 |
+| iOS      | PhoneNumberKit | 3.3     |
 
 The main advantage to this lib is it lets you optionally format a phone number synchronously without making calls into libphonenumber with platform calls.
 
@@ -62,7 +62,6 @@ class CountryWithPhoneCode {
 To access this list of countries you can get at it like this:
 ```dart
 final countries = CountryManager().countries; // List<CountryWithPhoneCode>
-final defaultLocale = CountryManager().deviceLocaleCountryCode // US
 ```
 
 # API Reference

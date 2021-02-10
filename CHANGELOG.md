@@ -1,5 +1,14 @@
-# 0.3.12
+# 1.0.3
+- Nullsafety for main version.
+
+# 1.0.2-nullsafety
 - Bumped underlying native lib versions. PhoneNumberKit -> 3.3.3, libphonenumber -> 8.12.17.
+
+# 1.0.1-nullsafety
+- Add constraint for flutter v1.10.0.
+
+# 1.0.0-nullsafety
+- Migrate to null safety.
 
 # 0.3.11
 - Update iOS minimum deployment to 9.0.

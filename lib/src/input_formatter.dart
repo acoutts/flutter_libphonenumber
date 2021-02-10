@@ -34,7 +34,7 @@ import 'package:flutter_libphonenumber/src/country_data.dart';
 class LibPhonenumberTextFormatter extends TextInputFormatter {
   LibPhonenumberTextFormatter({
     this.onCountrySelected,
-    this.overrideSkipCountryCode,
+    this.overrideSkipCountryCode = '',
     this.onFormatFinished,
     this.phoneNumberType = PhoneNumberType.mobile,
     this.phoneNumberFormat = PhoneNumberFormat.international,
@@ -48,7 +48,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
 
   /// Will be called with the selected country once the formatter determines the country
   /// from the leading country code that was inputted.
-  final ValueChanged<CountryWithPhoneCode> onCountrySelected;
+  final ValueChanged<CountryWithPhoneCode?>? onCountrySelected;
 
   /// When this is supplied then we will format the number using the
   /// supplied country code and mask with the country code removed.
@@ -58,9 +58,9 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
   final String overrideSkipCountryCode;
 
   /// Optional function to execute after we are finished formatting the number
-  final FutureOr Function(String val) onFormatFinished;
+  final FutureOr Function(String val)? onFormatFinished;
 
-  CountryWithPhoneCode _countryData;
+  CountryWithPhoneCode? _countryData;
 
   @override
   TextEditingValue formatEditUpdate(
@@ -73,7 +73,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
 
       /// Optionally pass the formatted value to the supplied callback
       if (onFormatFinished != null) {
-        onFormatFinished(newValue.text);
+        onFormatFinished!(newValue.text);
       }
       return newValue;
     }
@@ -82,7 +82,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
 
     /// Optionally pass the formatted value to the supplied callback
     if (onFormatFinished != null) {
-      onFormatFinished(maskedValue);
+      onFormatFinished!(maskedValue);
     }
 
     return TextEditingValue(
@@ -90,29 +90,28 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         text: maskedValue);
   }
 
-  /// this is a small dirty hask to be able to remove the firt characted
+  /// this is a small dirty hack to be able to remove the first character
   Future _clearCountry() async {
     await Future.delayed(Duration(milliseconds: 5));
     _updateCountryData(null);
   }
 
-  void _updateCountryData(CountryWithPhoneCode countryData) {
+  void _updateCountryData(CountryWithPhoneCode? countryData) {
     _countryData = countryData;
     if (onCountrySelected != null) {
-      onCountrySelected(_countryData);
+      onCountrySelected!(_countryData);
     }
   }
 
   String _applyMask(String numericString) {
-    CountryWithPhoneCode countryData;
+    CountryWithPhoneCode? countryData;
 
-    if (overrideSkipCountryCode != null && overrideSkipCountryCode.isNotEmpty) {
+    if (overrideSkipCountryCode.isNotEmpty) {
       /// If the user specified the country code, we will use that one directly.
-      countryData = CountryManager().countries.firstWhere(
-          (element) => element.countryCode == overrideSkipCountryCode,
-          orElse: () => null);
+      try {
+        countryData = CountryManager().countries.firstWhere(
+            (element) => element.countryCode == overrideSkipCountryCode);
 
-      if (countryData != null) {
         /// Since the source isn't going to have a country code in it, add the right country
         /// code, run it through the mask, and then take the result and return it with the
         /// country code removed.
@@ -153,6 +152,8 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         /// trim it by the length of the phone code + 1 for the leading plus sign and
         /// then trim off any leading/trailing spaces if necessary.
         return maskedResult.substring(countryData.phoneCode.length + 1).trim();
+      } on StateError catch (_) {
+        //
       }
     } else {
       /// Otherwise we will try to determine the country from the nubmer input so far
@@ -166,17 +167,17 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         }
       }
       if (_countryData != null) {
-        var mask = _countryData.getPhoneMask(
-            format: phoneNumberFormat, type: phoneNumberType);
+        var mask = _countryData!
+            .getPhoneMask(format: phoneNumberFormat, type: phoneNumberType);
 
         if (phoneNumberFormat == PhoneNumberFormat.national) {
-          mask = '+${_countryData.phoneCode} $mask';
+          mask = '+${_countryData!.phoneCode} $mask';
         }
 
         return _formatByMask(
           numericString.substring(
               phoneNumberFormat == PhoneNumberFormat.national
-                  ? _countryData.phoneCode.length
+                  ? _countryData!.phoneCode.length
                   : 0),
           mask,
         );
@@ -217,7 +218,7 @@ String toNumericString(String inputString, {bool allowPeriod = false}) {
   if (inputString == null) return '';
   var regExp = allowPeriod ? _digitWithPeriodRegex : _digitRegex;
   return inputString.splitMapJoin(regExp,
-      onMatch: (m) => m.group(0), onNonMatch: (nm) => '');
+      onMatch: (m) => m.group(0)!, onNonMatch: (nm) => '');
 }
 
 bool isDigit(String character) {

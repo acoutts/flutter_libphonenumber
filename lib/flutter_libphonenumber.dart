@@ -19,7 +19,9 @@ class FlutterLibphonenumber {
   // List<CountryWithPhoneCode> get countries => CountryManager().countries;
 
   /// Must call this before anything else so the countries data is populated
-  Future<void> init({Map<String, CountryWithPhoneCode> overrides}) async {
+  Future<void> init({
+    Map<String, CountryWithPhoneCode> overrides = const {},
+  }) async {
     return CountryManager().loadCountries(overrides: overrides);
   }
 
@@ -49,7 +51,9 @@ class FlutterLibphonenumber {
     /// }
     /// ```
     final result = await _channel
-        .invokeMapMethod<String, dynamic>("get_all_supported_regions");
+            .invokeMapMethod<String, dynamic>("get_all_supported_regions") ??
+        {};
+
     final returnMap = <String, CountryWithPhoneCode>{};
     result.forEach((k, v) => returnMap[k] = CountryWithPhoneCode(
           countryName: v['countryName'],
@@ -77,11 +81,12 @@ class FlutterLibphonenumber {
   ///   formatted: "1 (414) 444-4444",
   /// }
   /// ```
-  Future<Map<String, String>> format(String phone, String region) {
-    return _channel.invokeMapMethod<String, String>("format", {
-      "phone": _ensureLeadingPlus(phone),
-      "region": region,
-    });
+  Future<Map<String, String>> format(String phone, String region) async {
+    return await _channel.invokeMapMethod<String, String>("format", {
+          "phone": _ensureLeadingPlus(phone),
+          "region": region,
+        }) ??
+        <String, String>{};
   }
 
   /// Parse a single string and return a map in the format below. Throws an error if the
@@ -98,11 +103,12 @@ class FlutterLibphonenumber {
   ///   national_number: '030123123123',
   /// }
   /// ```
-  Future<Map<String, dynamic>> parse(String phone, {String region}) {
-    return _channel.invokeMapMethod<String, dynamic>("parse", {
-      "phone": _ensureLeadingPlus(phone),
-      "region": region,
-    });
+  Future<Map<String, dynamic>> parse(String phone, {String? region}) async {
+    return await _channel.invokeMapMethod<String, dynamic>("parse", {
+          "phone": _ensureLeadingPlus(phone),
+          "region": region,
+        }) ??
+        <String, dynamic>{};
   }
 
   /// Given a phone number, format it automatically using the masks we have from libphonenumber's example numbers.
@@ -148,7 +154,7 @@ class FlutterLibphonenumber {
     /// Try to parse the number to update our e164
     try {
       final parsedResult =
-          await parse('+${country.phoneCode}${onlyDigits(phoneNumber)}');
+          await (parse('+${country.phoneCode}${onlyDigits(phoneNumber)}'));
       // print('[formatParsePhonenumberAsync] parsedResult: $parsedResult');
       returnResult.e164 = parsedResult['e164'];
 
@@ -169,8 +175,8 @@ class FlutterLibphonenumber {
 }
 
 class FormatPhoneResult {
-  String formattedNumber;
-  String e164;
+  String? formattedNumber;
+  String? e164;
 
   @override
   String toString() {

@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
   final phoneController = TextEditingController();
   final countryController = TextEditingController(text: '+44');
   final manualFormatController = TextEditingController();
-  String parsedData;
+  String? parsedData;
 
   /// Used to format numbers as mobile or land line
   var globalPhoneType = PhoneNumberType.mobile;
@@ -36,17 +36,20 @@ class _MyAppState extends State<MyApp> {
 
   /// Will try to parse the country from the override country code field
   String get overrideCountryCode {
-    final res = countryController.text.isNotEmpty
-        ? CountryManager()
+    if (countryController.text.isNotEmpty) {
+      try {
+        return CountryManager()
             .countries
-            .firstWhere(
-                (element) =>
-                    element.phoneCode ==
-                    countryController.text.replaceAll(RegExp(r'[^\d]+'), ''),
-                orElse: () => null)
-            ?.countryCode
-        : null;
-    return res;
+            .firstWhere((element) =>
+                element.phoneCode ==
+                countryController.text.replaceAll(RegExp(r'[^\d]+'), ''))
+            .countryCode;
+      } catch (_) {
+        return '';
+      }
+    } else {
+      return '';
+    }
   }
 
   @override
@@ -287,8 +290,10 @@ class _MyAppState extends State<MyApp> {
                                     manualFormatController.text,
                                     'US', // TODO: how can we not have to set this manually?
                                   );
-                                  setState(() => manualFormatController.text =
-                                      res['formatted']);
+                                  setState(
+                                    () => manualFormatController.text =
+                                        res['formatted'] ?? '',
+                                  );
                                 },
                               ),
                             ),
@@ -354,8 +359,7 @@ class _MyAppState extends State<MyApp> {
                         /// Spacer
                         SizedBox(height: 10),
 
-                        Text(
-                            parsedData == null ? 'Number invalid' : parsedData),
+                        Text(parsedData ?? 'Number invalid'),
                       ],
                     ),
                   ),
