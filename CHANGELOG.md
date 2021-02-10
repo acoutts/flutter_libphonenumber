@@ -1,5 +1,6 @@
 # 1.0.3
 - Nullsafety for main version.
+- UK numbers will correctly remove leading 0 now on international numbers.
 
 # 1.0.2-nullsafety
 - Bumped underlying native lib versions. PhoneNumberKit -> 3.3.3, libphonenumber -> 8.12.17.

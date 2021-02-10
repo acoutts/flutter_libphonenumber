@@ -134,7 +134,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         /// in a national format to an international field, the number will be truncated.
         if (countryData.countryCode == 'GB' && numericString.length > 2) {
           numericStringWithCountryCode =
-              numericStringWithCountryCode.replaceFirst('440', '44', 0);
+              numericStringWithCountryCode.replaceAll(RegExp(r'^440'), '44');
         }
 
         var mask = countryData.getPhoneMask(
@@ -216,14 +216,13 @@ final RegExp _digitRegex = RegExp(r'[0-9]+');
 final RegExp _digitWithPeriodRegex = RegExp(r'[0-9]+(\.[0-9]+)?');
 
 String toNumericString(String inputString, {bool allowPeriod = false}) {
-  if (inputString == null) return '';
   var regExp = allowPeriod ? _digitWithPeriodRegex : _digitRegex;
   return inputString.splitMapJoin(regExp,
       onMatch: (m) => m.group(0)!, onNonMatch: (nm) => '');
 }
 
 bool isDigit(String character) {
-  if (character == null || character.isEmpty || character.length > 1) {
+  if (character.isEmpty || character.length > 1) {
     return false;
   }
   return _digitRegex.stringMatch(character) != null;
