@@ -2,16 +2,24 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Current Device",
+      "type": "dart",
+      "request": "launch",
+      "program": "example/lib/main.dart"
+    },
+    {
       "name": "Android (flutter_libphonenumber)",
       "request": "launch",
       "type": "dart",
       "deviceId": "android",
+      "program": "example/lib/main.dart"
     },
     {
       "name": "iPhone (flutter_libphonenumber)",
       "request": "launch",
       "type": "dart",
       "deviceId": "iphone",
+      "program": "example/lib/main.dart"
     }
   ],
 }

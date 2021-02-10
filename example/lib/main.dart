@@ -95,7 +95,7 @@ class _MyAppState extends State<MyApp> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            RaisedButton(
+                            ElevatedButton(
                               child: Text('Print all region data'),
                               onPressed: () async {
                                 // await FlutterLibphonenumber().init();
@@ -278,7 +278,7 @@ class _MyAppState extends State<MyApp> {
                           children: [
                             /// Manually format the phone input
                             Flexible(
-                              child: RaisedButton(
+                              child: ElevatedButton(
                                 child: Text(
                                   'Format (Async)',
                                   textAlign: TextAlign.center,
@@ -302,7 +302,7 @@ class _MyAppState extends State<MyApp> {
                             SizedBox(width: 10),
 
                             Flexible(
-                              child: RaisedButton(
+                              child: ElevatedButton(
                                 child: Text(
                                   'Format (Sync)',
                                   textAlign: TextAlign.center,
@@ -331,7 +331,7 @@ class _MyAppState extends State<MyApp> {
 
                             /// Manually format the phone input
                             Flexible(
-                              child: RaisedButton(
+                              child: ElevatedButton(
                                 child: Text(
                                   'Parse',
                                   textAlign: TextAlign.center,

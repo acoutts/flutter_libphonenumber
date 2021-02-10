@@ -65,6 +65,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
+    /// Will be true if teh new value is shorter than the last one
     var isErasing = newValue.text.length < oldValue.text.length;
     if (isErasing) {
       if (newValue.text.isEmpty) {
