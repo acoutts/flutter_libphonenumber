@@ -120,13 +120,20 @@ class FlutterLibphonenumber {
   /// Given a phone number, format it automatically using the masks we have from libphonenumber's example numbers.
   String formatNumberSync({
     required String number,
-    required CountryWithPhoneCode country,
+    CountryWithPhoneCode? country,
     phoneNumberType = PhoneNumberType.mobile,
     phoneNumberFormat = PhoneNumberFormat.international,
     bool removeCountryCode = false,
   }) {
+    final guessedCountry =
+        country ?? CountryWithPhoneCode.getCountryDataByPhone(number);
+
+    if (guessedCountry == null) {
+      return number;
+    }
+
     return PhoneMask(
-      country.getPhoneMask(
+      guessedCountry.getPhoneMask(
             format: phoneNumberFormat,
             type: phoneNumberType,
           ) ??

@@ -24,5 +24,16 @@ void main() {
       final mask = PhoneMask('+00 000 000 0000');
       expect(mask.apply('+393937224790'), '+39 393 722 4790');
     });
+
+    group('getCountryDataByPhone', () {
+      test('US number', () async {
+        await CountryManager().loadCountries(overrides: {
+          'US': CountryWithPhoneCode.us(),
+        });
+
+        final res = CountryWithPhoneCode.getCountryDataByPhone('+14199139457');
+        expect(res?.countryCode, 'US');
+      });
+    });
   });
 }

@@ -35,6 +35,7 @@ class CountryManager {
 
       _initialized = true;
     } catch (err) {
+      _countries = overrides.values.toList();
       // log('[CountryManager] Error loading countries: $err');
     }
   }
@@ -184,5 +185,67 @@ class CountryWithPhoneCode {
     }
 
     return returnVal;
+  }
+
+  /*
+  (c) Copyright 2020 Serov Konstantin.
+  Licensed under the MIT license:
+      http://www.opensource.org/licenses/mit-license.php
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+  */
+  static final RegExp _digitRegex = RegExp(r'[0-9]+');
+  static final RegExp _digitWithPeriodRegex = RegExp(r'[0-9]+(\.[0-9]+)?');
+
+  /// Try to guess country from phone
+  static CountryWithPhoneCode? getCountryDataByPhone(
+    String phone, {
+    int? subscringLength,
+  }) {
+    /// If number is empty, return null
+    if (phone.isEmpty) return null;
+
+    /// Unless otherwise specified, start trying to match from the
+    /// end of the inputted phone string.
+    subscringLength = subscringLength ?? phone.length;
+
+    /// Must provide valid offset to start searching from
+    if (subscringLength < 1) return null;
+    var phoneCode = phone.substring(0, subscringLength);
+
+    try {
+      final countries = CountryManager().countries;
+      final retCountry = countries.firstWhere((data) {
+        final res =
+            _toNumericString(data.phoneCode) == _toNumericString(phoneCode);
+        return res;
+      });
+
+      return retCountry;
+    } on StateError catch (_) {
+      return getCountryDataByPhone(phone, subscringLength: subscringLength - 1);
+    }
+  }
+
+  static String _toNumericString(
+    String inputString, {
+    bool allowPeriod = false,
+  }) {
+    var regExp = allowPeriod ? _digitWithPeriodRegex : _digitRegex;
+    return inputString.splitMapJoin(regExp,
+        onMatch: (m) => m.group(0)!, onNonMatch: (nm) => '');
   }
 }
