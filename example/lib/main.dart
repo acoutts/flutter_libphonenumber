@@ -18,10 +18,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    updatePlaceholderHint();
   }
 
+  final initFuture = FlutterLibphonenumber().init();
   final phoneController = TextEditingController();
-  final countryController = TextEditingController(text: '+44');
+  final countryController = TextEditingController(text: 'United States');
   final manualFormatController = TextEditingController();
   String? parsedData;
 
@@ -31,25 +33,32 @@ class _MyAppState extends State<MyApp> {
   /// Use international or national phone format
   var globalPhoneFormat = PhoneNumberFormat.international;
 
-  final initFuture = FlutterLibphonenumber().init();
-  // final initFuture = Future.delayed(Duration(milliseconds: 1500));
+  /// Current selected country
+  var currentSelectedCountry = CountryWithPhoneCode.us();
 
-  /// Will try to parse the country from the override country code field
-  String get overrideCountryCode {
-    if (countryController.text.isNotEmpty) {
-      try {
-        return CountryManager()
-            .countries
-            .firstWhere((element) =>
-                element.phoneCode ==
-                countryController.text.replaceAll(RegExp(r'[^\d]+'), ''))
-            .countryCode;
-      } catch (_) {
-        return '';
+  var placeholderHint = '';
+
+  void updatePlaceholderHint() {
+    final String newPlaceholder;
+
+    if (globalPhoneType == PhoneNumberType.mobile) {
+      if (globalPhoneFormat == PhoneNumberFormat.international) {
+        newPlaceholder =
+            currentSelectedCountry.exampleNumberMobileInternational ?? '';
+      } else {
+        newPlaceholder =
+            currentSelectedCountry.exampleNumberMobileNational ?? '';
       }
     } else {
-      return '';
+      if (globalPhoneFormat == PhoneNumberFormat.international) {
+        newPlaceholder =
+            currentSelectedCountry.exampleNumberFixedLineInternational ?? '';
+      } else {
+        newPlaceholder =
+            currentSelectedCountry.exampleNumberFixedLineNational ?? '';
+      }
     }
+    setState(() => placeholderHint = newPlaceholder);
   }
 
   @override
@@ -95,17 +104,117 @@ class _MyAppState extends State<MyApp> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            ElevatedButton(
-                              child: Text('Print all region data'),
-                              onPressed: () async {
-                                // await FlutterLibphonenumber().init();
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  /// Print region data
+                                  ElevatedButton(
+                                    child: Text('Print all region data'),
+                                    onPressed: () async {
+                                      // await FlutterLibphonenumber().init();
 
-                                final res = await FlutterLibphonenumber()
-                                    .getAllSupportedRegions();
-                                print(res['GB']);
-                                print(res['US']);
-                                print(res['BR']);
-                              },
+                                      final res = await FlutterLibphonenumber()
+                                          .getAllSupportedRegions();
+                                      print(res['IT']);
+                                      print(res['US']);
+                                      print(res['BR']);
+                                    },
+                                  ),
+
+                                  /// Spacer
+                                  SizedBox(height: 12),
+
+                                  /// Country code input
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 24),
+                                    child: TextField(
+                                      controller: countryController,
+                                      keyboardType: TextInputType.phone,
+                                      onChanged: (v) {
+                                        setState(() {});
+                                      },
+                                      textAlign: TextAlign.center,
+                                      onTap: () async {
+                                        final sortedCountries = CountryManager()
+                                            .countries
+                                          ..sort((a, b) => (a.countryName ?? '')
+                                              .compareTo(b.countryName ?? ''));
+                                        final res = await showModalBottomSheet<
+                                            CountryWithPhoneCode>(
+                                          context: context,
+                                          isScrollControlled: false,
+                                          builder: (context) {
+                                            return ListView.builder(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 16),
+                                              itemBuilder: (context, index) {
+                                                final item =
+                                                    sortedCountries[index];
+                                                return GestureDetector(
+                                                  behavior:
+                                                      HitTestBehavior.opaque,
+                                                  onTap: () {
+                                                    Navigator.of(context)
+                                                        .pop(item);
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 24,
+                                                            vertical: 16),
+                                                    child: Row(
+                                                      children: [
+                                                        /// Phone code
+                                                        Expanded(
+                                                          child: Text(
+                                                            '+' +
+                                                                item.phoneCode,
+                                                            textAlign:
+                                                                TextAlign.right,
+                                                          ),
+                                                        ),
+
+                                                        /// Spacer
+                                                        SizedBox(width: 16),
+
+                                                        /// Name
+                                                        Expanded(
+                                                          flex: 8,
+                                                          child: Text(
+                                                              item.countryName ??
+                                                                  ''),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              itemCount: sortedCountries.length,
+                                            );
+                                          },
+                                        );
+
+                                        print('New country selection: $res');
+
+                                        if (res != null) {
+                                          setState(() {
+                                            currentSelectedCountry = res;
+                                          });
+
+                                          updatePlaceholderHint();
+
+                                          countryController.text =
+                                              res.countryName ??
+                                                  '+ ${res.phoneCode}';
+                                        }
+                                      },
+                                      readOnly: true,
+                                      inputFormatters: [],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
 
                             /// Spacer
@@ -129,6 +238,7 @@ class _MyAppState extends State<MyApp> {
                                                     ? PhoneNumberType.fixedLine
                                                     : PhoneNumberType.mobile),
                                           );
+                                          updatePlaceholderHint();
                                         },
                                       ),
 
@@ -160,6 +270,7 @@ class _MyAppState extends State<MyApp> {
                                                     .international
                                                 : PhoneNumberFormat.national),
                                           );
+                                          updatePlaceholderHint();
                                         },
                                       ),
 
@@ -188,53 +299,26 @@ class _MyAppState extends State<MyApp> {
                         /// Format as you type
                         Text('Format as you type (synchronous using masks)'),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            /// Country code input
-                            Container(
-                              width: 50,
-                              child: TextField(
-                                controller: countryController,
-                                keyboardType: TextInputType.phone,
-                                decoration: InputDecoration(
-                                  hintText: '+44',
-                                ),
-                                onChanged: (v) {
-                                  setState(() {});
-                                },
-                                inputFormatters: [],
-                              ),
+                        /// Phone input
+                        Container(
+                          width: 160,
+                          child: TextField(
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.phone,
+                            controller: phoneController,
+                            decoration: InputDecoration(
+                              hintText: placeholderHint,
                             ),
-
-                            /// Spacer
-                            SizedBox(width: 30),
-
-                            /// Phone input
-                            Container(
-                              width: 160,
-                              child: TextField(
-                                textAlign: TextAlign.center,
-                                keyboardType: TextInputType.phone,
-                                controller: phoneController,
-                                decoration: InputDecoration(
-                                  hintText: '7777-777777',
-                                ),
-                                inputFormatters: [
-                                  LibPhonenumberTextFormatter(
-                                    phoneNumberType: globalPhoneType,
-                                    phoneNumberFormat: globalPhoneFormat,
-                                    overrideSkipCountryCode:
-                                        overrideCountryCode,
-                                    onCountrySelected: (val) {
-                                      print(
-                                          'Detected country: ${val?.countryName}');
-                                    },
-                                  ),
-                                ],
+                            inputFormatters: [
+                              LibPhonenumberTextFormatter(
+                                phoneNumberType: globalPhoneType,
+                                phoneNumberFormat: globalPhoneFormat,
+                                country: currentSelectedCountry,
+                                hideCountryCode: true,
+                                additionalDigits: 3,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
 
                         /// Spacer
@@ -265,7 +349,7 @@ class _MyAppState extends State<MyApp> {
                             textAlign: TextAlign.center,
                             controller: manualFormatController,
                             decoration: InputDecoration(
-                              hintText: '7777-777777',
+                              hintText: placeholderHint,
                             ),
                           ),
                         ),
@@ -288,7 +372,7 @@ class _MyAppState extends State<MyApp> {
                                   final res =
                                       await FlutterLibphonenumber().format(
                                     manualFormatController.text,
-                                    'US', // TODO: how can we not have to set this manually?
+                                    currentSelectedCountry.countryCode,
                                   );
                                   setState(
                                     () => manualFormatController.text =
@@ -313,14 +397,12 @@ class _MyAppState extends State<MyApp> {
                                         'Warning: countries list is empty which means init hs not be run yet. Can\'t format synchronously until init has been executed.');
                                   }
                                   // Synchronous formatting with no native call into libphonenumber, just a dart call to mask the input
-                                  setState(
-                                    () => manualFormatController.text =
-                                        FlutterLibphonenumber()
-                                            .formatNumberSync(
-                                      manualFormatController.text,
-                                      phoneNumberType: globalPhoneType,
-                                      phoneNumberFormat: globalPhoneFormat,
-                                    ),
+                                  manualFormatController.text =
+                                      FlutterLibphonenumber().formatNumberSync(
+                                    country: currentSelectedCountry,
+                                    number: manualFormatController.text,
+                                    phoneNumberType: globalPhoneType,
+                                    phoneNumberFormat: globalPhoneFormat,
                                   );
                                 },
                               ),
@@ -338,8 +420,12 @@ class _MyAppState extends State<MyApp> {
                                 ),
                                 onPressed: () async {
                                   try {
-                                    final res = await FlutterLibphonenumber()
-                                        .parse(manualFormatController.text);
+                                    final res =
+                                        await FlutterLibphonenumber().parse(
+                                      manualFormatController.text,
+                                      region:
+                                          currentSelectedCountry.countryCode,
+                                    );
 
                                     JsonEncoder encoder =
                                         JsonEncoder.withIndent('  ');

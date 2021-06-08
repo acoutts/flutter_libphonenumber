@@ -1,4 +1,5 @@
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
+import 'package:flutter_libphonenumber/src/phone_number_type.dart';
 
 /// Manages countries by code and name
 class CountryManager {
@@ -74,12 +75,12 @@ class CountryWithPhoneCode {
         countryCode = 'US',
         exampleNumberMobileNational = '(201) 555-0123',
         exampleNumberFixedLineNational = '(201) 555-0123',
-        phoneMaskMobileNational = '+0 (000) 000-0000',
-        phoneMaskFixedLineNational = '+0 (000) 000-0000',
+        phoneMaskMobileNational = '(000) 000-0000',
+        phoneMaskFixedLineNational = '(000) 000-0000',
         exampleNumberMobileInternational = '+1 201-555-0123',
         exampleNumberFixedLineInternational = '+1 201-555-0123',
-        phoneMaskMobileInternational = '+00 +00 0000 000000',
-        phoneMaskFixedLineInternational = '+00 +00 000 000 0000',
+        phoneMaskMobileInternational = '+0 000-000-0000',
+        phoneMaskFixedLineInternational = '+0 000-000-0000',
         countryName = 'United States';
 
   /// Country locale code.
@@ -152,43 +153,36 @@ class CountryWithPhoneCode {
   String toString() =>
       '[CountryWithPhoneCode(countryName: $countryName, regionCode: $countryCode, phoneCode: $phoneCode, exampleNumberMobileNational: $exampleNumberMobileNational, exampleNumberFixedLineNational: $exampleNumberFixedLineNational, phoneMaskMobileNational: $phoneMaskMobileNational, phoneMaskFixedLineNational: $phoneMaskFixedLineNational, exampleNumberMobileInternational: $exampleNumberMobileInternational, exampleNumberFixedLineInternational: $exampleNumberFixedLineInternational, phoneMaskMobileInternational: $phoneMaskMobileInternational, phoneMaskFixedLineInternational: $phoneMaskFixedLineInternational)]';
 
-  static CountryWithPhoneCode? getCountryDataByPhone(String phone,
-      {int? subscringLength}) {
-    if (phone.isEmpty) return null;
-    subscringLength = subscringLength ?? phone.length;
-
-    if (subscringLength < 1) return null;
-    var phoneCode = phone.substring(0, subscringLength);
-
-    try {
-      return CountryManager()
-          .countries
-          .firstWhere((data) => toNumericString(data.phoneCode) == phoneCode);
-    } on StateError catch (_) {
-      return getCountryDataByPhone(phone, subscringLength: subscringLength - 1);
-    }
-  }
-
   /// Get the phone mask based on number type and format
-  getPhoneMask(
-      {required PhoneNumberFormat format, required PhoneNumberType type}) {
-    if (format == PhoneNumberFormat.international &&
-        type == PhoneNumberType.mobile) {
-      return phoneMaskMobileInternational;
-    } else if (format == PhoneNumberFormat.international &&
-        type == PhoneNumberType.fixedLine) {
-      return phoneMaskFixedLineInternational;
-    } else if (format == PhoneNumberFormat.national &&
-        type == PhoneNumberType.mobile) {
-      return phoneMaskMobileNational;
+  String? getPhoneMask({
+    required PhoneNumberFormat format,
+    required PhoneNumberType type,
+    bool maskWithoutCountryCode = false,
+  }) {
+    String? returnVal;
+    if (type == PhoneNumberType.mobile) {
+      if (format == PhoneNumberFormat.international) {
+        returnVal = phoneMaskMobileInternational;
+      } else {
+        returnVal = phoneMaskMobileNational;
+      }
     } else {
-      return phoneMaskFixedLineNational;
+      if (format == PhoneNumberFormat.international) {
+        returnVal = phoneMaskFixedLineInternational;
+      } else {
+        returnVal = phoneMaskFixedLineNational;
+      }
     }
+
+    /// If we want to get the mask without the country code, strip
+    /// out the country code from the mask now.
+    if (maskWithoutCountryCode && returnVal != null) {
+      /// Return the mask after the country code and 2 characters,
+      /// one for the leading + and the other for the space between
+      /// country code and number.
+      returnVal = returnVal.substring(phoneCode.length + 2);
+    }
+
+    return returnVal;
   }
 }
-
-/// Used for phone masks to know how to format numbers
-enum PhoneNumberType { mobile, fixedLine }
-
-/// Used to format with national or international format
-enum PhoneNumberFormat { national, international }

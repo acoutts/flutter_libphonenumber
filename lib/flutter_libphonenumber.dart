@@ -2,10 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_libphonenumber/src/country_data.dart';
-import 'package:flutter_libphonenumber/src/input_formatter.dart';
+import 'package:flutter_libphonenumber/src/format_phone_result.dart';
+import 'package:flutter_libphonenumber/src/input_formatter/phone_mask.dart';
+import 'package:flutter_libphonenumber/src/phone_number_format.dart';
+import 'package:flutter_libphonenumber/src/phone_number_type.dart';
 
-export 'package:flutter_libphonenumber/src/input_formatter.dart';
 export 'package:flutter_libphonenumber/src/country_data.dart';
+export 'package:flutter_libphonenumber/src/format_phone_result.dart';
+export 'package:flutter_libphonenumber/src/input_formatter/input_formatter.dart';
+export 'package:flutter_libphonenumber/src/phone_number_format.dart';
+export 'package:flutter_libphonenumber/src/phone_number_type.dart';
 
 class FlutterLibphonenumber {
   static final FlutterLibphonenumber _instance =
@@ -112,83 +118,58 @@ class FlutterLibphonenumber {
   }
 
   /// Given a phone number, format it automatically using the masks we have from libphonenumber's example numbers.
-  String formatNumberSync(
-    String phone, {
+  String formatNumberSync({
+    required String number,
+    required CountryWithPhoneCode country,
     phoneNumberType = PhoneNumberType.mobile,
     phoneNumberFormat = PhoneNumberFormat.international,
+    bool removeCountryCode = false,
   }) {
-    return LibPhonenumberTextFormatter(
-      phoneNumberType: phoneNumberType,
-      phoneNumberFormat: phoneNumberFormat,
-    )
-        .formatEditUpdate(
-            TextEditingValue(text: ''), TextEditingValue(text: phone))
-        .text;
+    return PhoneMask(
+      country.getPhoneMask(
+            format: phoneNumberFormat,
+            type: phoneNumberType,
+          ) ??
+          '',
+    ).apply(
+      number,
+      removeCountryCode: removeCountryCode,
+    );
   }
 
-  /// Asynchronously formats a phone number with libphonenumber. Will return the formatted number
-  /// and if it's a valid/complete number, will return the e164 value as well. Uses libphonenumber's
-  /// parse function to verify if it's a valid number or not.
-  Future<FormatPhoneResult> formatParsePhonenumberAsync(
+  /// Asynchronously formats a number, returning the e164 and the number's requested format
+  /// result by specifying a [PhoneNumberType] and [PhoneNumberFormat].
+  ///
+  /// If the number is invalid or cannot be parsed, it will return a null result.
+  Future<FormatPhoneResult?> getFormattedParseResult(
     String phoneNumber,
     CountryWithPhoneCode country, {
     PhoneNumberType phoneNumberType = PhoneNumberType.mobile,
     PhoneNumberFormat phoneNumberFormat = PhoneNumberFormat.international,
   }) async {
-    // print(
-    //     '[formatParsePhonenumberAsync] phoneNumber: \'$phoneNumber\' | country: ${country.countryCode}');
-
-    /// What we will return
-    final returnResult = FormatPhoneResult();
-
-    /// Format the number with appropriate mask
-    final formattedResult = LibPhonenumberTextFormatter(
-      overrideSkipCountryCode: country.countryCode,
-      phoneNumberType: phoneNumberType,
-    )
-        .formatEditUpdate(
-            TextEditingValue(text: ''), TextEditingValue(text: phoneNumber))
-        .text;
-    returnResult.formattedNumber = formattedResult;
-
-    /// Try to parse the number to update our e164
     try {
-      final parsedResult =
-          await (parse('+${country.phoneCode}${onlyDigits(phoneNumber)}'));
-      // print('[formatParsePhonenumberAsync] parsedResult: $parsedResult');
-      returnResult.e164 = parsedResult['e164'];
+      /// Try to parse the number and get our result
+      final res = await parse(phoneNumber);
 
-      /// Return the international number with no country code if requested
+      late final String formattedNumber;
       if (phoneNumberFormat == PhoneNumberFormat.international) {
-        returnResult.formattedNumber = parsedResult['international']
-            .toString()
-            .substring(country.phoneCode.length + 2);
+        formattedNumber = res['international'];
+      } else if (phoneNumberFormat == PhoneNumberFormat.national) {
+        formattedNumber = res['national'];
       } else {
-        returnResult.formattedNumber = parsedResult['national'];
+        /// Should never happen
+        formattedNumber = '';
       }
+
+      /// Now construct the return value based on the requested format/type.
+      return FormatPhoneResult(
+        e164: res['e164'],
+        formattedNumber: formattedNumber,
+      );
     } catch (e) {
       // print(e);
     }
 
-    return returnResult;
+    return null;
   }
-}
-
-class FormatPhoneResult {
-  String? formattedNumber;
-  String? e164;
-
-  @override
-  String toString() {
-    return 'FormatPhoneResult[formattedNumber: $formattedNumber, e164: $e164]';
-  }
-}
-
-/// Ensure phone number has a leading `+` in it
-String _ensureLeadingPlus(String phoneNumber) {
-  var fixedNum = phoneNumber;
-  if (fixedNum.isNotEmpty && fixedNum[0] != '+') {
-    fixedNum = '+$fixedNum';
-  }
-  return fixedNum;
 }
