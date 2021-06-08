@@ -83,7 +83,7 @@ class FlutterLibphonenumber {
   /// ```
   Future<Map<String, String>> format(String phone, String region) async {
     return await _channel.invokeMapMethod<String, String>("format", {
-          "phone": _ensureLeadingPlus(phone),
+          "phone": phone,
           "region": region,
         }) ??
         <String, String>{};
@@ -105,7 +105,7 @@ class FlutterLibphonenumber {
   /// ```
   Future<Map<String, dynamic>> parse(String phone, {String? region}) async {
     return await _channel.invokeMapMethod<String, dynamic>("parse", {
-          "phone": _ensureLeadingPlus(phone),
+          "phone": phone,
           "region": region,
         }) ??
         <String, dynamic>{};

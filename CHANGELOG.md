@@ -1,3 +1,7 @@
+# 1.0.4
+- Fix number parsing issue by not attaching a leading '+' anymore. This fixes the problem parsing GB numbers starting with 07 which didn't have the 44 country code at the start.
+- Bumped libphonenumber version on android.
+
 # 1.0.3
 - Nullsafety for main version.
 - UK numbers will correctly remove leading 0 now on international numbers.
