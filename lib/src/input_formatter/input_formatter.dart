@@ -34,8 +34,6 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     }
 
     _mask = PhoneMask(m ?? '');
-
-    print('Using mask: $_mask');
   }
 
   /// The country to format this number with.
