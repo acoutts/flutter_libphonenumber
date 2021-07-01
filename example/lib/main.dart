@@ -399,8 +399,8 @@ class _MyAppState extends State<MyApp> {
                                   // Synchronous formatting with no native call into libphonenumber, just a dart call to mask the input
                                   manualFormatController.text =
                                       FlutterLibphonenumber().formatNumberSync(
+                                    manualFormatController.text,
                                     country: currentSelectedCountry,
-                                    number: manualFormatController.text,
                                     phoneNumberType: globalPhoneType,
                                     phoneNumberFormat: globalPhoneFormat,
                                   );

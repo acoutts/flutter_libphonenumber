@@ -22,9 +22,12 @@ class FlutterLibphonenumber {
   /// Method channel
   MethodChannel _channel = const MethodChannel('flutter_libphonenumber');
 
-  // List<CountryWithPhoneCode> get countries => CountryManager().countries;
-
-  /// Must call this before anything else so the countries data is populated
+  /// Must call this before anything else so the countries data is populated.
+  ///
+  /// Optionally provide a map of overrides where the key is the country code
+  /// (ex: `GB` or `US`) and the value is a `CountryWithPhoneCode` object
+  /// that should replace the data pulled from libphonenumber. This is useful
+  /// if you want to customize the mask data for a given country.
   Future<void> init({
     Map<String, CountryWithPhoneCode> overrides = const {},
   }) async {
@@ -61,25 +64,26 @@ class FlutterLibphonenumber {
         {};
 
     final returnMap = <String, CountryWithPhoneCode>{};
-    result.forEach((k, v) => returnMap[k] = CountryWithPhoneCode(
-          countryName: v['countryName'],
-          phoneCode: v['phoneCode'],
-          countryCode: k,
-          exampleNumberMobileNational: v['exampleNumberMobileNational'],
-          exampleNumberFixedLineNational: v['exampleNumberFixedLineNational'],
-          phoneMaskMobileNational: v['phoneMaskMobileNational'],
-          phoneMaskFixedLineNational: v['phoneMaskFixedLineNational'],
-          exampleNumberMobileInternational:
-              v['exampleNumberMobileInternational'],
-          exampleNumberFixedLineInternational:
-              v['exampleNumberFixedLineInternational'],
-          phoneMaskMobileInternational: v['phoneMaskMobileInternational'],
-          phoneMaskFixedLineInternational: v['phoneMaskFixedLineInternational'],
-        ));
+    result.forEach(
+      (k, v) => returnMap[k] = CountryWithPhoneCode(
+        countryName: v['countryName'],
+        phoneCode: v['phoneCode'],
+        countryCode: k,
+        exampleNumberMobileNational: v['exampleNumberMobileNational'],
+        exampleNumberFixedLineNational: v['exampleNumberFixedLineNational'],
+        phoneMaskMobileNational: v['phoneMaskMobileNational'],
+        phoneMaskFixedLineNational: v['phoneMaskFixedLineNational'],
+        exampleNumberMobileInternational: v['exampleNumberMobileInternational'],
+        exampleNumberFixedLineInternational:
+            v['exampleNumberFixedLineInternational'],
+        phoneMaskMobileInternational: v['phoneMaskMobileInternational'],
+        phoneMaskFixedLineInternational: v['phoneMaskFixedLineInternational'],
+      ),
+    );
     return returnMap;
   }
 
-  /// Formats a phone number using libphonenumber. Will return the parsed number.
+  /// Formats a phone number using platform libphonenumber. Will return the parsed number.
   ///
   /// Example response:
   /// ```
@@ -117,9 +121,12 @@ class FlutterLibphonenumber {
         <String, dynamic>{};
   }
 
-  /// Given a phone number, format it automatically using the masks we have from libphonenumber's example numbers.
-  String formatNumberSync({
-    required String number,
+  /// Given a phone number, format it automatically using the masks we have from
+  /// libphonenumber's example numbers. Optionally override the country (instead
+  /// of auto-detecting), the number type, format, and use [removeCountryCode]
+  /// if you want to strip the country code from the result.
+  String formatNumberSync(
+    String number, {
     CountryWithPhoneCode? country,
     phoneNumberType = PhoneNumberType.mobile,
     phoneNumberFormat = PhoneNumberFormat.international,

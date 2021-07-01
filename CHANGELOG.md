@@ -1,6 +1,6 @@
 # 1.1.0
-- Breaking changes to the API. The library no longer tries to automatically format a number by the inputted value because it's impossible to accurately guess which phone mask to use based purely on phone code, when multiple countries share the same phone code but have different formatting rules.
-- Now allows for additional digits to be added on the end of the input mask.
+- Improvements to how masking is performed.
+- Now allows for additional digits to be added on the end of the input mask for countries with varying number patterns.
 
 # 1.0.4
 - Fix number parsing issue by not attaching a leading '+' anymore. This fixes the problem parsing GB numbers starting with 07 which didn't have the 44 country code at the start.

@@ -110,17 +110,19 @@ Example response:
 }
 ```
 
-### `String formatNumberSync(String phone, {PhoneNumberType phoneNumberType = PhoneNumberType.mobile})`
+### `String formatNumberSync(String number, {CountryWithPhoneCode? country, PhoneNumberType phoneNumberType = PhoneNumberType.mobile, phoneNumberFormat = PhoneNumberFormat.international, bool removeCountryCode = false,})`
 Format a number synchronously using masks to format it. Must have ran the `init()` function to pre-populate the mask data or else the original `phone` value will be returned.
 
 Optionally specify the phone number type to format it as (`mobile` vs `fixedLine`). This is useful when a country has more than one phone number format and you want to format it to either fit the fixed line or mobile pattern.
+
+Use `removeCountryCode` to remove the country code from the result.
 
 Example response:
 ```dart
 "1 (414) 444-4444"
 ```
 
-### `Future<FormatPhoneResult> formatParsePhonenumberAsync(String phoneNumber, CountryWithPhoneCode country, {phoneNumberType = PhoneNumberType.mobile})`
+### `Future<FormatPhoneResult?> getFormattedParseResult(String phoneNumber,CountryWithPhoneCode country, {PhoneNumberType phoneNumberType = PhoneNumberType.mobile, PhoneNumberFormat phoneNumberFormat = PhoneNumberFormat.international,})`
 Asynchronously formats a phone number with libphonenumber. Will return the formatted number and if it's a valid/complete number, will return the e164 value as well in the `e164` field. Uses libphonenumber's parse function to verify if it's a valid number or not. This is useful if you want to format a number and also check if it's valid, in one step.
 
 Optionally pass a `PhoneNumberType` to format the number using either the mobile (default) or fixed line mask.
@@ -135,23 +137,25 @@ class FormatPhoneResult {
 ```
 
 ### `TextInputFormatter LibPhonenumberTextFormatter(...)`
-The text formatter takes 3 optional arguments:
-* `ValueChanged<CountryWithPhoneCode> onCountrySelected` is a callback that will be called when the formatter has automatically determined the country/region from the phone number. Could be useful if you want to parse a phone number input in realtime and save the detected country from it once available.
-* `String overrideSkipCountryCode`  When this is supplied then we will format the number using the supplied country code and mask with the country code removed. This is useful if you have the country code being selected in another text box and just need to format the number without its country code in it.
+* `required String country`
+You must provide the country used to format the text accurately.
+
+The text formatter also takes 5 optional arguments:
+* `PhoneNumberType? phoneNumberType` specify whether to format the phone number in the mobile format using the mask for mobile numbers, or the fixed line format. Can either be `PhoneNumberType.mobile` or `PhoneNumberType.fixedLine`. Defaults to `PhoneNumberType.mobile`.
+
+* `PhoneNumberFormat? phoneNumberFormat` specify to format using the national or international format. Can either be `PhoneNumberFormat.international` or `PhoneNumberFormat.national`. Defaults to `PhoneNumberFormat.international`.
+
 * `FutureOr Function(String val) onFormatFinished` Optionally get a notification at this callback of the final formatted value once all formatting is completed. This is useful if you want to do something else that is triggered after formatting is done.
-* `PhoneNumberType phoneNumberType` specify whether to format the phone number in the mobile format using the mask for mobile numbers, or the fixed line format. Can either be `PhoneNumberType.mobile` or `PhoneNumberType.fixedLine`. Defaults to `PhoneNumberType.mobile`.
-* `PhoneNumberFormat phoneNumberFormat` specify to format using the national or international format. Can either be `PhoneNumberFormat.international` or `PhoneNumberFormat.national`. Defaults to `PhoneNumberFormat.international`.
+
+* `bool? hideCountryCode` When true, mask will be applied to input assuming the country code is not present in the input.
 
 
-You should specify `overrideSkipCountryCode` when you have a country picker somewhere else and just want your text field to format the number without the country code in it. This is useful if you have a dropdown to select the country code and a text field next to it to enter the number.
+* `int? additionalDigits` You can tell the formatter to allow additional digits on the end of the mask. This is useful for some countries which have a similar mask but varying length of numbers. It's safe to set this to a value like 3 or 5 and you won't have to think about it again.
+
 
 To use it, simply add `LibPhonenumberTextFormatter()` to your `TextField`'s `inputFormatters` list:
 ```dart
 TextField(inputFormatters: [LibPhonenumberTextFormatter(
-    onCountrySelected: (country) => print('onCountrySelected: $country'),
-    onFormatFinished: (formattedVal) => print('onCountrySelected: $formattedVal'),
-    overrideSkipCountryCode: 'GB', // Optionally override country to GB and return the number w/o +44. Disabled auto-detection of country and forces using the mask of the provided country.
-    phoneNumberType: PhoneNumberType.fixedLine, // Optionally format the number as something other than mobile
-    phoneNumberFormat: PhoneNumberFormat.international, // Optionally format the number in its international or national format pattern.
+  country: 'GB',
 )])
 ```
