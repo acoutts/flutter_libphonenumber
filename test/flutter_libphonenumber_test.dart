@@ -24,7 +24,7 @@ void main() {
       final mask = PhoneMask('+00 000 000 0000');
       expect(mask.apply('+393937224790'), '+39 393 722 4790');
     });
-
+    
     group('getCountryDataByPhone', () {
       test('US number', () async {
         await CountryManager().loadCountries(overrides: {
@@ -53,5 +53,43 @@ void main() {
         expect(res, '+1 419-913-9457');
       });
     });
+
+    group('LibPhonenumberTextFormatter', () {
+
+      test('US number with code', () async {
+        final res = LibPhonenumberTextFormatter(
+          country: CountryWithPhoneCode.us(),
+          phoneNumberType: PhoneNumberType.mobile,
+          phoneNumberFormat: PhoneNumberFormat.international,
+          hideCountryCode: false,
+        ).formatEditUpdate(
+            TextEditingValue.empty,
+            TextEditingValue(
+                text: '+14199139457',
+            ),
+        );
+        expect(res.text, '+1 419-913-9457');
+      });
+
+      test('US number without code', () async {
+        await CountryManager().loadCountries(overrides: {
+          'US': CountryWithPhoneCode.us(),
+        });
+
+        final res = LibPhonenumberTextFormatter(
+          country: CountryWithPhoneCode.us(),
+          phoneNumberType: PhoneNumberType.mobile,
+          phoneNumberFormat: PhoneNumberFormat.international,
+          hideCountryCode: true,
+        ).formatEditUpdate(
+          TextEditingValue.empty,
+          TextEditingValue(
+            text: '4199139457',
+          ),
+        );
+        expect(res.text, '419-913-9457');
+      });
+    });
+
   });
 }
