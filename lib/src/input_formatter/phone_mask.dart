@@ -4,8 +4,7 @@ class PhoneMask {
   final RegExp _digitRegex = RegExp(r'[0-9]+');
 
   /// Apply the given phone mask to the input string.
-  String apply(
-    String inputString) {
+  String apply(String inputString) {
     /// If mask is empty, return input string
     if (mask.isEmpty) {
       return inputString;
