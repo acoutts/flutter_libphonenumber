@@ -72,10 +72,6 @@ void main() {
       });
 
       test('US number without code', () async {
-        await CountryManager().loadCountries(overrides: {
-          'US': CountryWithPhoneCode.us(),
-        });
-
         final res = LibPhonenumberTextFormatter(
           country: CountryWithPhoneCode.us(),
           phoneNumberType: PhoneNumberType.mobile,
