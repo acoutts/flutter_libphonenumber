@@ -139,6 +139,10 @@ class FlutterLibphonenumber {
       return number;
     }
 
+    if (removeCountryCode) {
+      number = number.replaceAll(RegExp(r'\D+'), '').substring(guessedCountry.phoneCode.length);
+    }
+
     return PhoneMask(
       guessedCountry.getPhoneMask(
             format: phoneNumberFormat,

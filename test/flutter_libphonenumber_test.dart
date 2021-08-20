@@ -41,7 +41,16 @@ void main() {
         });
 
         final res = FlutterLibphonenumber().formatNumberSync('+14199139457', removeCountryCode: true);
-        expect(res, '141-991-3945');
+        expect(res, '419-913-9457');
+      });
+
+      test('US number with code', () async {
+        await CountryManager().loadCountries(overrides: {
+          'US': CountryWithPhoneCode.us(),
+        });
+
+        final res = FlutterLibphonenumber().formatNumberSync('+14199139457', removeCountryCode: false);
+        expect(res, '+1 419-913-9457');
       });
     });
   });
