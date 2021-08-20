@@ -66,8 +66,8 @@ class CountryWithPhoneCode {
         phoneMaskFixedLineNational = '+00 0000 000 0000',
         exampleNumberMobileInternational = '+44 7400 123456',
         exampleNumberFixedLineInternational = '+44 121 234 5678',
-        phoneMaskMobileInternational = '+00 +00 0000 000000',
-        phoneMaskFixedLineInternational = '+00 +00 000 000 0000',
+        phoneMaskMobileInternational = '+00 0000 000000',
+        phoneMaskFixedLineInternational = '+00 000 000 0000',
         countryName = 'United Kingdom';
 
   /// US locale, useful for dummy values
