@@ -5,11 +5,7 @@ class PhoneMask {
 
   /// Apply the given phone mask to the input string.
   String apply(
-    String inputString, {
-
-    /// Optionally remove the country code from the input
-    bool removeCountryCode = false,
-  }) {
+    String inputString) {
     /// If mask is empty, return input string
     if (mask.isEmpty) {
       return inputString;

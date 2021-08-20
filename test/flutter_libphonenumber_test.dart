@@ -34,6 +34,15 @@ void main() {
         final res = CountryWithPhoneCode.getCountryDataByPhone('+14199139457');
         expect(res?.countryCode, 'US');
       });
+
+      test('US number without code', () async {
+        await CountryManager().loadCountries(overrides: {
+          'US': CountryWithPhoneCode.us(),
+        });
+
+        final res = FlutterLibphonenumber().formatNumberSync('+14199139457', removeCountryCode: true);
+        expect(res, '141-991-3945');
+      });
     });
   });
 }
