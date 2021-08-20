@@ -24,7 +24,7 @@ void main() {
       final mask = PhoneMask('+00 000 000 0000');
       expect(mask.apply('+393937224790'), '+39 393 722 4790');
     });
-    
+
     group('getCountryDataByPhone', () {
       test('US number', () async {
         await CountryManager().loadCountries(overrides: {
@@ -34,7 +34,10 @@ void main() {
         final res = CountryWithPhoneCode.getCountryDataByPhone('+14199139457');
         expect(res?.countryCode, 'US');
       });
+    });
 
+
+    group('Check formatNumberSync method', () {
       test('US number without code', () async {
         await CountryManager().loadCountries(overrides: {
           'US': CountryWithPhoneCode.us(),
@@ -54,9 +57,9 @@ void main() {
       });
     });
 
-    group('LibPhonenumberTextFormatter', () {
+    group('Check LibPhonenumberTextFormatter', () {
 
-      test('US number with code', () async {
+      test('formater for TextField with contry code in text', () async {
         final res = LibPhonenumberTextFormatter(
           country: CountryWithPhoneCode.us(),
           phoneNumberType: PhoneNumberType.mobile,
@@ -71,7 +74,7 @@ void main() {
         expect(res.text, '+1 419-913-9457');
       });
 
-      test('US number without code', () async {
+      test('formater for TextField without contry code in text', () async {
         final res = LibPhonenumberTextFormatter(
           country: CountryWithPhoneCode.us(),
           phoneNumberType: PhoneNumberType.mobile,
