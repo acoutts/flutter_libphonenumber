@@ -1,3 +1,7 @@
+# 1.2.0
+- BREAKING: renamed `hideCountryCode` to `inputContainsCountryCode` in `LibPhonenumberTextFormatter`.
+- BREAKING: renamed `removeCountryCode` to `removeCountryCodeFromResult` and added new parameter `inputContainsCountryCode` in `formatNumberSync()`. Use this to accurately describe if the input number contains a country code and whether or not the result should strip that country code out.
+
 # 1.1.0
 - Improvements to how masking is performed.
 - Now allows for additional digits to be added on the end of the input mask for countries with varying number patterns.

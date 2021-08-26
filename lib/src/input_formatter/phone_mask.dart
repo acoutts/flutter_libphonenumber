@@ -4,25 +4,20 @@ class PhoneMask {
   final RegExp _digitRegex = RegExp(r'[0-9]+');
 
   /// Apply the given phone mask to the input string.
-  String apply(
-    String inputString, {
-
-    /// Optionally remove the country code from the input
-    bool removeCountryCode = false,
-  }) {
+  String apply(String inputString) {
     /// If mask is empty, return input string
     if (mask.isEmpty) {
       return inputString;
     }
 
-    var chars = inputString.replaceAll(RegExp(r'\D+'), '').split('');
-    var result = <String>[];
+    final chars = inputString.replaceAll(RegExp(r'\D+'), '').split('');
+    final result = <String>[];
     var index = 0;
     for (var i = 0; i < mask.length; i++) {
       if (index >= chars.length) {
         break;
       }
-      var curChar = chars[index];
+      final curChar = chars[index];
       if (mask[i] == '0') {
         /// If it's a digit in the mask, add the digit to the output
         if (_isDigit(curChar)) {
@@ -39,6 +34,7 @@ class PhoneMask {
     return result.join();
   }
 
+  /// Returns if something is a digit or not
   bool _isDigit(String character) {
     if (character.isEmpty || character.length > 1) {
       return false;

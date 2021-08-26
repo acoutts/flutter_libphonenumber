@@ -15,16 +15,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final initFuture = FlutterLibphonenumber().init();
+  final phoneController = TextEditingController();
+  final countryController = TextEditingController(text: 'United States');
+  final manualFormatController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     updatePlaceholderHint();
   }
 
-  final initFuture = FlutterLibphonenumber().init();
-  final phoneController = TextEditingController();
-  final countryController = TextEditingController(text: 'United States');
-  final manualFormatController = TextEditingController();
   String? parsedData;
 
   /// Used to format numbers as mobile or land line
@@ -38,26 +39,33 @@ class _MyAppState extends State<MyApp> {
 
   var placeholderHint = '';
 
+  var inputContainsCountryCode = true;
+
   void updatePlaceholderHint() {
-    final String newPlaceholder;
+    late String newPlaceholder;
 
     if (globalPhoneType == PhoneNumberType.mobile) {
       if (globalPhoneFormat == PhoneNumberFormat.international) {
         newPlaceholder =
-            currentSelectedCountry.exampleNumberMobileInternational ?? '';
+            currentSelectedCountry.exampleNumberMobileInternational;
       } else {
-        newPlaceholder =
-            currentSelectedCountry.exampleNumberMobileNational ?? '';
+        newPlaceholder = currentSelectedCountry.exampleNumberMobileNational;
       }
     } else {
       if (globalPhoneFormat == PhoneNumberFormat.international) {
         newPlaceholder =
-            currentSelectedCountry.exampleNumberFixedLineInternational ?? '';
+            currentSelectedCountry.exampleNumberFixedLineInternational;
       } else {
-        newPlaceholder =
-            currentSelectedCountry.exampleNumberFixedLineNational ?? '';
+        newPlaceholder = currentSelectedCountry.exampleNumberFixedLineNational;
       }
     }
+
+    /// Strip country code from hint
+    if (!inputContainsCountryCode) {
+      newPlaceholder =
+          newPlaceholder.substring(currentSelectedCountry.phoneCode.length + 2);
+    }
+
     setState(() => placeholderHint = newPlaceholder);
   }
 
@@ -284,6 +292,31 @@ class _MyAppState extends State<MyApp> {
                                             : Text('International'),
                                       ),
                                     ],
+                                  ),
+
+                                  /// Format assuming country code present or absent
+                                  Row(
+                                    children: [
+                                      Switch(
+                                        value: inputContainsCountryCode,
+                                        onChanged: (val) {
+                                          setState(
+                                            () => inputContainsCountryCode =
+                                                !inputContainsCountryCode,
+                                          );
+                                          updatePlaceholderHint();
+                                        },
+                                      ),
+
+                                      /// Spacer
+                                      SizedBox(width: 5),
+
+                                      Flexible(
+                                        child: inputContainsCountryCode
+                                            ? Text('With country code')
+                                            : Text('No country code'),
+                                      ),
+                                    ],
                                   )
                                 ],
                               ),
@@ -314,7 +347,8 @@ class _MyAppState extends State<MyApp> {
                                 phoneNumberType: globalPhoneType,
                                 phoneNumberFormat: globalPhoneFormat,
                                 country: currentSelectedCountry,
-                                hideCountryCode: true,
+                                inputContainsCountryCode:
+                                    inputContainsCountryCode,
                                 additionalDigits: 3,
                               ),
                             ],
@@ -403,6 +437,8 @@ class _MyAppState extends State<MyApp> {
                                     country: currentSelectedCountry,
                                     phoneNumberType: globalPhoneType,
                                     phoneNumberFormat: globalPhoneFormat,
+                                    inputContainsCountryCode:
+                                        inputContainsCountryCode,
                                   );
                                 },
                               ),

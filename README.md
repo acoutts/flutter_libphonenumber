@@ -110,12 +110,12 @@ Example response:
 }
 ```
 
-### `String formatNumberSync(String number, {CountryWithPhoneCode? country, PhoneNumberType phoneNumberType = PhoneNumberType.mobile, phoneNumberFormat = PhoneNumberFormat.international, bool removeCountryCode = false,})`
+### `String formatNumberSync(String number, {CountryWithPhoneCode? country, PhoneNumberType phoneNumberType = PhoneNumberType.mobile, phoneNumberFormat = PhoneNumberFormat.international, bool removeCountryCodeFromResult = false, bool inputContainsCountryCode = true})`
 Format a number synchronously using masks to format it. Must have ran the `init()` function to pre-populate the mask data or else the original `phone` value will be returned.
 
 Optionally specify the phone number type to format it as (`mobile` vs `fixedLine`). This is useful when a country has more than one phone number format and you want to format it to either fit the fixed line or mobile pattern.
 
-Use `removeCountryCode` to remove the country code from the result.
+Use `removeCountryCodeFromResult` to remove the country code from the formatted result. Set `inputContainsCountryCode` accordingly based on if the inputted number to format contains the country code or not.
 
 Example response:
 ```dart
@@ -147,7 +147,7 @@ The text formatter also takes 5 optional arguments:
 
 * `FutureOr Function(String val) onFormatFinished` Optionally get a notification at this callback of the final formatted value once all formatting is completed. This is useful if you want to do something else that is triggered after formatting is done.
 
-* `bool? hideCountryCode` When true, mask will be applied to input assuming the country code is not present in the input.
+* `bool? inputContainsCountryCode` When true, mask will be applied assuming the input contains a country code in it.
 
 
 * `int? additionalDigits` You can tell the formatter to allow additional digits on the end of the mask. This is useful for some countries which have a similar mask but varying length of numbers. It's safe to set this to a value like 3 or 5 and you won't have to think about it again.

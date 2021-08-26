@@ -7,10 +7,9 @@ void main() {
     test('UK mobile international', () {
       final mask = PhoneMask(
         CountryWithPhoneCode.gb().getPhoneMask(
-              format: PhoneNumberFormat.international,
-              type: PhoneNumberType.mobile,
-            ) ??
-            '',
+          format: PhoneNumberFormat.international,
+          type: PhoneNumberType.mobile,
+        ),
       );
       expect(mask.apply('+447752555555'), '+44 7752 555555');
     });
@@ -27,13 +26,83 @@ void main() {
 
     group('getCountryDataByPhone', () {
       test('US number', () async {
-        await CountryManager().loadCountries(overrides: {
-          'US': CountryWithPhoneCode.us(),
-        });
+        await CountryManager().loadCountries(
+          overrides: {'US': CountryWithPhoneCode.us()},
+        );
 
         final res = CountryWithPhoneCode.getCountryDataByPhone('+14194444444');
         expect(res?.countryCode, 'US');
       });
+    });
+  });
+
+  group('getPhoneMask', () {
+    test('with removeCountryCodeFromMask=false', () async {
+      final res = CountryWithPhoneCode.us().getPhoneMask(
+        format: PhoneNumberFormat.international,
+        type: PhoneNumberType.mobile,
+        removeCountryCodeFromMask: false,
+      );
+
+      expect(
+        res,
+        '+0 000-000-0000',
+        reason: 'mask should contain country code in it',
+      );
+    });
+
+    test('with removeCountryCodeFromMask=true', () async {
+      final res = CountryWithPhoneCode.us().getPhoneMask(
+        format: PhoneNumberFormat.international,
+        type: PhoneNumberType.mobile,
+        removeCountryCodeFromMask: true,
+      );
+
+      expect(
+        res,
+        '000-000-0000',
+        reason: 'mask should not contain country code in it',
+      );
+    });
+  });
+
+  group('LibPhonenumberTextFormatter', () {
+    test('with inputContainsCountryCode=true', () {
+      final formatter = LibPhonenumberTextFormatter(
+        country: CountryWithPhoneCode.us(),
+        inputContainsCountryCode: true,
+      );
+
+      final formatResult = formatter.formatEditUpdate(
+        TextEditingValue(text: ''),
+        TextEditingValue(text: '+14194444444'),
+      );
+
+      expect(
+        formatResult.text,
+        '+1 419-444-4444',
+        reason:
+            'formatting with a country code should apply the mask with the country code in it',
+      );
+    });
+
+    test('with inputContainsCountryCode=false', () {
+      final formatter = LibPhonenumberTextFormatter(
+        country: CountryWithPhoneCode.us(),
+        inputContainsCountryCode: false,
+      );
+
+      final formatResult = formatter.formatEditUpdate(
+        TextEditingValue(text: ''),
+        TextEditingValue(text: '4194444444'),
+      );
+
+      expect(
+        formatResult.text,
+        '419-444-4444',
+        reason:
+            'formatting with a country code should apply the mask with the country code in it',
+      );
     });
   });
 }

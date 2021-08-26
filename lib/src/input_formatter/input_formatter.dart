@@ -15,25 +15,25 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     this.phoneNumberFormat = PhoneNumberFormat.international,
     this.onFormatFinished,
 
-    /// When true, mask will be applied to input assuming the country
-    /// code is not present in the input.
-    bool hideCountryCode = false,
+    /// When true, mask will be applied assuming the input contains
+    /// a country code in it.
+    bool inputContainsCountryCode = false,
 
     /// Additional digits to include
     this.additionalDigits = 0,
-  }) : this.countryData = CountryManager().countries {
+  }) : countryData = CountryManager().countries {
     var m = country.getPhoneMask(
       format: phoneNumberFormat,
       type: phoneNumberType,
-      maskWithoutCountryCode: hideCountryCode,
+      removeCountryCodeFromMask: !inputContainsCountryCode,
     );
 
     /// Allow additional digits on the mask
-    if (m != null && additionalDigits > 0) {
+    if (additionalDigits > 0) {
       m += List.filled(additionalDigits, '0').reduce((a, b) => a + b);
     }
 
-    _mask = PhoneMask(m ?? '');
+    _mask = PhoneMask(m);
   }
 
   /// The country to format this number with.
@@ -65,7 +65,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     /// Apply mask to the input
-    String maskedValue = _mask.apply(newValue.text);
+    final maskedValue = _mask.apply(newValue.text);
 
     /// Optionally pass the formatted value to the supplied callback
     if (onFormatFinished != null) {

@@ -3,9 +3,9 @@ import 'package:flutter_libphonenumber/src/phone_number_type.dart';
 
 /// Manages countries by code and name
 class CountryManager {
-  static final CountryManager _instance = CountryManager._internal();
-  factory CountryManager() => _instance;
   CountryManager._internal();
+  factory CountryManager() => _instance;
+  static final CountryManager _instance = CountryManager._internal();
 
   var _countries = <CountryWithPhoneCode>[];
   var _initialized = false;
@@ -100,49 +100,49 @@ class CountryWithPhoneCode {
   /// ```
   /// 07400 123456
   /// ```
-  final String? exampleNumberMobileNational;
+  final String exampleNumberMobileNational;
 
   /// Example fixed line number in national format.
   /// ```
   /// 0121 234 5678
   /// ```
-  final String? exampleNumberFixedLineNational;
+  final String exampleNumberFixedLineNational;
 
   /// Phone mask for mobile number in national format.
   /// ```
   /// 00000 000000
   /// ```
-  final String? phoneMaskMobileNational;
+  final String phoneMaskMobileNational;
 
   /// Phone mask for fixed line number in national format.
   /// ```
   /// 0000 000 0000
   /// ```
-  final String? phoneMaskFixedLineNational;
+  final String phoneMaskFixedLineNational;
 
   /// Example mobile number in international format.
   /// ```
   /// +44 7400 123456
   /// ```
-  final String? exampleNumberMobileInternational;
+  final String exampleNumberMobileInternational;
 
   /// Example fixed line number in international format.
   /// ```
   /// +44 121 234 5678
   /// ```
-  final String? exampleNumberFixedLineInternational;
+  final String exampleNumberFixedLineInternational;
 
   /// Phone mask for mobile number in international format.
   /// ```
   /// +00 0000 000000
   /// ```
-  final String? phoneMaskMobileInternational;
+  final String phoneMaskMobileInternational;
 
   /// Phone mask for fixed line number in international format.
   /// ```
   /// +00 000 000 0000
   /// ```
-  final String? phoneMaskFixedLineInternational;
+  final String phoneMaskFixedLineInternational;
 
   /// Country name
   /// ```
@@ -154,37 +154,41 @@ class CountryWithPhoneCode {
   String toString() =>
       '[CountryWithPhoneCode(countryName: $countryName, regionCode: $countryCode, phoneCode: $phoneCode, exampleNumberMobileNational: $exampleNumberMobileNational, exampleNumberFixedLineNational: $exampleNumberFixedLineNational, phoneMaskMobileNational: $phoneMaskMobileNational, phoneMaskFixedLineNational: $phoneMaskFixedLineNational, exampleNumberMobileInternational: $exampleNumberMobileInternational, exampleNumberFixedLineInternational: $exampleNumberFixedLineInternational, phoneMaskMobileInternational: $phoneMaskMobileInternational, phoneMaskFixedLineInternational: $phoneMaskFixedLineInternational)]';
 
-  /// Get the phone mask based on number type and format
-  String? getPhoneMask({
+  /// Get the phone mask based on number type and format.
+  /// When `removeCountryCodeFromMask` is true then the resulting mask
+  /// will not contain the phone code. This is useful for real-time formatting
+  /// with [LibPhonenumberTextFormatter] where the user might be entering a phone
+  /// number without the country code in it but we still want to format it accordingly.
+  String getPhoneMask({
     required PhoneNumberFormat format,
     required PhoneNumberType type,
-    bool maskWithoutCountryCode = false,
+    bool removeCountryCodeFromMask = false,
   }) {
-    String? returnVal;
+    late String returnMask;
     if (type == PhoneNumberType.mobile) {
       if (format == PhoneNumberFormat.international) {
-        returnVal = phoneMaskMobileInternational;
+        returnMask = phoneMaskMobileInternational;
       } else {
-        returnVal = phoneMaskMobileNational;
+        returnMask = phoneMaskMobileNational;
       }
     } else {
       if (format == PhoneNumberFormat.international) {
-        returnVal = phoneMaskFixedLineInternational;
+        returnMask = phoneMaskFixedLineInternational;
       } else {
-        returnVal = phoneMaskFixedLineNational;
+        returnMask = phoneMaskFixedLineNational;
       }
     }
 
     /// If we want to get the mask without the country code, strip
     /// out the country code from the mask now.
-    if (maskWithoutCountryCode && returnVal != null) {
+    if (removeCountryCodeFromMask) {
       /// Return the mask after the country code and 2 characters,
       /// one for the leading + and the other for the space between
       /// country code and number.
-      returnVal = returnVal.substring(phoneCode.length + 2);
+      returnMask = returnMask.substring(phoneCode.length + 2);
     }
 
-    return returnVal;
+    return returnMask;
   }
 
   /*
@@ -224,7 +228,7 @@ class CountryWithPhoneCode {
 
     /// Must provide valid offset to start searching from
     if (subscringLength < 1) return null;
-    var phoneCode = phone.substring(0, subscringLength);
+    final phoneCode = phone.substring(0, subscringLength);
 
     try {
       final countries = CountryManager().countries;
@@ -244,8 +248,11 @@ class CountryWithPhoneCode {
     String inputString, {
     bool allowPeriod = false,
   }) {
-    var regExp = allowPeriod ? _digitWithPeriodRegex : _digitRegex;
-    return inputString.splitMapJoin(regExp,
-        onMatch: (m) => m.group(0)!, onNonMatch: (nm) => '');
+    final regExp = allowPeriod ? _digitWithPeriodRegex : _digitRegex;
+    return inputString.splitMapJoin(
+      regExp,
+      onMatch: (m) => m.group(0)!,
+      onNonMatch: (nm) => '',
+    );
   }
 }
