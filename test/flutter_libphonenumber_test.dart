@@ -12,7 +12,7 @@ void main() {
             ) ??
             '',
       );
-      expect(mask.apply('+447752513731'), '+44 7752 513731');
+      expect(mask.apply('+447752555555'), '+44 7752 555555');
     });
 
     test('Italian mobile international', () {
@@ -31,7 +31,7 @@ void main() {
           'US': CountryWithPhoneCode.us(),
         });
 
-        final res = CountryWithPhoneCode.getCountryDataByPhone('+14199139457');
+        final res = CountryWithPhoneCode.getCountryDataByPhone('+14194444444');
         expect(res?.countryCode, 'US');
       });
     });
