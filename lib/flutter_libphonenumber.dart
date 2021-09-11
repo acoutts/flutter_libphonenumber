@@ -177,7 +177,10 @@ class FlutterLibphonenumber {
   }) async {
     try {
       /// Try to parse the number and get our result
-      final res = await parse(phoneNumber);
+      final res = await parse(
+        phoneNumber,
+        region: country.countryCode,
+      );
 
       late final String formattedNumber;
       if (phoneNumberFormat == PhoneNumberFormat.international) {

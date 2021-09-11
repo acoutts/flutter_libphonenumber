@@ -1,3 +1,8 @@
+## [Unreleased]
+
+## [1.2.1] - 2021.09.11
+- Fixed bug where region was not passed to `parse` call in `getFormattedParseResult`.
+
 # 1.2.0
 - BREAKING: renamed `hideCountryCode` to `inputContainsCountryCode` in `LibPhonenumberTextFormatter`.
 - BREAKING: renamed `removeCountryCode` to `removeCountryCodeFromResult` and added new parameter `inputContainsCountryCode` in `formatNumberSync()`. Use this to accurately describe if the input number contains a country code and whether or not the result should strip that country code out.
