@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [1.2.2] - 2022.01.12
+- Replaced jcenter with maven central (JeremyLWright).
+
 ## [1.2.1] - 2021.09.11
 - Fixed bug where region was not passed to `parse` call in `getFormattedParseResult`.
 
