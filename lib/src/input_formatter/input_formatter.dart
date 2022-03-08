@@ -1,12 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
-import 'package:flutter_libphonenumber/src/country_data.dart';
 import 'package:flutter_libphonenumber/src/input_formatter/phone_mask.dart';
-import 'package:flutter_libphonenumber/src/phone_number_format.dart';
-import 'package:flutter_libphonenumber/src/phone_number_type.dart';
 
 class LibPhonenumberTextFormatter extends TextInputFormatter {
   LibPhonenumberTextFormatter({
@@ -21,6 +17,9 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
 
     /// Additional digits to include
     this.additionalDigits = 0,
+
+    /// Force cursor the end of input when formatting.
+    this.shouldKeepCursorAtEndOfInput = true,
   }) : countryData = CountryManager().countries {
     var m = country.getPhoneMask(
       format: phoneNumberFormat,
@@ -57,6 +56,9 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
   /// the number but allow additional digits on the end.
   final int additionalDigits;
 
+  /// When shouldKeepCursorAtEndOfInput is true, the cursor will be forced to the end of the input after a format happened. Will default to true,
+  final bool shouldKeepCursorAtEndOfInput;
+
   late final PhoneMask _mask;
 
   @override
@@ -73,7 +75,10 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     }
 
     return TextEditingValue(
-      selection: TextSelection.collapsed(offset: maskedValue.length),
+      selection: TextSelection.collapsed(
+        offset: oldValue.selection.baseOffset +
+            (maskedValue.length - oldValue.text.length),
+      ),
       text: maskedValue,
     );
   }
