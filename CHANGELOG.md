@@ -1,4 +1,5 @@
-## [Unreleased]
+## [1.2.4] - 2022.03.09
+- Fixed some edge cases with cursor position when `shouldKeepCursorAtEndOfInput` is set to `false`
 
 ## [1.2.3] - 2022.03.08
 - New optional setting `shouldKeepCursorAtEndOfInput` on `LibPhonenumberTextFormatter` which will either keep the cursor at the end of the input if the middle of the input is changed, or the cursor will remain at the same position as where it was edited.
