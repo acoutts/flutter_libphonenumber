@@ -350,6 +350,7 @@ class _MyAppState extends State<MyApp> {
                                 inputContainsCountryCode:
                                     inputContainsCountryCode,
                                 additionalDigits: 3,
+                                shouldKeepCursorAtEndOfInput: false,
                               ),
                             ],
                           ),
