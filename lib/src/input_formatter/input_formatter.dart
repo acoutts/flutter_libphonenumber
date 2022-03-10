@@ -67,19 +67,72 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     /// Apply mask to the input
-    final maskedValue = _mask.apply(newValue.text);
+    final newMaskedValue = _mask.apply(newValue.text);
+    if (!shouldKeepCursorAtEndOfInput) {
+      //In case of a longer newValue
+      if (oldValue.text.length < newValue.text.length) {
+        var newValueBeforeCursor =
+            newMaskedValue.substring(0, newValue.selection.baseOffset);
 
-    /// Optionally pass the formatted value to the supplied callback
-    if (onFormatFinished != null) {
-      onFormatFinished!(maskedValue);
+        final oldValueBeforeCursor =
+            oldValue.text.substring(0, oldValue.selection.baseOffset);
+
+        if (!newValueBeforeCursor.endsWith('-')) {
+          newValueBeforeCursor = newValueBeforeCursor.substring(
+              0, newValueBeforeCursor.length - 1);
+        }
+
+        final beforeCursorLengthDiff =
+            newValueBeforeCursor.length - oldValueBeforeCursor.length;
+
+        /// Optionally pass the formatted value to the supplied callback
+        if (onFormatFinished != null) {
+          onFormatFinished!(newMaskedValue);
+        }
+        return TextEditingValue(
+          selection: TextSelection.collapsed(
+            offset: oldValue.selection.baseOffset +
+                (newValue.text.length - oldValue.text.length) +
+                beforeCursorLengthDiff,
+          ),
+          text: newMaskedValue,
+        );
+      }
+      //In this case characters got deleted
+      else if (oldValue.text.length > newValue.text.length) {
+        if (oldValue.selection.baseOffset == oldValue.text.length) {
+          return TextEditingValue(
+            selection: TextSelection.collapsed(
+              offset: newMaskedValue.length,
+            ),
+            text: newMaskedValue,
+          );
+        }
+        return TextEditingValue(
+          selection: TextSelection.collapsed(
+            offset: (oldValue.selection.baseOffset < newMaskedValue.length)
+                ? oldValue.selection.baseOffset - 1
+                : newMaskedValue.length - 1,
+          ),
+          text: newMaskedValue,
+        );
+      }
+      // In the case length remained the same (probably because of paste)
+      else {
+        return TextEditingValue(
+          selection: TextSelection.collapsed(
+            offset: newMaskedValue.length,
+          ),
+          text: newMaskedValue,
+        );
+      }
+    } else {
+      return TextEditingValue(
+        selection: TextSelection.collapsed(
+          offset: newMaskedValue.length,
+        ),
+        text: newMaskedValue,
+      );
     }
-
-    return TextEditingValue(
-      selection: TextSelection.collapsed(
-        offset: oldValue.selection.baseOffset +
-            (maskedValue.length - oldValue.text.length),
-      ),
-      text: maskedValue,
-    );
   }
 }
