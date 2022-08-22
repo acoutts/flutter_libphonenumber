@@ -142,6 +142,7 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
                   util.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL))
           put("national", util.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.NATIONAL))
           put("country_code", phoneNumber.countryCode.toString())
+          put("region_code", util.getRegionCodeForNumber(phoneNumber))
           put("national_number", phoneNumber.nationalNumber.toString())
         }
       }

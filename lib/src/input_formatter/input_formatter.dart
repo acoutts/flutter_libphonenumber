@@ -79,7 +79,9 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
 
         if (!newValueBeforeCursor.endsWith('-')) {
           newValueBeforeCursor = newValueBeforeCursor.substring(
-              0, newValueBeforeCursor.length - 1);
+            0,
+            newValueBeforeCursor.length - 1,
+          );
         }
 
         final beforeCursorLengthDiff =

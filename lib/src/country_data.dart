@@ -1,5 +1,4 @@
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
-import 'package:flutter_libphonenumber/src/phone_number_type.dart';
 
 /// Manages countries by code and name
 class CountryManager {

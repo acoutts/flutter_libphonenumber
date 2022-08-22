@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 
 void main() {
@@ -349,8 +348,7 @@ class _MyAppState extends State<MyApp> {
                                 country: currentSelectedCountry,
                                 inputContainsCountryCode:
                                     inputContainsCountryCode,
-                                additionalDigits: 3,
-                                shouldKeepCursorAtEndOfInput: false,
+                                shouldKeepCursorAtEndOfInput: true,
                               ),
                             ],
                           ),

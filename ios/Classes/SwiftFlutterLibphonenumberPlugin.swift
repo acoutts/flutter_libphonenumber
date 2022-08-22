@@ -120,6 +120,7 @@ public class SwiftFlutterLibphonenumberPlugin: NSObject, FlutterPlugin {
                 "international": kit.format(phoneNumber, toType: .international, withPrefix: true),
                 "national": kit.format(phoneNumber, toType: .national),
                 "country_code": String(phoneNumber.countryCode),
+                "region_code": String(kit.getRegionCode(of: phoneNumber) ?? ""),
                 "national_number": String(phoneNumber.nationalNumber)
             ]
         } catch {
