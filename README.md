@@ -8,8 +8,8 @@ Uses the following native libraries:
 
 | Platform | Library        | Version |
 |----------|----------------|---------|
-| Android  | libphonenumber | 8.12.24 |
-| iOS      | PhoneNumberKit | 3.3     |
+| Android  | libphonenumber | 8.12.52 |
+| iOS      | PhoneNumberKit | 3.3.4   |
 
 The main advantage to this lib is it lets you optionally format a phone number synchronously without making calls into libphonenumber with platform calls.
 
@@ -106,6 +106,7 @@ Example response:
     national: '030 123 123 123',
     type: 'mobile',
     international: '+49 30 123 123 123',
+    region_code: 'DE',
     national_number: '030123123123',
 }
 ```
