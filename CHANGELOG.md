@@ -1,3 +1,11 @@
+## [1.3.0] - 2022.12.05
+- Adds a new field (region_code) to the result of the parse method.
+- Upgrades the dependencies:
+  * libphonenumber to 8.12.52
+  * PhoneNumberKit to 3.3.4
+- Fixes some lint issues.
+- Upgrade gradle/kotlin versions in android project.
+
 ## [1.2.4] - 2022.03.09
 - Fixed some edge cases with cursor position when `shouldKeepCursorAtEndOfInput` is set to `false`
 
