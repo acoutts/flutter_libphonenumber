@@ -10,6 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  js: ^0.6.5
+  flutter_web_plugins:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
@@ -33,6 +36,9 @@ flutter:
         pluginClass: FlutterLibphonenumberPlugin
       ios:
         pluginClass: FlutterLibphonenumberPlugin
+      web:
+        pluginClass: FlutterLibphonenumberWebPlugin
+        fileName: flutter_libphonenumber_web.dart
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
