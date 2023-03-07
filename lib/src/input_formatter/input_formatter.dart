@@ -68,121 +68,127 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
   ) {
     late final TextEditingValue result;
 
-    try {
-      /// Apply mask to the input
-      final newMaskedValue = _mask.apply(newValue.text);
+    /// Apply mask to the input
+    final newMaskedValue = _mask.apply(newValue.text);
 
-      /// Optionally pass the formatted value to the supplied callback
-      if (onFormatFinished != null) {
-        onFormatFinished!(newMaskedValue);
-      }
+    /// Optionally pass the formatted value to the supplied callback
+    if (onFormatFinished != null) {
+      onFormatFinished!(newMaskedValue);
+    }
 
-      /// Force the cursor to the end of the input
-      if (shouldKeepCursorAtEndOfInput) {
-        result = TextEditingValue(
-          selection: TextSelection.collapsed(
-            offset: newMaskedValue.length,
-          ),
-          text: newMaskedValue,
+    print(
+      '>> oldValue: $oldValue\n>> newValue: $newValue\n',
+    );
+
+    /// Force the cursor to the end of the input if requested
+    if (shouldKeepCursorAtEndOfInput) {
+      result = TextEditingValue(
+        selection: TextSelection.collapsed(
+          offset: newMaskedValue.length,
+        ),
+        text: newMaskedValue,
+      );
+      print('>> result: $result');
+      return result;
+    }
+
+    final endsWithNonNumber =
+        newValue.text.endsWith(' ') || newValue.text.endsWith('-');
+
+    if (oldValue.text.length < newValue.text.length) {
+      print(
+          '>> longer string | oldValue.selection.baseOffset: ${oldValue.selection.baseOffset} | oldValue.text.length: ${oldValue.text.length}');
+
+      var newValueBeforeCursor =
+          newMaskedValue.substring(0, newValue.selection.baseOffset);
+
+      final oldValueBeforeCursor =
+          oldValue.text.substring(0, oldValue.selection.baseOffset);
+
+      if (!newValueBeforeCursor.endsWith('-')) {
+        newValueBeforeCursor = newValueBeforeCursor.substring(
+          0,
+          newValueBeforeCursor.length - 1,
         );
-        return result;
       }
 
-      /// After formatting, put the cursor at the same point it was
-      /// at before formatting, within the input. It will put the cursor
-      /// after the last character added or if a character was removed
-      /// it puts it after the character in front of the one removed.
+      final beforeCursorLengthDiff =
+          newValueBeforeCursor.length - oldValueBeforeCursor.length;
 
-      //In case of a longer newValue
-      if (oldValue.text.length < newValue.text.length &&
-          oldValue.text.isNotEmpty) {
-        var newValueBeforeCursor =
-            newMaskedValue.substring(0, newValue.selection.baseOffset);
+      result = TextEditingValue(
+        selection: TextSelection.collapsed(
+          offset: oldValue.selection.baseOffset +
+              (newValue.text.length - oldValue.text.length) +
+              beforeCursorLengthDiff,
+        ),
+        text: newMaskedValue,
+      );
+      print('>> result: $result');
+      return result;
+    }
+    // In this case characters got deleted
+    else if (oldValue.text.length > newValue.text.length) {
+      print(
+          '>> shorter string | oldValue.selection.baseOffset: ${oldValue.selection.baseOffset} | oldValue.text.length: ${oldValue.text.length}');
 
-        final oldValueBeforeCursor =
-            oldValue.text.substring(0, oldValue.selection.baseOffset);
+      if (oldValue.selection.isCollapsed) {
+        print('>> oldValue.selection.isCollapsed');
 
-        // print(
-        //     '>> longer string | newValueBeforeCursor: "$newValueBeforeCursor" | oldValueBeforeCursor: "$oldValueBeforeCursor"');
+        /// We deleted a single character from somewhere in the string
+        if (oldValue.selection.baseOffset == oldValue.text.length) {
+          print('>> oldValue.selection.baseOffset == oldValue.text.length');
 
-        if (!newValueBeforeCursor.endsWith('-') &&
-            !(newValueBeforeCursor.endsWith(' '))) {
-          // print('subtracting one');
-          newValueBeforeCursor = newValueBeforeCursor.substring(
-            0,
-            newValueBeforeCursor.length - 1,
-          );
-        }
-
-        final beforeCursorLengthDiff =
-            newValueBeforeCursor.length - oldValueBeforeCursor.length;
-
-        result = TextEditingValue(
-          selection: TextSelection.collapsed(
-            offset: oldValue.selection.baseOffset +
-                (newValue.text.length - oldValue.text.length) +
-                beforeCursorLengthDiff,
-          ),
-          text: newMaskedValue,
-        );
-        return result;
-      }
-      // In this case characters got deleted
-      else if (oldValue.text.length > newValue.text.length) {
-        print(
-            '>> shorter string | oldValue.selection.baseOffset: ${oldValue.selection.baseOffset} | oldValue.text.length: ${oldValue.text.length}');
-
-        if (oldValue.selection.isCollapsed) {
-          /// We deleted a single character from somewhere in the string
-          if (oldValue.selection.baseOffset == oldValue.text.length) {
-            /// This happens when we delete the character off the end of the string.
-            result = TextEditingValue(
-              selection: TextSelection.collapsed(
-                offset: newMaskedValue.length,
-              ),
-              text: newMaskedValue,
-            );
-            return result;
-          } else {
-            /// This happens when we delete one character in the middle of the string
-            result = TextEditingValue(
-              selection: TextSelection.collapsed(
-                offset: oldValue.selection.baseOffset - 1,
-              ),
-              text: newMaskedValue,
-            );
-            return result;
-          }
-        } else {
-          /// Put a collapsed selection at the area where we removed those X characters
+          /// This happens when we delete the character off the end of the string.
           result = TextEditingValue(
             selection: TextSelection.collapsed(
-              offset: newValue.selection.baseOffset,
+              offset: newMaskedValue.length,
             ),
             text: newMaskedValue,
           );
+          print('>> result: $result');
+          return result;
+        } else {
+          print('>> oldValue.selection.baseOffset != oldValue.text.length');
+
+          /// This happens when we delete one character in the middle of the string
+          result = TextEditingValue(
+            selection: TextSelection.collapsed(
+              offset: oldValue.selection.baseOffset - 1,
+            ),
+            text: newMaskedValue,
+          );
+          print('>> result: $result');
           return result;
         }
-      }
-      // In the case length remained the same
-      // Can happen if we select and replace part of the string either pasting or typing the value
-      // Ex: select 1 character, type a new one
-      // Ex: select 3 characters, paste 3 new ones
-      else {
-        print('>> same length string');
+      } else {
+        print('>> oldValue.selection.isNotCollapsed');
 
+        /// Put a collapsed selection at the area where we removed those X characters
         result = TextEditingValue(
           selection: TextSelection.collapsed(
-            offset: newValue.selection.baseOffset,
+            offset: newValue.selection.baseOffset - (endsWithNonNumber ? 1 : 0),
           ),
           text: newMaskedValue,
         );
+        print('>> result: $result');
         return result;
       }
-    } finally {
-      print(
-        '>> oldValue: $oldValue\n>> newValue: $newValue\n>> result: $result',
+    }
+    // In the case length remained the same
+    // Can happen if we select and replace part of the string either pasting or typing the value
+    // Ex: select 1 character, type a new one
+    // Ex: select 3 characters, paste 3 new ones
+    else {
+      print('>> same length string');
+
+      result = TextEditingValue(
+        selection: TextSelection.collapsed(
+          offset: newValue.selection.baseOffset - (endsWithNonNumber ? 1 : 0),
+        ),
+        text: newMaskedValue,
       );
+      print('>> result: $result');
+      return result;
     }
   }
 }
