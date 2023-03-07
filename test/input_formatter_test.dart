@@ -408,8 +408,6 @@ void main() {
       expect(formatResult.selection.baseOffset, 6);
     });
 
-    // ------------ not tested yet ---------------
-
     /// Replace 2 characters of the middle of the string with another using a selection / paste
     test(
         'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we replace 2 characters of the middle of the string with another, using a selection and pasting the new value',
@@ -423,28 +421,29 @@ void main() {
       final formatResult = formatter.formatEditUpdate(
         // Old value
         TextEditingValue(
-          text: '+1 419-2',
+          text: '+1 466-99',
           selection: TextSelection(
-            baseOffset: 8,
-            extentOffset: 8,
+            baseOffset: 4,
+            extentOffset: 6,
           ),
         ),
         // New value
         TextEditingValue(
-          text: '+1 419-',
+          text: '+1 455-99',
           selection: TextSelection(
-            baseOffset: 7,
-            extentOffset: 7,
+            baseOffset: 6,
+            extentOffset: 6,
           ),
         ),
       );
 
       /// Expected formatted output
-      expect(formatResult.text, '+1 419');
+      expect(formatResult.text, '+1 455-99');
 
       /// Cursor is at the point where we deleted something
       expect(formatResult.selection.baseOffset, 6);
-      expect(true, false);
     });
+
+    // ------------ not tested yet ---------------
   });
 }
