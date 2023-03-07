@@ -1,3 +1,7 @@
+## [1.4.0] - 2023.03.07
+- Fixed `onFormatFinished` callback not being called when `shouldKeepCursorAtEndOfInput=true`.
+
+
 ## [1.3.0] - 2022.12.05
 - Adds a new field (region_code) to the result of the parse method.
 - Upgrades the dependencies:

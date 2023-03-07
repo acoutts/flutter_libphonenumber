@@ -66,18 +66,48 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    /// Apply mask to the input
-    final newMaskedValue = _mask.apply(newValue.text);
-    if (!shouldKeepCursorAtEndOfInput) {
+    late final TextEditingValue result;
+
+    try {
+      /// Apply mask to the input
+      final newMaskedValue = _mask.apply(newValue.text);
+
+      /// Optionally pass the formatted value to the supplied callback
+      if (onFormatFinished != null) {
+        onFormatFinished!(newMaskedValue);
+      }
+
+      /// Force the cursor to the end of the input
+      if (shouldKeepCursorAtEndOfInput) {
+        result = TextEditingValue(
+          selection: TextSelection.collapsed(
+            offset: newMaskedValue.length,
+          ),
+          text: newMaskedValue,
+        );
+        return result;
+      }
+
+      /// After formatting, put the cursor at the same point it was
+      /// at before formatting, within the input. It will put the cursor
+      /// after the last character added or if a character was removed
+      /// it puts it after the character in front of the one removed.
+
       //In case of a longer newValue
-      if (oldValue.text.length < newValue.text.length) {
+      if (oldValue.text.length < newValue.text.length &&
+          oldValue.text.isNotEmpty) {
         var newValueBeforeCursor =
             newMaskedValue.substring(0, newValue.selection.baseOffset);
 
         final oldValueBeforeCursor =
             oldValue.text.substring(0, oldValue.selection.baseOffset);
 
-        if (!newValueBeforeCursor.endsWith('-')) {
+        // print(
+        //     '>> longer string | newValueBeforeCursor: "$newValueBeforeCursor" | oldValueBeforeCursor: "$oldValueBeforeCursor"');
+
+        if (!newValueBeforeCursor.endsWith('-') &&
+            !(newValueBeforeCursor.endsWith(' '))) {
+          // print('subtracting one');
           newValueBeforeCursor = newValueBeforeCursor.substring(
             0,
             newValueBeforeCursor.length - 1,
@@ -87,11 +117,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         final beforeCursorLengthDiff =
             newValueBeforeCursor.length - oldValueBeforeCursor.length;
 
-        /// Optionally pass the formatted value to the supplied callback
-        if (onFormatFinished != null) {
-          onFormatFinished!(newMaskedValue);
-        }
-        return TextEditingValue(
+        result = TextEditingValue(
           selection: TextSelection.collapsed(
             offset: oldValue.selection.baseOffset +
                 (newValue.text.length - oldValue.text.length) +
@@ -99,41 +125,63 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
           ),
           text: newMaskedValue,
         );
+        return result;
       }
-      //In this case characters got deleted
+      // In this case characters got deleted
       else if (oldValue.text.length > newValue.text.length) {
-        if (oldValue.selection.baseOffset == oldValue.text.length) {
-          return TextEditingValue(
+        print(
+            '>> shorter string | oldValue.selection.baseOffset: ${oldValue.selection.baseOffset} | oldValue.text.length: ${oldValue.text.length}');
+
+        if (oldValue.selection.isCollapsed) {
+          /// We deleted a single character from somewhere in the string
+          if (oldValue.selection.baseOffset == oldValue.text.length) {
+            /// This happens when we delete the character off the end of the string.
+            result = TextEditingValue(
+              selection: TextSelection.collapsed(
+                offset: newMaskedValue.length,
+              ),
+              text: newMaskedValue,
+            );
+            return result;
+          } else {
+            /// This happens when we delete one character in the middle of the string
+            result = TextEditingValue(
+              selection: TextSelection.collapsed(
+                offset: oldValue.selection.baseOffset - 1,
+              ),
+              text: newMaskedValue,
+            );
+            return result;
+          }
+        } else {
+          /// Put a collapsed selection at the area where we removed those X characters
+          result = TextEditingValue(
             selection: TextSelection.collapsed(
-              offset: newMaskedValue.length,
+              offset: newValue.selection.baseOffset,
             ),
             text: newMaskedValue,
           );
+          return result;
         }
-        return TextEditingValue(
-          selection: TextSelection.collapsed(
-            offset: (oldValue.selection.baseOffset < newMaskedValue.length)
-                ? oldValue.selection.baseOffset - 1
-                : newMaskedValue.length - 1,
-          ),
-          text: newMaskedValue,
-        );
       }
-      // In the case length remained the same (probably because of paste)
+      // In the case length remained the same
+      // Can happen if we select and replace part of the string either pasting or typing the value
+      // Ex: select 1 character, type a new one
+      // Ex: select 3 characters, paste 3 new ones
       else {
-        return TextEditingValue(
+        print('>> same length string');
+
+        result = TextEditingValue(
           selection: TextSelection.collapsed(
-            offset: newMaskedValue.length,
+            offset: newValue.selection.baseOffset,
           ),
           text: newMaskedValue,
         );
+        return result;
       }
-    } else {
-      return TextEditingValue(
-        selection: TextSelection.collapsed(
-          offset: newMaskedValue.length,
-        ),
-        text: newMaskedValue,
+    } finally {
+      print(
+        '>> oldValue: $oldValue\n>> newValue: $newValue\n>> result: $result',
       );
     }
   }

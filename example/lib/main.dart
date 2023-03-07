@@ -40,6 +40,9 @@ class _MyAppState extends State<MyApp> {
 
   var inputContainsCountryCode = true;
 
+  /// Keep cursor on the end
+  var shouldKeepCursorAtEndOfInput = true;
+
   void updatePlaceholderHint() {
     late String newPlaceholder;
 
@@ -316,7 +319,31 @@ class _MyAppState extends State<MyApp> {
                                             : Text('No country code'),
                                       ),
                                     ],
-                                  )
+                                  ),
+
+                                  /// Toggle keeping the cursor in the same spot as it was when inputting, allowing
+                                  /// user to edit the middle of the input.
+                                  Row(
+                                    children: [
+                                      Switch(
+                                        value: shouldKeepCursorAtEndOfInput,
+                                        onChanged: (val) {
+                                          setState(
+                                            () => shouldKeepCursorAtEndOfInput =
+                                                !shouldKeepCursorAtEndOfInput,
+                                          );
+                                          updatePlaceholderHint();
+                                        },
+                                      ),
+
+                                      /// Spacer
+                                      SizedBox(width: 5),
+
+                                      Flexible(
+                                        child: Text('Force cursor to end'),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
@@ -348,7 +375,8 @@ class _MyAppState extends State<MyApp> {
                                 country: currentSelectedCountry,
                                 inputContainsCountryCode:
                                     inputContainsCountryCode,
-                                shouldKeepCursorAtEndOfInput: true,
+                                shouldKeepCursorAtEndOfInput:
+                                    shouldKeepCursorAtEndOfInput,
                               ),
                             ],
                           ),
