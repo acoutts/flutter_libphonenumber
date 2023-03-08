@@ -99,27 +99,15 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
       print(
           '>> longer string | oldValue.selection.baseOffset: ${oldValue.selection.baseOffset} | oldValue.text.length: ${oldValue.text.length}');
 
-      var newValueBeforeCursor =
-          newMaskedValue.substring(0, newValue.selection.baseOffset);
+      final charsInOld = RegExp(r'(\+|-|\s)').allMatches(oldValue.text).length;
+      final charsInNew = RegExp(r'(\+|-|\s)').allMatches(newMaskedValue).length;
+      final charsAdded = charsInNew - charsInOld;
 
-      final oldValueBeforeCursor =
-          oldValue.text.substring(0, oldValue.selection.baseOffset);
-
-      if (!newValueBeforeCursor.endsWith('-')) {
-        newValueBeforeCursor = newValueBeforeCursor.substring(
-          0,
-          newValueBeforeCursor.length - 1,
-        );
-      }
-
-      final beforeCursorLengthDiff =
-          newValueBeforeCursor.length - oldValueBeforeCursor.length;
+      // print('>> charsInOld: $charsInOld | charsInNew = $charsInNew');
 
       result = TextEditingValue(
         selection: TextSelection.collapsed(
-          offset: oldValue.selection.baseOffset +
-              (newValue.text.length - oldValue.text.length) +
-              beforeCursorLengthDiff,
+          offset: newValue.selection.baseOffset + charsAdded,
         ),
         text: newMaskedValue,
       );
