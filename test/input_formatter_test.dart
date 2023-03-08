@@ -4,556 +4,312 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('LibPhonenumberTextFormatter', () {
-    /// Adding a new character to the end of the string
-    test(
-        'should keep cursor at the end when shouldKeepCursorAtEndOfInput is true and we add a new character to the end',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: true,
-        country: CountryWithPhoneCode.us(),
-      );
+    group('shouldKeepCursorAtEndOfInput=true', () {
+      group('adding character(s)', () {
+        group('with collapsed selection', () {
+          group('single character', () {
+            group('at end of string', () {
+              test('no separator', () {
+                /// This does not modify the separators in the string
+                /// (space, dash, plus, etc)
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 419',
-          selection: TextSelection.fromPosition(
-            TextPosition(
-              offset: 6,
-            ),
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 4194',
-          selection: TextSelection.fromPosition(
-            TextPosition(
-              offset: 7,
-            ),
-          ),
-        ),
-      );
+                final formatter = LibPhonenumberTextFormatter(
+                  inputContainsCountryCode: true,
+                  shouldKeepCursorAtEndOfInput: true,
+                  country: CountryWithPhoneCode.us(),
+                );
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 419-4');
+                final formatResult = formatter.formatEditUpdate(
+                  // Old value
+                  TextEditingValue(
+                    text: '+1 41',
+                    selection: TextSelection(
+                      baseOffset: 5,
+                      extentOffset: 5,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 419',
+                    selection: TextSelection(
+                      baseOffset: 6,
+                      extentOffset: 6,
+                    ),
+                  ),
+                );
 
-      /// Cursor is at end of line
-      expect(formatResult.selection.baseOffset, 8);
-    });
+                /// Expected formatted output
+                expect(formatResult.text, '+1 419');
 
-    /// Adding a new character in the middle of the string
-    test(
-        'should keep cursor at the end when shouldKeepCursorAtEndOfInput is true and we add a new character to the middle',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: true,
-        country: CountryWithPhoneCode.us(),
-      );
+                /// Cursor is at the point where we deleted something
+                expect(formatResult.selection.baseOffset, 6);
+              });
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 419-4',
-          selection: TextSelection.fromPosition(
-            TextPosition(
-              offset: 4,
-            ),
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 4219-4',
-          selection: TextSelection.fromPosition(
-            TextPosition(
-              offset: 5,
-            ),
-          ),
-        ),
-      );
+              test('with separator', () {
+                /// This modifies the separators in the string
+                /// (space, dash, plus, etc)
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 421-94');
+                final formatter = LibPhonenumberTextFormatter(
+                  inputContainsCountryCode: true,
+                  shouldKeepCursorAtEndOfInput: true,
+                  country: CountryWithPhoneCode.us(),
+                );
 
-      /// Cursor is at end of line
-      expect(formatResult.selection.baseOffset, 9);
-    });
+                final formatResult = formatter.formatEditUpdate(
+                  // Old value
+                  TextEditingValue(
+                    text: '+1 419',
+                    selection: TextSelection(
+                      baseOffset: 6,
+                      extentOffset: 6,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 4199',
+                    selection: TextSelection(
+                      baseOffset: 7,
+                      extentOffset: 7,
+                    ),
+                  ),
+                );
 
-    /// Add a character in the middle of the string
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we add one character in the middle of the string',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
+                /// Expected formatted output
+                expect(formatResult.text, '+1 419-9');
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 419',
-          selection: TextSelection.fromPosition(
-            TextPosition(
-              offset: 4,
-            ),
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 4219',
-          selection: TextSelection.fromPosition(
-            TextPosition(
-              offset: 5,
-            ),
-          ),
-        ),
-      );
+                /// Cursor is at the point where we deleted something
+                expect(formatResult.selection.baseOffset, 8);
+              });
+            });
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 421-9');
+            group('in middle of string', () {
+              test('no separator', () {
+                /// This does not modify the separators in the string
+                /// (space, dash, plus, etc)
 
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 5);
-    });
+                final formatter = LibPhonenumberTextFormatter(
+                  inputContainsCountryCode: true,
+                  shouldKeepCursorAtEndOfInput: true,
+                  country: CountryWithPhoneCode.us(),
+                );
 
-    /// Add a character in the end of the string
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we add one character in the end of the string',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
+                final formatResult = formatter.formatEditUpdate(
+                  // Old value
+                  TextEditingValue(
+                    text: '+1 46',
+                    selection: TextSelection(
+                      baseOffset: 4,
+                      extentOffset: 4,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 436',
+                    selection: TextSelection(
+                      baseOffset: 5,
+                      extentOffset: 5,
+                    ),
+                  ),
+                );
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 419',
-          selection: TextSelection.fromPosition(
-            TextPosition(
-              offset: 6,
-            ),
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 4192',
-          selection: TextSelection.fromPosition(
-            TextPosition(
-              offset: 7,
-            ),
-          ),
-        ),
-      );
+                /// Expected formatted output
+                expect(formatResult.text, '+1 436');
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 419-2');
+                /// Cursor is at the point where we deleted something
+                expect(formatResult.selection.baseOffset, 6);
+              });
 
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 8);
-    });
+              test('with separator', () {
+                /// This modifies the separators in the string
+                /// (space, dash, plus, etc)
 
-    /// Delete one character in the middle of the string (no selection)
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we delete one character in the middle of the string without a selection',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
+                final formatter = LibPhonenumberTextFormatter(
+                  inputContainsCountryCode: true,
+                  shouldKeepCursorAtEndOfInput: true,
+                  country: CountryWithPhoneCode.us(),
+                );
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 419-2',
-          selection: TextSelection(
-            baseOffset: 5,
-            extentOffset: 5,
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 49-2',
-          selection: TextSelection(
-            baseOffset: 4,
-            extentOffset: 4,
-          ),
-        ),
-      );
+                final formatResult = formatter.formatEditUpdate(
+                  // Old value
+                  TextEditingValue(
+                    text: '+1 436',
+                    selection: TextSelection(
+                      baseOffset: 4,
+                      extentOffset: 4,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 4636',
+                    selection: TextSelection(
+                      baseOffset: 5,
+                      extentOffset: 5,
+                    ),
+                  ),
+                );
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 492');
+                /// Expected formatted output
+                expect(formatResult.text, '+1 463-6');
 
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 4);
-    });
+                /// Cursor is at the point where we deleted something
+                expect(formatResult.selection.baseOffset, 8);
+              });
+            });
+          });
 
-    /// Delete one character at end of the string (no selection)
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we delete one character at the end of the string without a selection',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
+          group('multiple characters', () {
+            group('at end of string', () {
+              test('no separator', () {
+                /// This does not modify the separators in the string
+                /// (space, dash, plus, etc)
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 419-2',
-          selection: TextSelection(
-            baseOffset: 8,
-            extentOffset: 8,
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 419-',
-          selection: TextSelection(
-            baseOffset: 7,
-            extentOffset: 7,
-          ),
-        ),
-      );
+                final formatter = LibPhonenumberTextFormatter(
+                  inputContainsCountryCode: true,
+                  shouldKeepCursorAtEndOfInput: true,
+                  country: CountryWithPhoneCode.us(),
+                );
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 419');
+                final formatResult = formatter.formatEditUpdate(
+                  // Old value
+                  TextEditingValue(
+                    text: '+1 463-6',
+                    selection: TextSelection(
+                      baseOffset: 8,
+                      extentOffset: 8,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 463-646',
+                    selection: TextSelection(
+                      baseOffset: 10,
+                      extentOffset: 10,
+                    ),
+                  ),
+                );
 
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 6);
-    });
+                /// Expected formatted output
+                expect(formatResult.text, '+1 463-646');
 
-    /// Delete one character in the middle of the string (with selection)
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we delete one character in the middle of the string with a selection',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
+                /// Cursor is at the point where we deleted something
+                expect(formatResult.selection.baseOffset, 10);
+              });
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 429-4',
-          selection: TextSelection(
-            baseOffset: 5,
-            extentOffset: 6,
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 42-4',
-          selection: TextSelection(
-            baseOffset: 5,
-            extentOffset: 5,
-          ),
-        ),
-      );
+              test('with separator', () {
+                /// This modifies the separators in the string
+                /// (space, dash, plus, etc)
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 424');
+                final formatter = LibPhonenumberTextFormatter(
+                  inputContainsCountryCode: true,
+                  shouldKeepCursorAtEndOfInput: true,
+                  country: CountryWithPhoneCode.us(),
+                );
 
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 5);
-    });
+                final formatResult = formatter.formatEditUpdate(
+                  // Old value
+                  TextEditingValue(
+                    text: '+1 463-64',
+                    selection: TextSelection(
+                      baseOffset: 9,
+                      extentOffset: 9,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 463-6446',
+                    selection: TextSelection(
+                      baseOffset: 11,
+                      extentOffset: 11,
+                    ),
+                  ),
+                );
 
-    /// Delete one character at end of the string (with selection)
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we delete one character at the end of the string with a selection',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
+                /// Expected formatted output
+                expect(formatResult.text, '+1 463-644-6');
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 425-45',
-          selection: TextSelection(
-            baseOffset: 8,
-            extentOffset: 9,
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 425-4',
-          selection: TextSelection(
-            baseOffset: 8,
-            extentOffset: 8,
-          ),
-        ),
-      );
+                /// Cursor is at the point where we deleted something
+                expect(formatResult.selection.baseOffset, 12);
+              });
+            });
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 425-4');
+            group('in middle of string', () {});
+          });
+        });
 
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 8);
-    });
+        group('with expanded selection', () {
+          group('single character', () {
+            group('at end of string', () {});
 
-    /// Replace part of the end of the string with a smaller string using a selection
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we replace part of the end of the string with a smaller string using a selection',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
+            group('in middle of string', () {});
+          });
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 425-455',
-          selection: TextSelection(
-            baseOffset: 8,
-            extentOffset: 10,
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 425-45',
-          selection: TextSelection(
-            baseOffset: 9,
-            extentOffset: 9,
-          ),
-        ),
-      );
+          group('multiple characters', () {
+            group('at end of string', () {});
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 425-45');
+            group('in middle of string', () {});
+          });
+        });
+      });
 
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 9);
-    });
+      group('removing character(s)', () {
+        group('with collapsed selection', () {
+          group('single character', () {
+            group('at end of string', () {});
 
-    /// Replace part of the middle of the string with a smaller string using a selection
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we replace part of the middle of the string with a smaller string using a selection',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
+            group('in middle of string', () {});
+          });
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 425-455',
-          selection: TextSelection(
-            baseOffset: 4,
-            extentOffset: 6,
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 45-455',
-          selection: TextSelection(
-            baseOffset: 5,
-            extentOffset: 5,
-          ),
-        ),
-      );
+          group('multiple characters', () {
+            group('at end of string', () {});
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 454-55');
+            group('in middle of string', () {});
+          });
+        });
 
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 5);
-    });
+        group('with expanded selection', () {
+          group('single character', () {
+            group('at end of string', () {});
 
-    /// Replace one character of the middle of the string with another using a selection
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we replace one character of the middle of the string with another, using a selection',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
+            group('in middle of string', () {});
+          });
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 454-55',
-          selection: TextSelection(
-            baseOffset: 5,
-            extentOffset: 6,
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 457-55',
-          selection: TextSelection(
-            baseOffset: 6,
-            extentOffset: 6,
-          ),
-        ),
-      );
+          group('multiple characters', () {
+            group('at end of string', () {});
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 457-55');
+            group('in middle of string', () {});
+          });
+        });
+      });
 
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 6);
-    });
+      group('replacing character(s)', () {
+        group('with collapsed selection', () {
+          group('single character', () {
+            group('at end of string', () {});
 
-    /// Replace 2 characters of the middle of the string with another using a selection / paste
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we replace 2 characters of the middle of the string with another, using a selection and pasting the new value',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
+            group('in middle of string', () {});
+          });
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 466-99',
-          selection: TextSelection(
-            baseOffset: 4,
-            extentOffset: 6,
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 455-99',
-          selection: TextSelection(
-            baseOffset: 6,
-            extentOffset: 6,
-          ),
-        ),
-      );
+          group('multiple characters', () {
+            group('at end of string', () {});
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 455-99');
+            group('in middle of string', () {});
+          });
+        });
 
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 6);
-    });
+        group('with expanded selection', () {
+          group('single character', () {
+            group('at end of string', () {});
 
-    /// Replace 2 characters of the middle of the string with a longer value
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we replace 2 characters of the middle of the string with a longer value, using a selection and pasting the new value',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
+            group('in middle of string', () {});
+          });
 
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 665-99',
-          selection: TextSelection(
-            baseOffset: 4,
-            extentOffset: 6,
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 6455-99',
-          selection: TextSelection(
-            baseOffset: 7,
-            extentOffset: 7,
-          ),
-        ),
-      );
+          group('multiple characters', () {
+            group('at end of string', () {});
 
-      /// Expected formatted output
-      expect(formatResult.text, '+1 645-599');
-
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 8);
-    });
-
-    /// Delete multiple characters with a selection which removes a dash
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we replace multiple characters using a selection resulting in the removal of a dash separator',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
-
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 419-444',
-          selection: TextSelection(
-            baseOffset: 7,
-            extentOffset: 10,
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 419-',
-          selection: TextSelection(
-            baseOffset: 7,
-            extentOffset: 7,
-          ),
-        ),
-      );
-
-      /// Expected formatted output
-      expect(formatResult.text, '+1 419');
-
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 6);
-    });
-
-    // ------------ not tested yet ---------------
-
-    /// Adding the country code as the first digit
-    test(
-        'should keep cursor at the same spot when shouldKeepCursorAtEndOfInput is false and we enter the first digit for the country code',
-        () {
-      final formatter = LibPhonenumberTextFormatter(
-        inputContainsCountryCode: true,
-        shouldKeepCursorAtEndOfInput: false,
-        country: CountryWithPhoneCode.us(),
-      );
-
-      final formatResult = formatter.formatEditUpdate(
-        // Old value
-        TextEditingValue(
-          text: '+1 419-444',
-          selection: TextSelection(
-            baseOffset: 7,
-            extentOffset: 10,
-          ),
-        ),
-        // New value
-        TextEditingValue(
-          text: '+1 419-',
-          selection: TextSelection(
-            baseOffset: 7,
-            extentOffset: 7,
-          ),
-        ),
-      );
-
-      /// Expected formatted output
-      expect(formatResult.text, '+1 419');
-
-      /// Cursor is at the point where we deleted something
-      expect(formatResult.selection.baseOffset, 6);
-
-      expect(true, false);
+            group('in middle of string', () {});
+          });
+        });
+      });
     });
   });
 }
