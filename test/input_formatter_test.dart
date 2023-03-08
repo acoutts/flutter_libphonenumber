@@ -232,7 +232,79 @@ void main() {
               });
             });
 
-            group('in middle of string', () {});
+            group('in middle of string', () {
+              test('no separator', () {
+                /// This does not modify the separators in the string
+                /// (space, dash, plus, etc)
+
+                final formatter = LibPhonenumberTextFormatter(
+                  inputContainsCountryCode: true,
+                  shouldKeepCursorAtEndOfInput: true,
+                  country: CountryWithPhoneCode.us(),
+                );
+
+                final formatResult = formatter.formatEditUpdate(
+                  // Old value
+                  TextEditingValue(
+                    text: '+1 463-6',
+                    selection: TextSelection(
+                      baseOffset: 4,
+                      extentOffset: 4,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 44663-6',
+                    selection: TextSelection(
+                      baseOffset: 6,
+                      extentOffset: 6,
+                    ),
+                  ),
+                );
+
+                /// Expected formatted output
+                expect(formatResult.text, '+1 446-636');
+
+                /// Cursor is at the point where we deleted something
+                expect(formatResult.selection.baseOffset, 10);
+              });
+
+              test('with separator', () {
+                /// This modifies the separators in the string
+                /// (space, dash, plus, etc)
+
+                final formatter = LibPhonenumberTextFormatter(
+                  inputContainsCountryCode: true,
+                  shouldKeepCursorAtEndOfInput: true,
+                  country: CountryWithPhoneCode.us(),
+                );
+
+                final formatResult = formatter.formatEditUpdate(
+                  // Old value
+                  TextEditingValue(
+                    text: '+1 446-636',
+                    selection: TextSelection(
+                      baseOffset: 4,
+                      extentOffset: 4,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 44646-636',
+                    selection: TextSelection(
+                      baseOffset: 6,
+                      extentOffset: 6,
+                    ),
+                  ),
+                );
+
+                /// Expected formatted output
+                expect(formatResult.text, '+1 446-466-36');
+
+                /// Cursor is at the point where we deleted something
+                expect(formatResult.selection.baseOffset, 13);
+              });
+            });
           });
         });
 
