@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
@@ -107,7 +108,10 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
 
       result = TextEditingValue(
         selection: TextSelection.collapsed(
-          offset: newValue.selection.baseOffset + charsAdded,
+          offset: min(
+            newMaskedValue.length, // don't go more than the end of the string
+            newValue.selection.baseOffset + charsAdded,
+          ),
         ),
         text: newMaskedValue,
       );

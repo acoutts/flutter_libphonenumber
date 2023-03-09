@@ -1852,28 +1852,27 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 463-6',
+                    text: '+1 463-25',
                     selection: TextSelection(
-                      baseOffset: 4,
-                      extentOffset: 4,
+                      baseOffset: 9,
+                      extentOffset: 9,
                     ),
                   ),
                   // New value
                   TextEditingValue(
-                    text: '+1 44663-6',
+                    text: '+1 463-2',
                     selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
+                      baseOffset: 8,
+                      extentOffset: 8,
                     ),
                   ),
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-636');
+                expect(formatResult.text, '+1 463-2');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 10);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 8);
               });
 
               test('with separator', () {
@@ -1889,28 +1888,27 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 446-636',
+                    text: '+1 463-2',
                     selection: TextSelection(
-                      baseOffset: 4,
-                      extentOffset: 4,
+                      baseOffset: 8,
+                      extentOffset: 8,
                     ),
                   ),
                   // New value
                   TextEditingValue(
-                    text: '+1 44646-636',
+                    text: '+1 463-',
                     selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
+                      baseOffset: 7,
+                      extentOffset: 7,
                     ),
                   ),
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-466-36');
+                expect(formatResult.text, '+1 463');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 13);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 6);
               });
             });
 
@@ -1928,28 +1926,27 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 463-6',
+                    text: '+1 463',
+                    selection: TextSelection(
+                      baseOffset: 5,
+                      extentOffset: 5,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 43',
                     selection: TextSelection(
                       baseOffset: 4,
                       extentOffset: 4,
                     ),
                   ),
-                  // New value
-                  TextEditingValue(
-                    text: '+1 44663-6',
-                    selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
-                    ),
-                  ),
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-636');
+                expect(formatResult.text, '+1 43');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 10);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 4);
               });
 
               test('with separator', () {
@@ -1965,28 +1962,27 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 446-636',
+                    text: '+1 466-3',
+                    selection: TextSelection(
+                      baseOffset: 5,
+                      extentOffset: 5,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 46-3',
                     selection: TextSelection(
                       baseOffset: 4,
                       extentOffset: 4,
                     ),
                   ),
-                  // New value
-                  TextEditingValue(
-                    text: '+1 44646-636',
-                    selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
-                    ),
-                  ),
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-466-36');
+                expect(formatResult.text, '+1 463');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 13);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 4);
               });
             });
           });
@@ -2008,28 +2004,27 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 463-6',
+                    text: '+1 463',
                     selection: TextSelection(
-                      baseOffset: 4,
-                      extentOffset: 4,
+                      baseOffset: 5,
+                      extentOffset: 6,
                     ),
                   ),
                   // New value
                   TextEditingValue(
-                    text: '+1 44663-6',
+                    text: '+1 46',
                     selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
+                      baseOffset: 5,
+                      extentOffset: 5,
                     ),
                   ),
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-636');
+                expect(formatResult.text, '+1 46');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 10);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 5);
               });
 
               test('with separator', () {
@@ -2045,28 +2040,27 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 446-636',
+                    text: '+1 466-6',
                     selection: TextSelection(
-                      baseOffset: 4,
-                      extentOffset: 4,
+                      baseOffset: 7,
+                      extentOffset: 8,
                     ),
                   ),
                   // New value
                   TextEditingValue(
-                    text: '+1 44646-636',
+                    text: '+1 466-',
                     selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
+                      baseOffset: 7,
+                      extentOffset: 7,
                     ),
                   ),
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-466-36');
+                expect(formatResult.text, '+1 466');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 13);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 6);
               });
             });
 
@@ -2084,28 +2078,27 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 463-6',
+                    text: '+1 466',
+                    selection: TextSelection(
+                      baseOffset: 4,
+                      extentOffset: 5,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 46',
                     selection: TextSelection(
                       baseOffset: 4,
                       extentOffset: 4,
                     ),
                   ),
-                  // New value
-                  TextEditingValue(
-                    text: '+1 44663-6',
-                    selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
-                    ),
-                  ),
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-636');
+                expect(formatResult.text, '+1 46');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 10);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 4);
               });
 
               test('with separator', () {
@@ -2121,28 +2114,27 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 446-636',
+                    text: '+1 499-6',
                     selection: TextSelection(
-                      baseOffset: 4,
-                      extentOffset: 4,
+                      baseOffset: 5,
+                      extentOffset: 6,
                     ),
                   ),
                   // New value
                   TextEditingValue(
-                    text: '+1 44646-636',
+                    text: '+1 49-6',
                     selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
+                      baseOffset: 5,
+                      extentOffset: 5,
                     ),
                   ),
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-466-36');
+                expect(formatResult.text, '+1 496');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 13);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 5);
               });
             });
           });
@@ -2162,28 +2154,27 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 463-6',
+                    text: '+1 496',
+                    selection: TextSelection(
+                      baseOffset: 4,
+                      extentOffset: 6,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 4',
                     selection: TextSelection(
                       baseOffset: 4,
                       extentOffset: 4,
                     ),
                   ),
-                  // New value
-                  TextEditingValue(
-                    text: '+1 44663-6',
-                    selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
-                    ),
-                  ),
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-636');
+                expect(formatResult.text, '+1 4');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 10);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 4);
               });
 
               test('with separator', () {
@@ -2199,15 +2190,15 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 446-636',
+                    text: '+1 488-8',
                     selection: TextSelection(
-                      baseOffset: 4,
-                      extentOffset: 4,
+                      baseOffset: 6,
+                      extentOffset: 8,
                     ),
                   ),
                   // New value
                   TextEditingValue(
-                    text: '+1 44646-636',
+                    text: '+1 488',
                     selection: TextSelection(
                       baseOffset: 6,
                       extentOffset: 6,
@@ -2216,11 +2207,10 @@ void main() {
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-466-36');
+                expect(formatResult.text, '+1 488');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 13);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 6);
               });
             });
 
@@ -2238,28 +2228,27 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 463-6',
+                    text: '+1 488',
                     selection: TextSelection(
-                      baseOffset: 4,
-                      extentOffset: 4,
+                      baseOffset: 3,
+                      extentOffset: 5,
                     ),
                   ),
                   // New value
                   TextEditingValue(
-                    text: '+1 44663-6',
+                    text: '+1 8',
                     selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
+                      baseOffset: 3,
+                      extentOffset: 3,
                     ),
                   ),
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-636');
+                expect(formatResult.text, '+1 8');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 10);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 3);
               });
 
               test('with separator', () {
@@ -2275,28 +2264,27 @@ void main() {
                 final formatResult = formatter.formatEditUpdate(
                   // Old value
                   TextEditingValue(
-                    text: '+1 446-636',
+                    text: '+1 965-8',
+                    selection: TextSelection(
+                      baseOffset: 4,
+                      extentOffset: 6,
+                    ),
+                  ),
+                  // New value
+                  TextEditingValue(
+                    text: '+1 9-8',
                     selection: TextSelection(
                       baseOffset: 4,
                       extentOffset: 4,
                     ),
                   ),
-                  // New value
-                  TextEditingValue(
-                    text: '+1 44646-636',
-                    selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
-                    ),
-                  ),
                 );
 
                 /// Expected formatted output
-                expect(formatResult.text, '+1 446-466-36');
+                expect(formatResult.text, '+1 98');
 
                 /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 13);
-                expect(true, false);
+                expect(formatResult.selection.baseOffset, 4);
               });
             });
           });
@@ -2306,162 +2294,144 @@ void main() {
       group('replacing character(s)', () {
         group('with expanded selection', () {
           group('single character', () {
-            group('at end of string', () {
-              test('no separator', () {
-                /// This does not modify the separators in the string
-                /// (space, dash, plus, etc)
+            test('at end of string', () {
+              final formatter = LibPhonenumberTextFormatter(
+                inputContainsCountryCode: true,
+                shouldKeepCursorAtEndOfInput: false,
+                country: CountryWithPhoneCode.us(),
+              );
 
-                final formatter = LibPhonenumberTextFormatter(
-                  inputContainsCountryCode: true,
-                  shouldKeepCursorAtEndOfInput: false,
-                  country: CountryWithPhoneCode.us(),
-                );
-
-                final formatResult = formatter.formatEditUpdate(
-                  // Old value
-                  TextEditingValue(
-                    text: '+1 463-6',
-                    selection: TextSelection(
-                      baseOffset: 4,
-                      extentOffset: 4,
-                    ),
+              final formatResult = formatter.formatEditUpdate(
+                // Old value
+                TextEditingValue(
+                  text: '+1 98',
+                  selection: TextSelection(
+                    baseOffset: 4,
+                    extentOffset: 5,
                   ),
-                  // New value
-                  TextEditingValue(
-                    text: '+1 44663-6',
-                    selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
-                    ),
+                ),
+                // New value
+                TextEditingValue(
+                  text: '+1 99',
+                  selection: TextSelection(
+                    baseOffset: 5,
+                    extentOffset: 5,
                   ),
-                );
+                ),
+              );
 
-                /// Expected formatted output
-                expect(formatResult.text, '+1 446-636');
+              /// Expected formatted output
+              expect(formatResult.text, '+1 99');
 
-                /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 10);
-                expect(true, false);
-              });
+              /// Cursor is at the point where we deleted something
+              expect(formatResult.selection.baseOffset, 5);
             });
 
-            group('in middle of string', () {
-              test('no separator', () {
-                /// This does not modify the separators in the string
-                /// (space, dash, plus, etc)
+            test('in middle of string', () {
+              final formatter = LibPhonenumberTextFormatter(
+                inputContainsCountryCode: true,
+                shouldKeepCursorAtEndOfInput: false,
+                country: CountryWithPhoneCode.us(),
+              );
 
-                final formatter = LibPhonenumberTextFormatter(
-                  inputContainsCountryCode: true,
-                  shouldKeepCursorAtEndOfInput: false,
-                  country: CountryWithPhoneCode.us(),
-                );
-
-                final formatResult = formatter.formatEditUpdate(
-                  // Old value
-                  TextEditingValue(
-                    text: '+1 463-6',
-                    selection: TextSelection(
-                      baseOffset: 4,
-                      extentOffset: 4,
-                    ),
+              final formatResult = formatter.formatEditUpdate(
+                // Old value
+                TextEditingValue(
+                  text: '+1 666',
+                  selection: TextSelection(
+                    baseOffset: 4,
+                    extentOffset: 5,
                   ),
-                  // New value
-                  TextEditingValue(
-                    text: '+1 44663-6',
-                    selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
-                    ),
+                ),
+                // New value
+                TextEditingValue(
+                  text: '+1 696',
+                  selection: TextSelection(
+                    baseOffset: 5,
+                    extentOffset: 5,
                   ),
-                );
+                ),
+              );
 
-                /// Expected formatted output
-                expect(formatResult.text, '+1 446-636');
+              /// Expected formatted output
+              expect(formatResult.text, '+1 696');
 
-                /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 10);
-                expect(true, false);
-              });
+              /// Cursor is at the point where we deleted something
+              expect(formatResult.selection.baseOffset, 5);
             });
           });
 
           group('multiple characters', () {
-            group('at end of string', () {
-              test('no separator', () {
-                /// This does not modify the separators in the string
-                /// (space, dash, plus, etc)
+            test('at end of string', () {
+              /// This does not modify the separators in the string
+              /// (space, dash, plus, etc)
 
-                final formatter = LibPhonenumberTextFormatter(
-                  inputContainsCountryCode: true,
-                  shouldKeepCursorAtEndOfInput: false,
-                  country: CountryWithPhoneCode.us(),
-                );
+              final formatter = LibPhonenumberTextFormatter(
+                inputContainsCountryCode: true,
+                shouldKeepCursorAtEndOfInput: false,
+                country: CountryWithPhoneCode.us(),
+              );
 
-                final formatResult = formatter.formatEditUpdate(
-                  // Old value
-                  TextEditingValue(
-                    text: '+1 463-6',
-                    selection: TextSelection(
-                      baseOffset: 4,
-                      extentOffset: 4,
-                    ),
+              final formatResult = formatter.formatEditUpdate(
+                // Old value
+                TextEditingValue(
+                  text: '+1 693-33',
+                  selection: TextSelection(
+                    baseOffset: 7,
+                    extentOffset: 9,
                   ),
-                  // New value
-                  TextEditingValue(
-                    text: '+1 44663-6',
-                    selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
-                    ),
+                ),
+                // New value
+                TextEditingValue(
+                  text: '+1 693-96',
+                  selection: TextSelection(
+                    baseOffset: 9,
+                    extentOffset: 9,
                   ),
-                );
+                ),
+              );
 
-                /// Expected formatted output
-                expect(formatResult.text, '+1 446-636');
+              /// Expected formatted output
+              expect(formatResult.text, '+1 693-96');
 
-                /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 10);
-                expect(true, false);
-              });
+              /// Cursor is at the point where we deleted something
+              expect(formatResult.selection.baseOffset, 9);
             });
 
-            group('in middle of string', () {
-              test('no separator', () {
-                /// This does not modify the separators in the string
-                /// (space, dash, plus, etc)
+            test('in middle of string', () {
+              /// This does not modify the separators in the string
+              /// (space, dash, plus, etc)
 
-                final formatter = LibPhonenumberTextFormatter(
-                  inputContainsCountryCode: true,
-                  shouldKeepCursorAtEndOfInput: false,
-                  country: CountryWithPhoneCode.us(),
-                );
+              final formatter = LibPhonenumberTextFormatter(
+                inputContainsCountryCode: true,
+                shouldKeepCursorAtEndOfInput: false,
+                country: CountryWithPhoneCode.us(),
+              );
 
-                final formatResult = formatter.formatEditUpdate(
-                  // Old value
-                  TextEditingValue(
-                    text: '+1 463-6',
-                    selection: TextSelection(
-                      baseOffset: 4,
-                      extentOffset: 4,
-                    ),
+              final formatResult = formatter.formatEditUpdate(
+                // Old value
+                TextEditingValue(
+                  text: '+1 693-96',
+                  selection: TextSelection(
+                    baseOffset: 3,
+                    extentOffset: 5,
                   ),
-                  // New value
-                  TextEditingValue(
-                    text: '+1 44663-6',
-                    selection: TextSelection(
-                      baseOffset: 6,
-                      extentOffset: 6,
-                    ),
+                ),
+                // New value
+                TextEditingValue(
+                  text: '+1 963-96',
+                  selection: TextSelection(
+                    baseOffset: 5,
+                    extentOffset: 5,
                   ),
-                );
+                ),
+              );
 
-                /// Expected formatted output
-                expect(formatResult.text, '+1 446-636');
+              /// Expected formatted output
+              expect(formatResult.text, '+1 963-96');
 
-                /// Cursor is at the point where we deleted something
-                expect(formatResult.selection.baseOffset, 10);
-                expect(true, false);
-              });
+              /// Cursor is at the point where we deleted something
+              expect(formatResult.selection.baseOffset, 5);
             });
           });
         });
