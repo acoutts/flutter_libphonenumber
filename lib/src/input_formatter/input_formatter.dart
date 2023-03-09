@@ -77,9 +77,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
       onFormatFinished!(newMaskedValue);
     }
 
-    print(
-      '>> oldValue: $oldValue\n>> newValue: $newValue\n',
-    );
+    // print('>> oldValue: $oldValue\n>> newValue: $newValue\n');
 
     /// Force the cursor to the end of the input if requested
     if (shouldKeepCursorAtEndOfInput) {
@@ -89,19 +87,30 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         ),
         text: newMaskedValue,
       );
-      print('>> result: $result');
+      // print('>> result: $result');
       return result;
     }
 
-    final endsWithNonNumber =
-        newValue.text.endsWith(' ') || newValue.text.endsWith('-');
+    /// True if the new input ends with a non-digit value
+    final endsWithNonNumber = RegExp(r'^.*(\D)$').hasMatch(newValue.text);
 
-    if (oldValue.text.length < newValue.text.length) {
-      print(
-          '>> longer string | oldValue.selection.baseOffset: ${oldValue.selection.baseOffset} | oldValue.text.length: ${oldValue.text.length}');
+    if (newValue.text.length > oldValue.text.length) {
+      ///////////////////////////////////
+      /// Character(s) added
+      ///
+      /// Ex: We typed in a new digit
+      /// Ex: We pasted in a longer value over an existing selection
+      ///////////////////////////////////
 
-      final charsInOld = RegExp(r'(\+|-|\s)').allMatches(oldValue.text).length;
-      final charsInNew = RegExp(r'(\+|-|\s)').allMatches(newMaskedValue).length;
+      // print(
+      //     '>> longer string | oldValue.selection.baseOffset: ${oldValue.selection.baseOffset} | oldValue.text.length: ${oldValue.text.length}');
+
+      /// We have to account for any new non-digit characters added to the string.
+      /// Say we have a current value of: "+1 444-867" and we add a new digit (9).
+      /// newValue is then "+1 444-8679" but newMaskedValue is "+1 444-867-9".
+      /// The baseOffset in newValue would be off by 1 because the mask added a new dash.
+      final charsInOld = RegExp(r'(\D+)').allMatches(oldValue.text).length;
+      final charsInNew = RegExp(r'(\D+)').allMatches(newMaskedValue).length;
       final charsAdded = charsInNew - charsInOld;
 
       // print('>> charsInOld: $charsInOld | charsInNew = $charsInNew');
@@ -115,63 +124,80 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         ),
         text: newMaskedValue,
       );
-      print('>> result: $result');
+      // print('>> result: $result');
       return result;
-    }
-    // In this case characters got deleted
-    else if (oldValue.text.length > newValue.text.length) {
-      print(
-          '>> shorter string | oldValue.selection.baseOffset: ${oldValue.selection.baseOffset} | oldValue.text.length: ${oldValue.text.length}');
+    } else if (newValue.text.length < oldValue.text.length) {
+      ///////////////////////////////////
+      /// Character(s) removed
+      ///
+      /// Ex: We deleted one character with backspace
+      /// Ex: We pasted a shorter value over an existing selection
+      ///////////////////////////////////
+
+      // print(
+      //   '>> shorter string | oldValue.selection.baseOffset: ${oldValue.selection.baseOffset} | oldValue.text.length: ${oldValue.text.length}',
+      // );
 
       if (oldValue.selection.isCollapsed) {
-        print('>> oldValue.selection.isCollapsed');
+        /// A collapsed selection means it's just a cursor with nothing selected.
 
-        /// We deleted a single character from somewhere in the string
+        // print('>> oldValue.selection.isCollapsed');
+
         if (oldValue.selection.baseOffset == oldValue.text.length) {
-          print('>> oldValue.selection.baseOffset == oldValue.text.length');
+          /// We deleted a character from the end of the string. In that case just put the cursor
+          /// at the end of the new string.
 
-          /// This happens when we delete the character off the end of the string.
+          // print('>> oldValue.selection.baseOffset == oldValue.text.length');
+
           result = TextEditingValue(
             selection: TextSelection.collapsed(
               offset: newMaskedValue.length,
             ),
             text: newMaskedValue,
           );
-          print('>> result: $result');
+          // print('>> result: $result');
           return result;
         } else {
-          print('>> oldValue.selection.baseOffset != oldValue.text.length');
+          /// We deleted a character from somewhere within the string. We have to put the cursor
+          /// where it was before.
 
-          /// This happens when we delete one character in the middle of the string
+          // print('>> oldValue.selection.baseOffset != oldValue.text.length');
+
           result = TextEditingValue(
             selection: TextSelection.collapsed(
               offset: oldValue.selection.baseOffset - 1,
             ),
             text: newMaskedValue,
           );
-          print('>> result: $result');
+          // print('>> result: $result');
           return result;
         }
       } else {
-        print('>> oldValue.selection.isNotCollapsed');
+        /// A non-collapsed selection means there's one or more characters selected.
+        /// We have to put the cursor at the end of the new value inputted.
 
-        /// Put a collapsed selection at the area where we removed those X characters
+        // print('>> oldValue.selection.isNotCollapsed');
+
         result = TextEditingValue(
           selection: TextSelection.collapsed(
             offset: newValue.selection.baseOffset - (endsWithNonNumber ? 1 : 0),
           ),
           text: newMaskedValue,
         );
-        print('>> result: $result');
+        // print('>> result: $result');
         return result;
       }
-    }
-    // In the case length remained the same
-    // Can happen if we select and replace part of the string either pasting or typing the value
-    // Ex: select 1 character, type a new one
-    // Ex: select 3 characters, paste 3 new ones
-    else {
-      print('>> same length string');
+    } else {
+      ///////////////////////////////////
+      /// Character(s) replaced
+      ///
+      /// In the case length remained the same
+      /// Can happen if we select and replace part of the string either pasting or typing the value
+      /// Ex: select 1 character, type a new one
+      /// Ex: select 3 characters, paste 3 new ones
+      ///////////////////////////////////
+
+      // print('>> same length string');
 
       result = TextEditingValue(
         selection: TextSelection.collapsed(
@@ -179,7 +205,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
         ),
         text: newMaskedValue,
       );
-      print('>> result: $result');
+      // print('>> result: $result');
       return result;
     }
   }
