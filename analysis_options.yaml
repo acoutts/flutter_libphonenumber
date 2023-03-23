@@ -1,0 +1,77 @@
+include: all_lint_rules.yaml
+
+analyzer:
+  language:
+    strict-inference: true
+
+  # strong-mode:
+  #   implicit-casts: false
+  #   implicit-dynamic: false
+
+  errors:
+    # Otherwise cause the import of all_lint_rules to warn because of some rules conflicts.
+    # We explicitly enabled even conflicting rules and are fixing the conflict
+    # in this file
+    included_file_warning: ignore
+
+    # Things we really want to enforce in our code
+    always_use_package_imports: error
+    prefer_final_parameters: error
+    prefer_final_fields: error
+    prefer_final_in_for_each: error
+    prefer_final_locals: error
+    require_trailing_commas: error
+    avoid_unused_constructor_parameters: error
+    use_named_constants: error
+    avoid_field_initializers_in_const_classes: error
+    missing_default_value_for_parameter: error
+    sort_constructors_first: error
+    sort_unnamed_constructors_first: error
+    sort_child_properties_last: error
+    inference_failure_on_function_invocation: error
+    todo: ignore # Todos are just informational
+
+linter:
+  rules:
+    prefer_double_quotes: false
+    avoid_function_literals_in_foreach_calls: false
+    non_constant_identifier_names: false
+    public_member_api_docs: false
+    diagnostic_describe_all_properties: false
+    prefer_expression_function_bodies: false
+    prefer_asserts_with_message: false
+    prefer_mixin: false
+    avoid_catches_without_on_clauses: false
+    avoid_classes_with_only_static_members: false
+    library_private_types_in_public_api: false
+    comment_references: false
+    avoid_bool_literals_in_conditional_expressions: false
+    avoid_positional_boolean_parameters: false
+    only_throw_errors: false
+    join_return_with_assignment: false
+    use_if_null_to_convert_nulls_to_bools: false
+    use_setters_to_change_properties: false
+    no_default_cases: false
+    flutter_style_todos: false
+    avoid_setters_without_getters: false
+    sort_pub_dependencies: false
+    avoid_dynamic_calls: false # nice to have one day
+    avoid_redundant_argument_values: false # It's ok to be redundant to be explicit and clear
+    avoid_annotating_with_dynamic: false # it's ok to be extra explicit
+
+    # For compatibility with Scope
+    no_runtimeType_toString: false
+    avoid_types_on_closure_parameters: false
+
+    # Things we have disabled on purpose
+    unnecessary_final: false # we always want to use final whenever possible
+    prefer_relative_imports: false # we always want to use package imports
+    lines_longer_than_80_chars: false # Sometimes this makes it even harder to read than if it was one longer line
+    omit_local_variable_types: false # We always want to be explicit
+    always_specify_types: false # this gets a little too crazy/redundant and there's no auto-fix yet
+    avoid_js_rounded_ints: false # we will never be compiling to javascript so we can ignore this
+    depend_on_referenced_packages: false # this one does not appear to work - says we are missing deps we have in our pubspec.
+    cascade_invocations: false # this can get confusing to understand sometimes.
+    use_build_context_synchronously: false # still experimental but it's a good idea to follow eventually.
+    always_put_required_named_parameters_first: false # nice to have but 600+ errors to fix by hand
+    one_member_abstracts: false # interferes with our interface pattern for IoC across modules

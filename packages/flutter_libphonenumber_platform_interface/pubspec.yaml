@@ -1,0 +1,16 @@
+name: flutter_libphonenumber_platform_interface
+description: A common platform interface for the flutter_libphonenumber plugin.
+version: 1.0.0
+
+environment:
+  sdk: ">=2.19.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface: ^2.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

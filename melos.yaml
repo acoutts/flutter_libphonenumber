@@ -1,0 +1,11 @@
+# Name of this workspace, this is used for display purpose on the CLI
+# and on your IDEs.
+name: flutter_libphonenumber_workspace
+
+# versioning:
+#   # Versioning mode, currently only independent supported.
+#   mode: independent
+
+# Array of globs to search for packages.
+packages:
+  - packages/**
