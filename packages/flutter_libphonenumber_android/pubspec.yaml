@@ -11,13 +11,14 @@ flutter:
     implements: flutter_libphonenumber
     platforms:
       android:
-        package: com.bottlepay.flutter_libphonenumber_android
-        pluginClass: FlutterLibphonenumberAndroidPlugin
+        package: com.bottlepay.flutter_libphonenumber
+        pluginClass: FlutterLibphonenumberPlugin
         dartPluginClass: FlutterLibphonenumberAndroid
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_libphonenumber_platform_interface: ^1.0.0
 
 dev_dependencies:
   flutter_test:
