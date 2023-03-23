@@ -15,6 +15,12 @@ migration:
     - platform: root
       create_revision: 90c64ed42ba53a52d18f0cb3b17666c8662ed2a0
       base_revision: 90c64ed42ba53a52d18f0cb3b17666c8662ed2a0
+    - platform: android
+      create_revision: 90c64ed42ba53a52d18f0cb3b17666c8662ed2a0
+      base_revision: 90c64ed42ba53a52d18f0cb3b17666c8662ed2a0
+    - platform: ios
+      create_revision: 90c64ed42ba53a52d18f0cb3b17666c8662ed2a0
+      base_revision: 90c64ed42ba53a52d18f0cb3b17666c8662ed2a0
 
   # User provided section
 

@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name = "flutter_libphonenumber_ios"
-  s.version = "0.0.1"
+  s.version = "1.0.0"
   s.summary = "Leverages libphonenumber to allow for asynchronous and synchronous formatting of phone numbers in Flutter apps. Includes a TextInputFormatter to allow real-time AsYouType formatting."
   s.description = <<-DESC
   Leverages libphonenumber to allow for asynchronous and synchronous formatting of phone numbers in Flutter apps. Includes a TextInputFormatter to allow real-time AsYouType formatting.
