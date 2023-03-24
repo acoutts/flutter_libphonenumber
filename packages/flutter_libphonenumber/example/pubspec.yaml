@@ -1,7 +1,6 @@
 name: flutter_libphonenumber_example
 description: Demonstrates how to use the flutter_libphonenumber plugin.
-
-publish_to: "none"
+publish_to: none
 
 environment:
   sdk: ">=2.19.0 <4.0.0"
