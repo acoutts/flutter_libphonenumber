@@ -24,7 +24,6 @@ abstract class FlutterLibphonenumberPlatform extends PlatformInterface {
   /// platform-specific class that extends [FlutterLibphonenumberPlatform] when
   /// they register themselves.
   static set instance(final FlutterLibphonenumberPlatform instance) {
-    print('set instance ${instance.runtimeType}');
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }
