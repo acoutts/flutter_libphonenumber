@@ -1,5 +1,6 @@
 ## [2.0.0] - 2023.03.23
 - Migrated to new federated plugin configuration.
+- Added web implementation from laynor.
 
 ## [1.4.0] - 2023.03.07
 - Fixed `onFormatFinished` callback not being called when `shouldKeepCursorAtEndOfInput=true`.
