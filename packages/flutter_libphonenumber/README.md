@@ -21,7 +21,7 @@ The main advantage to this lib is it lets you optionally format a phone number s
 Important: add the following to your app's Podfile:
 
 ```
-pod "PhoneNumberKit", :git => "https://github.com/marmelroy/PhoneNumberKit", :tag => "3.5.9"
+pod "PhoneNumberKit", :git => "https://github.com/marmelroy/PhoneNumberKit"
 ```
 
 ## Getting Started
