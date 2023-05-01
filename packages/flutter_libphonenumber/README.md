@@ -17,8 +17,15 @@ The main advantage to this lib is it lets you optionally format a phone number s
 
 ![Format and parse](https://media.giphy.com/media/XGgnYYeo2YS7elAPRQ/source.gif)
 
+## iOS Setup
+Important: add the following to your app's Podfile:
+
+```
+pod "PhoneNumberKit", :git => "https://github.com/marmelroy/PhoneNumberKit", :tag => "3.5.9"
+```
 
 ## Getting Started
+
 First you need to call the `init` function. This will load all of the available regions available on the device from libphonenumber to build a formatting mask for each country using its example number from libphonenumber.
 
 If you don't run the init function then `formatNumberSync` will simply return the same thing passed into it without formatting anything as there won't be any masks to utilize.
