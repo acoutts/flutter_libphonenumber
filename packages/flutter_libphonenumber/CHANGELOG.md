@@ -1,3 +1,6 @@
+## [2.1.0] - 2023.05.01
+- BREAKING: Bumped flutter_libphonenumber_ios to 1.1.0 which includes the latest PhoneNumberKit version. You must include the entry in your Podfile now. See updated README for details.
+
 ## [2.0.0] - 2023.03.23
 - Migrated to new federated plugin configuration.
 - Added web implementation from laynor.
