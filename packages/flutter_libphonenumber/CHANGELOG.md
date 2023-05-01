@@ -1,3 +1,6 @@
+## [2.1.2] - 2023.05.01
+- Fix compatibility with AGP 8.0 (#43).
+
 ## [2.1.1] - 2023.05.01
 - Fix pod configuration for PhoneNumberKit.
 
