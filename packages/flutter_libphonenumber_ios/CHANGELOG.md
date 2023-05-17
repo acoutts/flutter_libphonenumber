@@ -1,3 +1,6 @@
+# 1.1.2
+* Bump PhoneNumberKit to 3.5.10.
+
 # 1.1.1
 * Fix pod configuration for PhoneNumberKit.
 
