@@ -1,3 +1,6 @@
+## [2.1.3] - 2023.05.17
+- Fix pod issue with PhoneNumberKit by bumping flutter_libphonenumber_ios version to latest.
+
 ## [2.1.2] - 2023.05.01
 - Fix compatibility with AGP 8.0 (#43).
 
