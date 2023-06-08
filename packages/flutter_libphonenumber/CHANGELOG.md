@@ -1,3 +1,6 @@
+## [2.1.4] - 2023.06.08
+- Bump flutter_libphonenumber_ios to v1.1.3.
+
 ## [2.1.3] - 2023.05.17
 - Fix pod issue with PhoneNumberKit by bumping flutter_libphonenumber_ios version to latest.
 
