@@ -1,5 +1,5 @@
 # 1.1.4
-* Bump PhoneNumberKit to 3.6.3.
+* Bump PhoneNumberKit to `~> 3.6.1`.
 
 # 1.1.3
 * Bump PhoneNumberKit to 3.6.0.
