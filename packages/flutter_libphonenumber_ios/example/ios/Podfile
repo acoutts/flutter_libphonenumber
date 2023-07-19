@@ -1,8 +1,6 @@
 # Uncomment this line to define a global platform for your project
 # platform :ios, '11.0'
 
-pod "PhoneNumberKit", :git => "https://github.com/marmelroy/PhoneNumberKit"
-
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
