@@ -1,3 +1,6 @@
+## [2.1.5] - 2023.07.19
+- Bump flutter_libphonenumber_ios to v1.1.4.
+
 ## [2.1.4] - 2023.06.08
 - Bump flutter_libphonenumber_ios to v1.1.3.
 
