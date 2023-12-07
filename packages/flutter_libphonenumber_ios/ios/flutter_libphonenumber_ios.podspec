@@ -15,8 +15,8 @@ Pod::Spec.new do |s|
   s.source = { :path => "." }
   s.source_files = "Classes/**/*"
   s.dependency "Flutter"
-  s.dependency "PhoneNumberKit/PhoneNumberKitCore", "3.6.6"
-  s.platform = :ios, "9.0"
+  s.dependency "PhoneNumberKit/PhoneNumberKitCore", "3.7.6"
+  s.platform = :ios, "12.0"
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
   s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES", "VALID_ARCHS[sdk=iphonesimulator*]" => "x86_64" }
