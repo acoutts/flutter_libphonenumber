@@ -1,3 +1,6 @@
+## [2.2.1] - 2023.12.07
+- Fix init method overrides, from @nikolaychernov.
+
 ## [2.2.0] - 2023.12.07
 - Bump flutter_libphonenumber_ios to v1.2.0.
 - *BREAKING* Raises minimum iOS deployment to 12.0.
