@@ -25,7 +25,7 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
   private lateinit var channel: MethodChannel
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "com.bottlepay/flutter_libphonenumber_android")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "com.bottlepay/flutter_libphonenumber_android")
     channel.setMethodCallHandler(this);
   }
 
