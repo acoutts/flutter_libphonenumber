@@ -1,3 +1,7 @@
+## [2.2.0] - 2023.12.07
+- Bump flutter_libphonenumber_ios to v1.2.0.
+- *BREAKING* Raises minimum iOS deployment to 12.0.
+
 ## [2.1.5] - 2023.07.19
 - Bump flutter_libphonenumber_ios to v1.1.4.
 
