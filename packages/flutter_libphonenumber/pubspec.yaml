@@ -36,3 +36,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   plugin_platform_interface: ^2.1.4
+
+# remove this once published to pub.dev
+dependency_overrides:
+  flutter_libphonenumber_android:
+    path: ../flutter_libphonenumber_android
