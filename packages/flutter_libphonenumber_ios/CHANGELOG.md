@@ -1,3 +1,7 @@
+# 1.2.1
+* Bump PhoneNumberKit to 3.7.9
+* Added a Privacy Manifest to the iOS Project
+
 # 1.2.0
 * Bump PhoneNumberKit to 3.7.6.
 * *BREAKING* Raises minimum iOS deployment to 12.0.
