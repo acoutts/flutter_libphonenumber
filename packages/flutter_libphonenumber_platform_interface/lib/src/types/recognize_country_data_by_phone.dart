@@ -1,5 +1,5 @@
 import 'package:dlibphonenumber/dlibphonenumber.dart';
-// import 'package:collection/collection.dart'; // firstWhereOrNull extension
+// import 'package:collection/collection.dart'; // firstWhereOrNull extension, avoid dependency for one method
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter_libphonenumber_platform_interface/flutter_libphonenumber_platform_interface.dart';
 
@@ -23,8 +23,22 @@ CountryWithPhoneCode? recognizeCountryDataByPhone(final String phone) {
   final String? regionCode = phoneUtil.getRegionCodeForNumber(number);
   // print('regionCode: $regionCode');
   if (regionCode != null) {
-    final country = CountryManager().countries.firstWhereOrNull((country) => country.countryCode == regionCode);
+    final country = CountryManager().countries.firstWhereOrNull((final country) => country.countryCode == regionCode);
     return country;
   }
   return null;
+}
+
+
+/// part of https://pub.dev/packages/collection
+extension IterableExtension<T> on Iterable<T> {
+  /// The first element satisfying [test], or `null` if there are none.
+  T? firstWhereOrNull(final bool Function(T element) test) {
+    for (final element in this) {
+      if (test(element)) {
+        return element;
+      }
+    }
+    return null;
+  }
 }
