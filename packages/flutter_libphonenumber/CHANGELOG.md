@@ -1,4 +1,8 @@
-## [2.2.2] - 2023.12.07
+## [2.2.3] - 2024.04.16
+
+- Bump flutter_libphonenumber_web to v1.0.1.
+
+## [2.2.2] - 2024.04.16
 
 - Bump flutter_libphonenumber_ios to v1.2.1.
 
