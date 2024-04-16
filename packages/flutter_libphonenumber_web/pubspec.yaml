@@ -2,7 +2,7 @@ name: flutter_libphonenumber_web
 description: Web implementation of the flutter_libphonenumber plugin.
 repository: https://github.com/bottlepay/flutter_libphonenumber/tree/main/packages/flutter_libphonenumber_web
 issue_tracker: https://github.com/bottlepay/flutter_libphonenumber/issues
-version: 1.0.0
+version: 1.0.1
 
 environment:
   sdk: ">=2.19.0 <4.0.0"
@@ -22,7 +22,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   flutter_libphonenumber_platform_interface: ^1.0.0
-  js: ^0.6.5
+  js: ^0.7.1
 
 dev_dependencies:
   flutter_test:
