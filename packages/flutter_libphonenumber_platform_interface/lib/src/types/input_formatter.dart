@@ -11,6 +11,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     this.phoneNumberType = PhoneNumberType.mobile,
     this.phoneNumberFormat = PhoneNumberFormat.international,
     this.onFormatFinished,
+    this.onCountryRecognized,
     this.inputContainsCountryCode = false,
 
     /// Additional digits to include
@@ -49,6 +50,10 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
   /// Optional function to execute after we are finished formatting the number.
   /// Useful if you need to get the formatted value for something else to use.
   final FutureOr Function(String val)? onFormatFinished;
+
+  /// Optional callback that is called when it is possible to recognize the country as a result
+  /// of selecting a phone number from OS autofill suggestions or pasting from the clipboard
+  final void Function(CountryWithPhoneCode country)? onCountryRecognized;
 
   /// When true, mask will be applied assuming the input contains a country code in it.
   final bool inputContainsCountryCode;
