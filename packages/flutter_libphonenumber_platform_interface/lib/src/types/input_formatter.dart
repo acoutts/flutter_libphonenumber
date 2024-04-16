@@ -73,6 +73,14 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     final TextEditingValue oldValue,
     final TextEditingValue newValue,
   ) {
+
+    /// First, let's try to recognize the whole number
+    final recognizedValue = _tryRecognizePhoneWithCountry(oldValue, newValue);
+    if (recognizedValue != null) {
+      return recognizedValue;
+    }
+
+
     late final TextEditingValue result;
 
     /// Apply mask to the input
