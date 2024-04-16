@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_libphonenumber_platform_interface/flutter_libphonenumber_platform_interface.dart';
+import 'package:flutter_libphonenumber_platform_interface/src/types/recognize_country_data_by_phone.dart';
 
 class LibPhonenumberTextFormatter extends TextInputFormatter {
   LibPhonenumberTextFormatter({
@@ -208,5 +209,46 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
       // print('>> result: $result');
       return result;
     }
+  }
+
+  /// Recognizes phone from iOS suggestions or clipboard
+  TextEditingValue? _tryRecognizePhoneWithCountry(
+    final TextEditingValue oldValue,
+    final TextEditingValue newValue,
+  ) {
+    // user tapped on suggested phone or pasted from clipboard
+    // but this not sure, so we have additional checks inside
+    final seemsUserTappedSuggestionOrPasted = oldValue.text.isEmpty && newValue.text.length > 1 && newValue.text.startsWith('+');
+
+    if (seemsUserTappedSuggestionOrPasted) {
+      final CountryWithPhoneCode? recognizedCountry = recognizeCountryDataByPhone(newValue.text);
+      if (recognizedCountry != null) {
+        // build mask for recognized country
+        final rawMask = recognizedCountry.getPhoneMask(format: phoneNumberFormat, type: phoneNumberType, removeCountryCodeFromMask: false);
+        // print('  mask: $rawMask');
+        final mask = PhoneMask(rawMask);
+
+        // apply mask to the input
+        var maskedStr = mask.apply(newValue.text);
+        // print('masked: $maskedStr');
+
+        // tell parent code what we recognized country
+        // it can be used for update flag or prefix in another widget
+        onCountryRecognized?.call(recognizedCountry);
+
+        // remove country code from already masked string
+        // 2 means one for the leading + and one for the space between country code and number
+        if (!inputContainsCountryCode) {
+          maskedStr = maskedStr.substring(recognizedCountry.phoneCode.length + 2);
+        }
+
+        return TextEditingValue(
+          text: maskedStr,
+          selection: TextSelection.collapsed(offset: maskedStr.length), // force cursor to the end
+        );
+      }
+    }
+
+    return null;
   }
 }
