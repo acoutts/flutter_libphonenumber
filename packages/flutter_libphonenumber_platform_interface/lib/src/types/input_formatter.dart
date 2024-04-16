@@ -11,10 +11,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
     this.phoneNumberType = PhoneNumberType.mobile,
     this.phoneNumberFormat = PhoneNumberFormat.international,
     this.onFormatFinished,
-
-    /// When true, mask will be applied assuming the input contains
-    /// a country code in it.
-    final bool inputContainsCountryCode = false,
+    this.inputContainsCountryCode = false,
 
     /// Additional digits to include
     this.additionalDigits = 0,
@@ -52,6 +49,9 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
   /// Optional function to execute after we are finished formatting the number.
   /// Useful if you need to get the formatted value for something else to use.
   final FutureOr Function(String val)? onFormatFinished;
+
+  /// When true, mask will be applied assuming the input contains a country code in it.
+  final bool inputContainsCountryCode;
 
   /// Allow additional digits on the end of the mask. This is useful for countries like Austria where the
   /// libphonenumber example number doesn't include all of the possibilities. This way we can still format
