@@ -35,7 +35,7 @@ Future<Map<String, dynamic>> parse(
 Future<void> init({
   final Map<String, CountryWithPhoneCode> overrides = const {},
 }) async {
-  return FlutterLibphonenumberPlatform.instance.init();
+  return FlutterLibphonenumberPlatform.instance.init(overrides: overrides);
 }
 
 String formatNumberSync(
