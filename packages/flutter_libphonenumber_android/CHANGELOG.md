@@ -1,6 +1,3 @@
-## 1.0.1
-* Fix compatibility with AGP 8.0 (#43).
+## 0.0.1
 
-## 1.0.0
-
-* Initial release after migration to federated plugin.
+* TODO: Describe initial release.

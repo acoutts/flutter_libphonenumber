@@ -23,9 +23,7 @@ class FlutterLibphonenumberIOS extends FlutterLibphonenumberPlatform {
 
   @override
   Future<Map<String, CountryWithPhoneCode>> getAllSupportedRegions() async {
-    final result = await _channel
-            .invokeMapMethod<String, dynamic>('get_all_supported_regions') ??
-        {};
+    final result = await _channel.invokeMapMethod<String, dynamic>('get_all_supported_regions') ?? {};
 
     final returnMap = <String, CountryWithPhoneCode>{};
     result.forEach(
@@ -34,17 +32,13 @@ class FlutterLibphonenumberIOS extends FlutterLibphonenumberPlatform {
         phoneCode: v['phoneCode'] ?? '',
         countryCode: k,
         exampleNumberMobileNational: v['exampleNumberMobileNational'] ?? '',
-        exampleNumberFixedLineNational:
-            v['exampleNumberFixedLineNational'] ?? '',
+        exampleNumberFixedLineNational: v['exampleNumberFixedLineNational'] ?? '',
         phoneMaskMobileNational: v['phoneMaskMobileNational'] ?? '',
         phoneMaskFixedLineNational: v['phoneMaskFixedLineNational'] ?? '',
-        exampleNumberMobileInternational:
-            v['exampleNumberMobileInternational'] ?? '',
-        exampleNumberFixedLineInternational:
-            v['exampleNumberFixedLineInternational'] ?? '',
+        exampleNumberMobileInternational: v['exampleNumberMobileInternational'] ?? '',
+        exampleNumberFixedLineInternational: v['exampleNumberFixedLineInternational'] ?? '',
         phoneMaskMobileInternational: v['phoneMaskMobileInternational'] ?? '',
-        phoneMaskFixedLineInternational:
-            v['phoneMaskFixedLineInternational'] ?? '',
+        phoneMaskFixedLineInternational: v['phoneMaskFixedLineInternational'] ?? '',
       ),
     );
     return returnMap;

@@ -5,8 +5,8 @@ issue_tracker: https://github.com/bottlepay/flutter_libphonenumber/issues
 version: 1.0.1
 
 environment:
-  sdk: ">=2.19.0 <4.0.0"
-  flutter: ">=3.0.0"
+  sdk: ">=3.4.1 <4.0.0"
+  flutter: ">=3.3.0"
 
 flutter:
   plugin:

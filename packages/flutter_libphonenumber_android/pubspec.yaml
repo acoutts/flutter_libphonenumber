@@ -5,17 +5,8 @@ issue_tracker: https://github.com/bottlepay/flutter_libphonenumber/issues
 version: 1.0.2
 
 environment:
-  sdk: ">=2.19.0 <4.0.0"
-  flutter: ">=3.0.0"
-
-flutter:
-  plugin:
-    implements: flutter_libphonenumber
-    platforms:
-      android:
-        package: com.bottlepay.flutter_libphonenumber
-        pluginClass: FlutterLibphonenumberPlugin
-        dartPluginClass: FlutterLibphonenumberAndroid
+  sdk: ">=3.4.1 <4.0.0"
+  flutter: ">=3.3.0"
 
 dependencies:
   flutter:
@@ -25,4 +16,14 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  plugin_platform_interface: ^2.0.2
+  flutter_lints: ^4.0.0
+  plugin_platform_interface: ^2.1.8
+
+flutter:
+  plugin:
+    implements: flutter_libphonenumber
+    platforms:
+      android:
+        package: com.bottlepay.flutter_libphonenumber
+        pluginClass: FlutterLibphonenumberPlugin
+        dartPluginClass: FlutterLibphonenumberAndroid

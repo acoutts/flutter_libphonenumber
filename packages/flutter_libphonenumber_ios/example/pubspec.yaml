@@ -2,14 +2,16 @@ name: flutter_libphonenumber_ios_example
 description: Demonstrates how to use the flutter_libphonenumber plugin.
 publish_to: none
 
+version: 1.0.0+1
+
 environment:
-  sdk: ">=2.19.0 <4.0.0"
-  flutter: ">=3.0.0"
+  sdk: ">=3.4.1 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
+  cupertino_icons: ^1.0.8
   flutter_libphonenumber_ios:
     path: ../
   flutter_libphonenumber_platform_interface: ^1.0.0

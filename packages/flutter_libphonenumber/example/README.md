@@ -1,6 +1,6 @@
-# flutter_libphonenumber_example
+# example
 
-Demonstrates how to use the flutter_libphonenumber plugin.
+A new Flutter project.
 
 ## Getting Started
 
