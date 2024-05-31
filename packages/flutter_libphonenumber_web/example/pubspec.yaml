@@ -11,8 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.8
-
   flutter_libphonenumber_web:
     path: ../
   flutter_libphonenumber_platform_interface: ^1.0.0

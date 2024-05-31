@@ -4,13 +4,15 @@ import 'dart:ui';
 import 'package:flutter/services.dart';
 import 'package:flutter_libphonenumber_platform_interface/flutter_libphonenumber_platform_interface.dart';
 import 'package:flutter_libphonenumber_web/src/base.dart';
-import 'package:flutter_libphonenumber_web/src/libphonenumber.dart' as phoneutil;
+import 'package:flutter_libphonenumber_web/src/libphonenumber.dart'
+    as phoneutil;
 import 'package:flutter_libphonenumber_web/src/utils.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 /// The version of libphonenumber to use
 const String libPhoneNumberVersion = 'b7fe84af9b553f0f2db765a6e20c27fa867a971d';
-const String libPhoneNumberUrl = 'https://cdn.jsdelivr.net/gh/ruimarinho/google-libphonenumber@$libPhoneNumberVersion/dist/libphonenumber.min.js';
+const String libPhoneNumberUrl =
+    'https://cdn.jsdelivr.net/gh/ruimarinho/google-libphonenumber@$libPhoneNumberVersion/dist/libphonenumber.min.js';
 
 class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
   static late Future _jsLibrariesLoadingFuture;
@@ -72,7 +74,8 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
 
     final res = <String, CountryWithPhoneCode>{};
 
-    final displayNames = phoneutil.libPhoneNumberFlutterGetRegionDisplayNames(window.locale.languageCode);
+    final displayNames = phoneutil
+        .libPhoneNumberFlutterGetRegionDisplayNames(window.locale.languageCode);
 
     for (final region in util.getSupportedRegions()) {
       final exampleNumberMobile = util.getExampleNumberForType(
@@ -102,8 +105,10 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
           _formatNational(exampleNumberFixedLine),
           phoneCode,
         ),
-        exampleNumberMobileInternational: _formatInternational(exampleNumberMobile),
-        exampleNumberFixedLineInternational: _formatInternational(exampleNumberFixedLine),
+        exampleNumberMobileInternational:
+            _formatInternational(exampleNumberMobile),
+        exampleNumberFixedLineInternational:
+            _formatInternational(exampleNumberFixedLine),
         phoneMaskMobileInternational: _maskNumber(
           _formatInternational(exampleNumberMobile),
           phoneCode,
@@ -149,9 +154,14 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
     );
   }
 
-  static String _maskNumber(final String phoneNumber, final String phoneCode) => phoneNumber.replaceAll(RegExp(r'\d'), '0');
+  static String _maskNumber(final String phoneNumber, final String phoneCode) =>
+      phoneNumber.replaceAll(RegExp(r'\d'), '0');
 
-  static String _formatNational(final phoneutil.PhoneNumber phoneNumber) => phoneutil.PhoneNumberUtil.getInstance().format(phoneNumber, phoneutil.PhoneNumberFormat.NATIONAL);
+  static String _formatNational(final phoneutil.PhoneNumber phoneNumber) =>
+      phoneutil.PhoneNumberUtil.getInstance()
+          .format(phoneNumber, phoneutil.PhoneNumberFormat.NATIONAL);
 
-  static String _formatInternational(final phoneutil.PhoneNumber phoneNumber) => phoneutil.PhoneNumberUtil.getInstance().format(phoneNumber, phoneutil.PhoneNumberFormat.INTERNATIONAL);
+  static String _formatInternational(final phoneutil.PhoneNumber phoneNumber) =>
+      phoneutil.PhoneNumberUtil.getInstance()
+          .format(phoneNumber, phoneutil.PhoneNumberFormat.INTERNATIONAL);
 }
