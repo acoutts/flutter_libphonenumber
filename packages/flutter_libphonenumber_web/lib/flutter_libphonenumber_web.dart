@@ -29,7 +29,7 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
         contextName: 'libphonenumber',
         url: libPhoneNumberUrl,
         usesRequireJs: true,
-      )
+      ),
     ];
     final helperScriptTag = html.ScriptElement()
       ..type = 'application/javascript'
