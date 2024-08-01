@@ -43,7 +43,6 @@ Future<void> loadScriptUsingScriptTag(final String url) {
     ..defer = false
     ..crossOrigin = 'anonymous'
     ..type = 'text/javascript'
-    // ignore: unsafe_html
     ..src = url;
 
   document.head!.append(script);
