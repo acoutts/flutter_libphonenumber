@@ -1,9 +1,7 @@
-// ignore_for_file: non_constant_identifier_names
-
 @JS()
 library libphonenumber;
 
-import 'package:js/js.dart';
+import 'dart:js_interop';
 
 @JS()
 external DisplayNames libPhoneNumberFlutterGetRegionDisplayNames(
@@ -11,19 +9,19 @@ external DisplayNames libPhoneNumberFlutterGetRegionDisplayNames(
 );
 
 @JS('Intl.DisplayNames')
-class DisplayNames {
+extension type DisplayNames._(JSObject _) implements JSObject {
   external String of(final String countryCode);
 }
 
 @JS('libphonenumber.PhoneNumber')
-class PhoneNumber {
+extension type PhoneNumber._(JSObject _) implements JSObject {
   external PhoneNumber();
-  external String getCountryCode();
-  external String getNationalNumber();
+  external int getCountryCode();
+  external int getNationalNumber();
 }
 
 @JS('libphonenumber.PhoneNumberFormat')
-class PhoneNumberFormat {
+extension type PhoneNumberFormat._(JSObject _) implements JSObject {
   external static int E164;
   external static int INTERNATIONAL;
   external static int NATIONAL;
@@ -31,7 +29,7 @@ class PhoneNumberFormat {
 }
 
 @JS('libphonenumber.PhoneNumberType')
-class PhoneNumberType {
+extension type PhoneNumberType._(JSObject _) implements JSObject {
   external static int FIXED_LINE;
   external static int MOBILE;
   external static int FIXED_LINE_OR_MOBILE;
@@ -78,16 +76,16 @@ String numberTypeToString(final int type) {
 }
 
 @JS('libphonenumber.AsYouTypeFormatter')
-class AsYouTypeFormatter {
+extension type AsYouTypeFormatter._(JSObject _) implements JSObject {
   external AsYouTypeFormatter(final String? regionCode);
   external void clear();
   external String inputDigit(final String char);
 }
 
 @JS('libphonenumber.PhoneNumberUtil')
-class PhoneNumberUtil {
+extension type PhoneNumberUtil._(JSObject _) implements JSObject {
   external static PhoneNumberUtil getInstance();
-  external Map<String, dynamic> getExampleNumber(final String regionCode);
+  external JSObject getExampleNumber(final String regionCode);
   external PhoneNumber parse(
     final String phoneNumber,
     final String? regionCode,
@@ -99,7 +97,7 @@ class PhoneNumberUtil {
     final int phoneNumberFormat,
   );
   external String getRegionCodeForNumber(final PhoneNumber phoneNumber);
-  external List<String> getSupportedRegions();
+  external JSArray<JSString> getSupportedRegions();
   external int getCountryCodeForRegion(final String? region);
   external PhoneNumber? getExampleNumberForType(
     final String region,
@@ -122,9 +120,9 @@ extension PhoneNumberUtilExt on PhoneNumberUtil {
           'e164': format(phoneNumber, PhoneNumberFormat.E164),
           'international': format(phoneNumber, PhoneNumberFormat.INTERNATIONAL),
           'national': format(phoneNumber, PhoneNumberFormat.NATIONAL),
-          'country_code': phoneNumber.getCountryCode(),
+          'country_code': '${phoneNumber.getCountryCode()}',
           'region_code': getRegionCodeForNumber(phoneNumber),
-          'national_number': phoneNumber.getNationalNumber(),
+          'national_number': '${phoneNumber.getNationalNumber()}',
         };
       }
     } catch (e) {

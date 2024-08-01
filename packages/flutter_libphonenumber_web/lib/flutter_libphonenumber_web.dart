@@ -1,5 +1,4 @@
-import 'dart:html' as html;
-import 'dart:ui';
+import 'dart:js_interop';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_libphonenumber_platform_interface/flutter_libphonenumber_platform_interface.dart';
@@ -8,6 +7,7 @@ import 'package:flutter_libphonenumber_web/src/libphonenumber.dart'
     as phoneutil;
 import 'package:flutter_libphonenumber_web/src/utils.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:web/web.dart';
 
 /// The version of libphonenumber to use
 const String libPhoneNumberVersion = 'b7fe84af9b553f0f2db765a6e20c27fa867a971d';
@@ -29,9 +29,10 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
         contextName: 'libphonenumber',
         url: libPhoneNumberUrl,
         usesRequireJs: true,
-      )
+      ),
     ];
-    final helperScriptTag = html.ScriptElement()
+
+    final helperScriptTag = HTMLScriptElement()
       ..type = 'application/javascript'
       ..text = '''
       function libPhoneNumberFlutterGetRegionDisplayNames(lang) {
@@ -39,7 +40,7 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
       }
     ''';
 
-    html.document.head!.append(helperScriptTag);
+    document.head!.append(helperScriptTag);
     _jsLibrariesLoadingFuture = injectJSLibraries(libraries);
   }
 
@@ -75,9 +76,11 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
     final res = <String, CountryWithPhoneCode>{};
 
     final displayNames = phoneutil
-        .libPhoneNumberFlutterGetRegionDisplayNames(window.locale.languageCode);
+        .libPhoneNumberFlutterGetRegionDisplayNames(window.navigator.language);
 
-    for (final region in util.getSupportedRegions()) {
+    final regions = util.getSupportedRegions().toDart;
+    for (final regionJs in regions) {
+      final region = regionJs.toDart;
       final exampleNumberMobile = util.getExampleNumberForType(
             region,
             phoneutil.PhoneNumberType.MOBILE,
@@ -162,6 +165,8 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
           .format(phoneNumber, phoneutil.PhoneNumberFormat.NATIONAL);
 
   static String _formatInternational(final phoneutil.PhoneNumber phoneNumber) =>
-      phoneutil.PhoneNumberUtil.getInstance()
-          .format(phoneNumber, phoneutil.PhoneNumberFormat.INTERNATIONAL);
+      phoneutil.PhoneNumberUtil.getInstance().format(
+        phoneNumber,
+        phoneutil.PhoneNumberFormat.INTERNATIONAL,
+      );
 }

@@ -28,8 +28,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import 'package:js/js.dart';
-
 class JsLibrary {
   const JsLibrary({
     required this.contextName,
@@ -46,19 +44,4 @@ class JsLibrary {
   /// E.g. if at the beginning you see code like
   /// if (typeof define === "function" && define.amd)
   final bool usesRequireJs;
-}
-
-@JS('Promise')
-@staticInterop
-class Promise<T> {}
-
-@JS('Map')
-@staticInterop
-class JsMap {
-  external factory JsMap();
-}
-
-extension JsMapExt on JsMap {
-  external void set(final dynamic key, final dynamic value);
-  external dynamic get(final dynamic key);
 }
