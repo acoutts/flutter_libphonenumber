@@ -27,7 +27,7 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_libphonenumber_android: ^1.0.1
+  flutter_libphonenumber_android: ^1.0.2
   flutter_libphonenumber_ios: ^1.2.1
   flutter_libphonenumber_platform_interface: ^1.0.0
   flutter_libphonenumber_web: ^1.1.0
