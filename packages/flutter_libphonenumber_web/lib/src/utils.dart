@@ -29,45 +29,23 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import 'dart:async';
-import 'dart:html' as html;
-import 'dart:js' show context, JsObject;
 
 import 'package:flutter_libphonenumber_web/src/base.dart';
+import 'package:web/web.dart';
 
 Future<void> loadScript(final JsLibrary library) async {
-  dynamic amd;
-  dynamic define;
-  // ignore: avoid_dynamic_calls
-  if (library.usesRequireJs && context['define']?['amd'] != null) {
-    // In dev, requireJs is loaded in. Disable it here.
-    // see https://github.com/dart-lang/sdk/issues/33979
-    define = JsObject.fromBrowserObject(context['define'] as Object);
-    // ignore: avoid_dynamic_calls
-    amd = define['amd'];
-    // ignore: avoid_dynamic_calls
-    define['amd'] = false;
-  }
-  try {
-    await loadScriptUsingScriptTag(library.url);
-  } finally {
-    if (amd != null) {
-      // Re-enable requireJs
-      // ignore: avoid_dynamic_calls
-      define['amd'] = amd;
-    }
-  }
+  await loadScriptUsingScriptTag(library.url);
 }
 
 Future<void> loadScriptUsingScriptTag(final String url) {
-  final script = html.ScriptElement()
+  final script = HTMLScriptElement()
     ..async = true
     ..defer = false
     ..crossOrigin = 'anonymous'
     ..type = 'text/javascript'
-    // ignore: unsafe_html
     ..src = url;
 
-  html.document.head!.append(script);
+  document.head!.append(script);
 
   return script.onLoad.first;
 }

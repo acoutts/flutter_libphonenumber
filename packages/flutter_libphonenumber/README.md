@@ -9,20 +9,13 @@ Uses the following native libraries:
 | Platform | Library        | Version |
 |----------|----------------|---------|
 | Android  | libphonenumber | 8.12.52 |
-| iOS      | PhoneNumberKit | 3.6.0   |
+| iOS      | PhoneNumberKit | 3.7.6   |
 
 The main advantage to this lib is it lets you optionally format a phone number synchronously without making calls into libphonenumber with platform calls.
 
 ![AsYouType real-time formatting](https://media.giphy.com/media/XHk6PTxbJ5wRW6ChDz/source.gif)
 
 ![Format and parse](https://media.giphy.com/media/XGgnYYeo2YS7elAPRQ/source.gif)
-
-## iOS Setup
-Important: add the following to your app's Podfile:
-
-```
-pod "PhoneNumberKit", :git => "https://github.com/marmelroy/PhoneNumberKit"
-```
 
 ## Getting Started
 
@@ -100,7 +93,7 @@ Will return the parsed / formatted number like this:
 }
 ```
 
-### `Future<Map<String, dynamic>> parse(String phone, {String region})`
+### `Future<Map<String, dynamic>> parse(String phone, {String? region})`
 Parses a number and if it is full and complete, returns some metadata associated with the number. The number must be a valid and compelte e164 formatted number to be considered valid.
 
 Will throw an error if the number isn't valid.
@@ -130,7 +123,7 @@ Example response:
 "1 (414) 444-4444"
 ```
 
-### `Future<FormatPhoneResult?> getFormattedParseResult(String phoneNumber,CountryWithPhoneCode country, {PhoneNumberType phoneNumberType = PhoneNumberType.mobile, PhoneNumberFormat phoneNumberFormat = PhoneNumberFormat.international,})`
+### `Future<FormatPhoneResult?> getFormattedParseResult(String phoneNumber,CountryWithPhoneCode country, {PhoneNumberType phoneNumberType = PhoneNumberType.mobile, PhoneNumberFormat phoneNumberFormat = PhoneNumberFormat.international})`
 Asynchronously formats a phone number with libphonenumber. Will return the formatted number and if it's a valid/complete number, will return the e164 value as well in the `e164` field. Uses libphonenumber's parse function to verify if it's a valid number or not. This is useful if you want to format a number and also check if it's valid, in one step.
 
 Optionally pass a `PhoneNumberType` to format the number using either the mobile (default) or fixed line mask.
@@ -148,19 +141,19 @@ class FormatPhoneResult {
 * `required String country`
 You must provide the country used to format the text accurately.
 
-The text formatter also takes 5 optional arguments:
+The text formatter also takes 6 optional arguments:
 * `PhoneNumberType? phoneNumberType` specify whether to format the phone number in the mobile format using the mask for mobile numbers, or the fixed line format. Can either be `PhoneNumberType.mobile` or `PhoneNumberType.fixedLine`. Defaults to `PhoneNumberType.mobile`.
 
 * `PhoneNumberFormat? phoneNumberFormat` specify to format using the national or international format. Can either be `PhoneNumberFormat.international` or `PhoneNumberFormat.national`. Defaults to `PhoneNumberFormat.international`.
 
-* `FutureOr Function(String val) onFormatFinished` Optionally get a notification at this callback of the final formatted value once all formatting is completed. This is useful if you want to do something else that is triggered after formatting is done.
+* `FutureOr Function(String val)? onFormatFinished` Optionally get a notification at this callback of the final formatted value once all formatting is completed. This is useful if you want to do something else that is triggered after formatting is done.
 
-* `bool? inputContainsCountryCode` When true, mask will be applied assuming the input contains a country code in it.
+* `bool inputContainsCountryCode = false` When true, mask will be applied assuming the input contains a country code in it.
 
 
-* `int? additionalDigits` You can tell the formatter to allow additional digits on the end of the mask. This is useful for some countries which have a similar mask but varying length of numbers. It's safe to set this to a value like 3 or 5 and you won't have to think about it again.
+* `int additionalDigits = 0` You can tell the formatter to allow additional digits on the end of the mask. This is useful for some countries which have a similar mask but varying length of numbers. It's safe to set this to a value like 3 or 5 and you won't have to think about it again.
 
-* `bool shouldKeepCursorAtEndOfInput` Whether or not the cursor should be kept in the same spot after modifying the input. This defaults to true because that was the original behavior of the package but now you can set it to false and the cursor will stay in the same spot, allowing users to modify the middle of the input.
+* `bool shouldKeepCursorAtEndOfInput = true` Whether or not the cursor should be kept in the same spot after modifying the input. This defaults to true because that was the original behavior of the package but now you can set it to false and the cursor will stay in the same spot, allowing users to modify the middle of the input.
 
 
 To use it, simply add `LibPhonenumberTextFormatter()` to your `TextField`'s `inputFormatters` list:

@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name = "flutter_libphonenumber_ios"
-  s.version = "1.1.0"
+  s.version = "1.1.4"
   s.summary = "Leverages libphonenumber to allow for asynchronous and synchronous formatting of phone numbers in Flutter apps. Includes a TextInputFormatter to allow real-time AsYouType formatting."
   s.description = <<-DESC
   Leverages libphonenumber to allow for asynchronous and synchronous formatting of phone numbers in Flutter apps. Includes a TextInputFormatter to allow real-time AsYouType formatting.
@@ -15,10 +15,11 @@ Pod::Spec.new do |s|
   s.source = { :path => "." }
   s.source_files = "Classes/**/*"
   s.dependency "Flutter"
-  s.dependency "PhoneNumberKit/PhoneNumberKitCore", "3.6.0"
-  s.platform = :ios, "9.0"
+  s.dependency "PhoneNumberKit/PhoneNumberKitCore", "3.7.9"
+  s.platform = :ios, "12.0"
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
   s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES", "VALID_ARCHS[sdk=iphonesimulator*]" => "x86_64" }
   s.swift_version = "5.0"
+  s.resource_bundles = {'flutter_libphonenumber_ios' => ['Resources/PrivacyInfo.xcprivacy']}
 end
