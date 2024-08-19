@@ -1,26 +1,37 @@
+## [1.2.2] - 2024.08.19
+
+- Bump PhoneNumberKit to 3.8.0
+
 # 1.2.1
-* Bump PhoneNumberKit to 3.7.9
-* Added a Privacy Manifest to the iOS Project
+
+- Bump PhoneNumberKit to 3.7.9
+- Added a Privacy Manifest to the iOS Project
 
 # 1.2.0
-* Bump PhoneNumberKit to 3.7.6.
-* *BREAKING* Raises minimum iOS deployment to 12.0.
+
+- Bump PhoneNumberKit to 3.7.6.
+- _BREAKING_ Raises minimum iOS deployment to 12.0.
 
 # 1.1.4
-* Bump PhoneNumberKit to 3.6.6.
+
+- Bump PhoneNumberKit to 3.6.6.
 
 # 1.1.3
-* Bump PhoneNumberKit to 3.6.0.
+
+- Bump PhoneNumberKit to 3.6.0.
 
 # 1.1.2
-* Bump PhoneNumberKit to 3.5.10.
+
+- Bump PhoneNumberKit to 3.5.10.
 
 # 1.1.1
-* Fix pod configuration for PhoneNumberKit.
+
+- Fix pod configuration for PhoneNumberKit.
 
 ## 1.1.0
-* Breaking: PhoneNumberKit pod must now be added to your Podfile because it is no longer published on cocoapods and must be downloaded from git.
+
+- Breaking: PhoneNumberKit pod must now be added to your Podfile because it is no longer published on cocoapods and must be downloaded from git.
 
 ## 1.0.0
 
-* Initial release after migration to federated plugin.
+- Initial release after migration to federated plugin.
