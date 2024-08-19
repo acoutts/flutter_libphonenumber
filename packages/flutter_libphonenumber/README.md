@@ -1,15 +1,16 @@
 # flutter_libphonenumber
 
 A wrapper around libphonenumber with added functionality merged from the following libs:
-* https://github.com/nashfive/phone_number
-* https://github.com/caseyryan/flutter_multi_formatter
+
+- https://github.com/nashfive/phone_number
+- https://github.com/caseyryan/flutter_multi_formatter
 
 Uses the following native libraries:
 
 | Platform | Library        | Version |
-|----------|----------------|---------|
-| Android  | libphonenumber | 8.12.52 |
-| iOS      | PhoneNumberKit | 3.7.6   |
+| -------- | -------------- | ------- |
+| Android  | libphonenumber | 8.13.43 |
+| iOS      | PhoneNumberKit | 3.8.0   |
 
 The main advantage to this lib is it lets you optionally format a phone number synchronously without making calls into libphonenumber with platform calls.
 
@@ -32,17 +33,21 @@ await init();
 ```
 
 ## Formatting a number synchronously
+
 Normally calls to libphonenumber's format function are asynchronous, and you might not want
 your UI rebuilding every time you need to format a phone number.
 
 To get around this, we load a mask of every supported phone region's example number from libphonenumber during the `init()` call. We can then use this mask to format an e164 phone number **synchronously** like this:
+
 ```dart
 final rawNumber = '+14145556666';
 final formattedNumber = formatNumberSync(rawNumber); // +1 414-555-6666
 ```
 
 ## CountryManager
+
 When you call init, this lib will store a list of the countries and phone metadata with the following class:
+
 ```dart
 class CountryWithPhoneCode {
   final String phoneCode                            // '44',
@@ -60,22 +65,27 @@ class CountryWithPhoneCode {
 ```
 
 To access this list of countries you can get at it like this:
+
 ```dart
 final countries = CountryManager().countries; // List<CountryWithPhoneCode>
 ```
 
 # API Reference
+
 Here is a reference of all of the available functions.
 
 ### `Future<void> init({Map<String, CountryWithPhoneCode> overrides})`
+
 Must be called before we can format anything. This loads all available countries on the device and calls `getAllSupportedRegions()` to then cross-reference and combine everything and save a `List<CountryWithPhoneCode>` of every available country with its phone code / mask.
 
 Optionally provide a map of overrides where the key is the country code (ex: `GB` or `US`) and the value is a `CountryWithPhoneCode` object that should replace the data pulled from libphonenumber. This is useful if you want to customize the mask data for a given country.
 
 ### `Future<Map<String, CountryWithPhoneCode>> getAllSupportedRegions()`
+
 Returns all of the available regions on the device in a map with each key as the region code, and the value as a `CountryWithPhoneCode` object containing all of the mobile and landline phone masks / example numbers for national / international format, phone code, region code, and country name.
 
 Example response:
+
 ```dart
 {
   "UK": [CountryWithPhoneCode()],
@@ -84,9 +94,11 @@ Example response:
 ```
 
 ### `Future<Map<String, String>> format(String phone, String region)`
+
 Formats a number using libphonenumber. Under the hood this is using the AsYouType formatter. Depending on your result, you might want to use `formatNumberSync()` to utilize the phone number masks.
 
 Will return the parsed / formatted number like this:
+
 ```dart
 {
     formatted: "1 (414) 444-4444",
@@ -94,11 +106,13 @@ Will return the parsed / formatted number like this:
 ```
 
 ### `Future<Map<String, dynamic>> parse(String phone, {String? region})`
+
 Parses a number and if it is full and complete, returns some metadata associated with the number. The number must be a valid and compelte e164 formatted number to be considered valid.
 
 Will throw an error if the number isn't valid.
 
 Example response:
+
 ```dart
 {
     country_code: 49,
@@ -112,6 +126,7 @@ Example response:
 ```
 
 ### `String formatNumberSync(String number, {CountryWithPhoneCode? country, PhoneNumberType phoneNumberType = PhoneNumberType.mobile, phoneNumberFormat = PhoneNumberFormat.international, bool removeCountryCodeFromResult = false, bool inputContainsCountryCode = true})`
+
 Format a number synchronously using masks to format it. Must have ran the `init()` function to pre-populate the mask data or else the original `phone` value will be returned.
 
 Optionally specify the phone number type to format it as (`mobile` vs `fixedLine`). This is useful when a country has more than one phone number format and you want to format it to either fit the fixed line or mobile pattern.
@@ -119,11 +134,13 @@ Optionally specify the phone number type to format it as (`mobile` vs `fixedLine
 Use `removeCountryCodeFromResult` to remove the country code from the formatted result. Set `inputContainsCountryCode` accordingly based on if the inputted number to format contains the country code or not.
 
 Example response:
+
 ```dart
 "1 (414) 444-4444"
 ```
 
 ### `Future<FormatPhoneResult?> getFormattedParseResult(String phoneNumber,CountryWithPhoneCode country, {PhoneNumberType phoneNumberType = PhoneNumberType.mobile, PhoneNumberFormat phoneNumberFormat = PhoneNumberFormat.international})`
+
 Asynchronously formats a phone number with libphonenumber. Will return the formatted number and if it's a valid/complete number, will return the e164 value as well in the `e164` field. Uses libphonenumber's parse function to verify if it's a valid number or not. This is useful if you want to format a number and also check if it's valid, in one step.
 
 Optionally pass a `PhoneNumberType` to format the number using either the mobile (default) or fixed line mask.
@@ -138,25 +155,26 @@ class FormatPhoneResult {
 ```
 
 ### `TextInputFormatter LibPhonenumberTextFormatter(...)`
-* `required String country`
-You must provide the country used to format the text accurately.
+
+- `required String country`
+  You must provide the country used to format the text accurately.
 
 The text formatter also takes 6 optional arguments:
-* `PhoneNumberType? phoneNumberType` specify whether to format the phone number in the mobile format using the mask for mobile numbers, or the fixed line format. Can either be `PhoneNumberType.mobile` or `PhoneNumberType.fixedLine`. Defaults to `PhoneNumberType.mobile`.
 
-* `PhoneNumberFormat? phoneNumberFormat` specify to format using the national or international format. Can either be `PhoneNumberFormat.international` or `PhoneNumberFormat.national`. Defaults to `PhoneNumberFormat.international`.
+- `PhoneNumberType? phoneNumberType` specify whether to format the phone number in the mobile format using the mask for mobile numbers, or the fixed line format. Can either be `PhoneNumberType.mobile` or `PhoneNumberType.fixedLine`. Defaults to `PhoneNumberType.mobile`.
 
-* `FutureOr Function(String val)? onFormatFinished` Optionally get a notification at this callback of the final formatted value once all formatting is completed. This is useful if you want to do something else that is triggered after formatting is done.
+- `PhoneNumberFormat? phoneNumberFormat` specify to format using the national or international format. Can either be `PhoneNumberFormat.international` or `PhoneNumberFormat.national`. Defaults to `PhoneNumberFormat.international`.
 
-* `bool inputContainsCountryCode = false` When true, mask will be applied assuming the input contains a country code in it.
+- `FutureOr Function(String val)? onFormatFinished` Optionally get a notification at this callback of the final formatted value once all formatting is completed. This is useful if you want to do something else that is triggered after formatting is done.
 
+- `bool inputContainsCountryCode = false` When true, mask will be applied assuming the input contains a country code in it.
 
-* `int additionalDigits = 0` You can tell the formatter to allow additional digits on the end of the mask. This is useful for some countries which have a similar mask but varying length of numbers. It's safe to set this to a value like 3 or 5 and you won't have to think about it again.
+- `int additionalDigits = 0` You can tell the formatter to allow additional digits on the end of the mask. This is useful for some countries which have a similar mask but varying length of numbers. It's safe to set this to a value like 3 or 5 and you won't have to think about it again.
 
-* `bool shouldKeepCursorAtEndOfInput = true` Whether or not the cursor should be kept in the same spot after modifying the input. This defaults to true because that was the original behavior of the package but now you can set it to false and the cursor will stay in the same spot, allowing users to modify the middle of the input.
-
+- `bool shouldKeepCursorAtEndOfInput = true` Whether or not the cursor should be kept in the same spot after modifying the input. This defaults to true because that was the original behavior of the package but now you can set it to false and the cursor will stay in the same spot, allowing users to modify the middle of the input.
 
 To use it, simply add `LibPhonenumberTextFormatter()` to your `TextField`'s `inputFormatters` list:
+
 ```dart
 TextField(inputFormatters: [LibPhonenumberTextFormatter(
   country: 'GB',

@@ -1,3 +1,7 @@
+## [1.2.0] - 2024.08.19
+
+- Bump libphonenumber to 8.13.43.
+
 ## [1.1.0] - 2024.08.19
 
 - Bump android compileSdk to 34
