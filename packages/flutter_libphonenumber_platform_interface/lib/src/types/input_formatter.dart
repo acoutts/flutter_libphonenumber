@@ -33,7 +33,10 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
           .reduce((final a, final b) => a + b);
     }
 
-    _mask = PhoneMask(m);
+    _mask = PhoneMask(
+      mask: m,
+      country: country,
+    );
   }
 
   /// The country to format this number with.

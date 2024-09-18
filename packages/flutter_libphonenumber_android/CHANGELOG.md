@@ -1,3 +1,7 @@
+## [1.3.0] - 2024.09.18
+
+- Bump flutter_libphonenumber_platform_interface to 2.0.0
+
 ## [1.2.0] - 2024.08.19
 
 - Bump libphonenumber to 8.13.43.

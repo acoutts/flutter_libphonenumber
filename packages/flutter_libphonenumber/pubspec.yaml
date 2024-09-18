@@ -2,7 +2,7 @@ name: flutter_libphonenumber
 description: Leverages libphonenumber to allow for asynchronous and synchronous formatting of phone numbers in Flutter apps.
 repository: https://github.com/bottlepay/flutter_libphonenumber/tree/main/packages/flutter_libphonenumber
 issue_tracker: https://github.com/bottlepay/flutter_libphonenumber/issues
-version: 2.3.3
+version: 2.4.0
 
 environment:
   sdk: ">=2.19.0 <4.0.0"
@@ -27,10 +27,10 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_libphonenumber_android: ^1.2.0
-  flutter_libphonenumber_ios: ^1.2.2
-  flutter_libphonenumber_platform_interface: ^1.0.0
-  flutter_libphonenumber_web: ^1.1.0
+  flutter_libphonenumber_android: ^1.3.0
+  flutter_libphonenumber_ios: ^1.3.0
+  flutter_libphonenumber_platform_interface: ^2.0.0
+  flutter_libphonenumber_web: ^1.2.0
 
 dev_dependencies:
   flutter_test:
