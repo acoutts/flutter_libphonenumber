@@ -130,11 +130,12 @@ abstract class FlutterLibphonenumberPlatform extends PlatformInterface {
     }
 
     var formatResult = PhoneMask(
-      guessedCountry.getPhoneMask(
+      mask: guessedCountry.getPhoneMask(
         format: phoneNumberFormat,
         type: phoneNumberType,
         removeCountryCodeFromMask: !inputContainsCountryCode,
       ),
+      country: guessedCountry,
     ).apply(number);
 
     /// Remove the country code from the result if the user set removeCountryCodeFromResult=true.

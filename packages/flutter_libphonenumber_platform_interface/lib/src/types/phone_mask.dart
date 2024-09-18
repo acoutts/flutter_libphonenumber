@@ -1,6 +1,12 @@
+import 'package:flutter_libphonenumber_platform_interface/flutter_libphonenumber_platform_interface.dart';
+
 class PhoneMask {
-  PhoneMask(this.mask);
+  PhoneMask({
+    required this.mask,
+    required this.country,
+  });
   final String mask;
+  final CountryWithPhoneCode country;
   final RegExp _digitRegex = RegExp('[0-9]+');
 
   /// Apply the given phone mask to the input string.
@@ -10,7 +16,17 @@ class PhoneMask {
       return inputString;
     }
 
-    final chars = inputString.replaceAll(RegExp(r'\D+'), '').split('');
+    var cleanedInput = inputString.replaceAll(RegExp(r'\D+'), '');
+
+    /// If phone mask doesn't contain country code but input does,
+    /// remove the country code from the input
+    if (!mask.startsWith('+') && inputString.startsWith('+')) {
+      cleanedInput =
+          cleanedInput.replaceFirst(RegExp('^${country.phoneCode}'), '');
+    }
+
+    final chars = cleanedInput.split('');
+
     final result = <String>[];
     var index = 0;
     for (var i = 0; i < mask.length; i++) {

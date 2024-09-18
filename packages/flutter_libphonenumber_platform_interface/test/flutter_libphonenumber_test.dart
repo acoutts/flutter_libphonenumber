@@ -10,21 +10,32 @@ void main() {
   group('PhoneMask', () {
     test('UK mobile international', () {
       final mask = PhoneMask(
-        const CountryWithPhoneCode.gb().getPhoneMask(
+        mask: const CountryWithPhoneCode.gb().getPhoneMask(
           format: PhoneNumberFormat.international,
           type: PhoneNumberType.mobile,
         ),
+        country: const CountryWithPhoneCode.gb(),
       );
       expect(mask.apply('+447752555555'), '+44 7752 555555');
     });
 
     test('Italian mobile international', () {
-      final mask = PhoneMask('+00 000 000 0000');
-      expect(mask.apply('+393937224790'), '+39 393 722 4790');
-    });
-
-    test('Austrian 11 character number', () {
-      final mask = PhoneMask('+00 000 000 0000');
+      final mask = PhoneMask(
+        mask: '+00 000 000 0000',
+        country: CountryWithPhoneCode(
+          phoneCode: '+39',
+          countryCode: '',
+          exampleNumberMobileNational: '',
+          exampleNumberFixedLineNational: '',
+          phoneMaskMobileNational: '',
+          phoneMaskFixedLineNational: '',
+          exampleNumberMobileInternational: '',
+          exampleNumberFixedLineInternational: '',
+          phoneMaskMobileInternational: '',
+          phoneMaskFixedLineInternational: '',
+          countryName: '',
+        ),
+      );
       expect(mask.apply('+393937224790'), '+39 393 722 4790');
     });
 
@@ -66,6 +77,44 @@ void main() {
       expect(
         res,
         '000-000-0000',
+        reason: 'mask should not contain country code in it',
+      );
+    });
+
+    test(
+        'with phoneNumberFormat=PhoneNumberFormat.national and phoneNumberType=PhoneNumberType.mobile',
+        () async {
+      final res = PhoneMask(
+        mask: const CountryWithPhoneCode.us().getPhoneMask(
+          format: PhoneNumberFormat.national,
+          type: PhoneNumberType.mobile,
+        ),
+        country: const CountryWithPhoneCode.us(),
+      );
+      final applied = res.apply('+14194444444');
+
+      expect(
+        applied,
+        '(419) 444-4444',
+        reason: 'mask should not contain country code in it',
+      );
+    });
+
+    test(
+        'with phoneNumberFormat=PhoneNumberFormat.international and phoneNumberType=PhoneNumberType.mobile',
+        () async {
+      final res = PhoneMask(
+        mask: const CountryWithPhoneCode.us().getPhoneMask(
+          format: PhoneNumberFormat.international,
+          type: PhoneNumberType.mobile,
+        ),
+        country: const CountryWithPhoneCode.us(),
+      );
+      final applied = res.apply('+14194444444');
+
+      expect(
+        applied,
+        '+1 419-444-4444',
         reason: 'mask should not contain country code in it',
       );
     });
