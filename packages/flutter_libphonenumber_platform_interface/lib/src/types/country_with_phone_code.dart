@@ -142,7 +142,7 @@ class CountryWithPhoneCode {
 
     /// If we want to get the mask without the country code, strip
     /// out the country code from the mask now.
-    if (removeCountryCodeFromMask) {
+    if (removeCountryCodeFromMask && returnMask.startsWith('+')) {
       /// Return the mask after the country code and 2 characters,
       /// one for the leading + and the other for the space between
       /// country code and number.

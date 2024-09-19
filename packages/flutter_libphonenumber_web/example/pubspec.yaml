@@ -12,7 +12,7 @@ dependencies:
 
   flutter_libphonenumber_web:
     path: ../
-  flutter_libphonenumber_platform_interface: ^2.0.0
+  flutter_libphonenumber_platform_interface: ^2.1.0
 
 dev_dependencies:
   flutter_test:

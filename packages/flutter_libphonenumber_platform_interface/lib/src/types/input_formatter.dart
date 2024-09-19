@@ -94,8 +94,9 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
       return result;
     }
 
-    /// True if the new input ends with a non-digit value
-    final endsWithNonNumber = RegExp(r'^.*(\D)$').hasMatch(newValue.text);
+    /// Non-zero if the new input ends with a non-digit value
+    final match = RegExp(r'\D+$').firstMatch(newValue.text);
+    final numEndingNonNumbers = match?.group(0)?.length ?? 0;
 
     if (newValue.text.length > oldValue.text.length) {
       ///////////////////////////////////
@@ -112,8 +113,8 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
       /// Say we have a current value of: "+1 444-867" and we add a new digit (9).
       /// newValue is then "+1 444-8679" but newMaskedValue is "+1 444-867-9".
       /// The baseOffset in newValue would be off by 1 because the mask added a new dash.
-      final charsInOld = RegExp(r'(\D+)').allMatches(oldValue.text).length;
-      final charsInNew = RegExp(r'(\D+)').allMatches(newMaskedValue).length;
+      final charsInOld = RegExp(r'(\D)').allMatches(oldValue.text).length;
+      final charsInNew = RegExp(r'(\D)').allMatches(newMaskedValue).length;
       final charsAdded = charsInNew - charsInOld;
 
       // print('>> charsInOld: $charsInOld | charsInNew = $charsInNew');
@@ -139,6 +140,10 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
 
       // print(
       //   '>> shorter string | oldValue.selection.baseOffset: ${oldValue.selection.baseOffset} | oldValue.text.length: ${oldValue.text.length}',
+      // );
+
+      // print(
+      //   'oldValue.selection: ${oldValue.selection} | newValue.selection: ${newValue.selection}',
       // );
 
       if (oldValue.selection.isCollapsed) {
@@ -183,7 +188,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
 
         result = TextEditingValue(
           selection: TextSelection.collapsed(
-            offset: newValue.selection.baseOffset - (endsWithNonNumber ? 1 : 0),
+            offset: newValue.selection.baseOffset - numEndingNonNumbers,
           ),
           text: newMaskedValue,
         );
@@ -204,7 +209,7 @@ class LibPhonenumberTextFormatter extends TextInputFormatter {
 
       result = TextEditingValue(
         selection: TextSelection.collapsed(
-          offset: newValue.selection.baseOffset - (endsWithNonNumber ? 1 : 0),
+          offset: newValue.selection.baseOffset - numEndingNonNumbers,
         ),
         text: newMaskedValue,
       );

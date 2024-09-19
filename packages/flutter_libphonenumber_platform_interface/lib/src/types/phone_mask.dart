@@ -16,7 +16,7 @@ class PhoneMask {
       return inputString;
     }
 
-    var cleanedInput = inputString.replaceAll(RegExp(r'\D+'), '');
+    var cleanedInput = inputString.replaceAll(RegExp(r'\D'), '');
 
     /// If phone mask doesn't contain country code but input does,
     /// remove the country code from the input
