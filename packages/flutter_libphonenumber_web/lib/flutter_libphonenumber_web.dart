@@ -9,10 +9,7 @@ import 'package:flutter_libphonenumber_web/src/utils.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:web/web.dart';
 
-/// The version of libphonenumber to use
-const String libPhoneNumberVersion = 'b7fe84af9b553f0f2db765a6e20c27fa867a971d';
-const String libPhoneNumberUrl =
-    'https://cdn.jsdelivr.net/gh/ruimarinho/google-libphonenumber@$libPhoneNumberVersion/dist/libphonenumber.min.js';
+const String libPhoneNumberUrl = 'src/libphonenumber.min.js';
 
 class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
   static late Future _jsLibrariesLoadingFuture;
