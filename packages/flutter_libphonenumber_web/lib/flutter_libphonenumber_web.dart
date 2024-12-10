@@ -9,7 +9,7 @@ import 'package:flutter_libphonenumber_web/src/utils.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:web/web.dart';
 
-const String libPhoneNumberUrl = 'src/libphonenumber.min.js';
+const String libPhoneNumberUrl = 'packages/flutter_libphonenumber_web/src/libphonenumber.min.js';
 
 class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
   static late Future _jsLibrariesLoadingFuture;
