@@ -9,6 +9,7 @@ import 'package:flutter_libphonenumber_web/src/utils.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:web/web.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:universal_io/io.dart' as io
 
 class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
   static late Future _jsLibrariesLoadingFuture;
@@ -19,19 +20,19 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
     _setupScripts();
   }
 
-  static Future<String> getJsFilePath(String assetPath) async {
+  static Future<String> getJsFilePath(final String assetPath) async {
     final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/libphonenumber.js');
+    final file = io.File('${directory.path}/libphonenumber.js');
     final byteData = await rootBundle.load(assetPath);
     final buffer = byteData.buffer;
     await file.writeAsBytes(
-        buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+      buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),);
     return file.uri.toString();
   }
 
-  static void _setupScripts() {
+  static Future<void> _setupScripts() async {
     final libraries = [
-      const JsLibrary(
+      JsLibrary(
         contextName: 'libphonenumber',
         url: await getJsFilePath('assets/libphonenumber.js'),
         usesRequireJs: true,
