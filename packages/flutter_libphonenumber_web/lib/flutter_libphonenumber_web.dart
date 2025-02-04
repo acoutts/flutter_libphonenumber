@@ -20,7 +20,7 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
     _setupScripts();
   }
 
-  Future<String> getJsFilePath(String assetPath) async {
+  static Future<String> getJsFilePath(String assetPath) async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/libphonenumber.js');
     final byteData = await rootBundle.load(assetPath);
@@ -34,7 +34,7 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
     final libraries = [
       const JsLibrary(
         contextName: 'libphonenumber',
-        url: getJsFilePath('assets/libphonenumber.js'),
+        url: await getJsFilePath('assets/libphonenumber.js'),
         usesRequireJs: true,
       ),
     ];
