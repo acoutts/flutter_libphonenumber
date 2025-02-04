@@ -30,11 +30,16 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
     return file.uri.toString();
   }
 
-  static Future<void> _setupScripts() async {
+  static void _setupScripts() {
+    late String url;
+    getJsFilePath('assets/libphonenumber.js').then((final value) {
+      url = value;
+    });
+
     final libraries = [
       JsLibrary(
         contextName: 'libphonenumber',
-        url: await getJsFilePath('assets/libphonenumber.js'),
+        url: url,
         usesRequireJs: true,
       ),
     ];
