@@ -8,6 +8,8 @@ import 'package:flutter_libphonenumber_web/src/libphonenumber.dart'
 import 'package:flutter_libphonenumber_web/src/utils.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:web/web.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart';
 
 class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
   static late Future _jsLibrariesLoadingFuture;
