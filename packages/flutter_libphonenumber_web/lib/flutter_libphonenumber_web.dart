@@ -1,15 +1,14 @@
+import 'dart:async';
 import 'dart:js_interop';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_libphonenumber_platform_interface/flutter_libphonenumber_platform_interface.dart';
 import 'package:flutter_libphonenumber_web/src/base.dart';
 import 'package:flutter_libphonenumber_web/src/libphonenumber.dart'
-    as phoneutil;
+as phoneutil;
 import 'package:flutter_libphonenumber_web/src/utils.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:web/web.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:universal_io/io.dart' as io;
 
 class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
   static late Future _jsLibrariesLoadingFuture;
@@ -20,26 +19,11 @@ class FlutterLibphonenumberPlugin extends FlutterLibphonenumberPlatform {
     _setupScripts();
   }
 
-  static Future<String> getJsFilePath(final String assetPath) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = io.File('${directory.path}/libphonenumber.js');
-    final byteData = await rootBundle.load(assetPath);
-    final buffer = byteData.buffer;
-    await file.writeAsBytes(
-      buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),);
-    return file.uri.toString();
-  }
-
   static void _setupScripts() {
-    late String url;
-    getJsFilePath('assets/libphonenumber.js').then((final value) {
-      url = value;
-    });
-
     final libraries = [
-      JsLibrary(
+      const JsLibrary(
         contextName: 'libphonenumber',
-        url: url,
+        url: 'packages/flutter_libphonenumber_web/assets/libphonenumber.js',
         usesRequireJs: true,
       ),
     ];
