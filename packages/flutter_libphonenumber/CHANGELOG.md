@@ -1,3 +1,7 @@
+## [2.5.1] - 2024.09.19
+
+- Bump flutter_libphonenumber_android to 1.4.1: This fixes unresolved Registrar issue occurring after upgrading Flutter to 3.29.0 (#93 @amitkhairnar44)
+
 ## [2.5.0] - 2024.09.19
 
 - Bump flutter_libphonenumber_platform_interface to 2.1.0
