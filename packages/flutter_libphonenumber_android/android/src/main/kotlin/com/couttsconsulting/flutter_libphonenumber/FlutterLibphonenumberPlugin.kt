@@ -17,6 +17,10 @@ import java.util.*
 
 /** FlutterLibphonenumberPlugin */
 public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
+  private companion object {
+    private val DIGIT_REGEX = Regex("""\d""")
+  }
+
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -74,28 +78,30 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
   // Gathers all of the supported regions on another thread and sends them back to Dart when ready
   private fun getAllSupportedRegions(result: Result) {
     Thread(Runnable {
+      val phoneUtil = PhoneNumberUtil.getInstance()
       val regionsMap = mutableMapOf<String, MutableMap<String, String>>()
-      for (region in PhoneNumberUtil.getInstance().supportedRegions) {
+      for (region in phoneUtil.supportedRegions) {
         val itemMap = mutableMapOf<String, String>()
-        // Save the phone code
-        val phoneCode = PhoneNumberUtil.getInstance().getCountryCodeForRegion(region).toString()
-        itemMap["phoneCode"] = phoneCode
+        itemMap["phoneCode"] = phoneUtil.getCountryCodeForRegion(region).toString()
 
+        val exampleNumberMobile = phoneUtil.getExampleNumberForType(region, PhoneNumberType.MOBILE) ?: Phonenumber.PhoneNumber()
+        val exampleNumberFixedLine = phoneUtil.getExampleNumberForType(region, PhoneNumberType.FIXED_LINE) ?: Phonenumber.PhoneNumber()
+        val mobileNational = formatNational(phoneUtil, exampleNumberMobile)
+        val fixedLineNational = formatNational(phoneUtil, exampleNumberFixedLine)
+        val mobileInternational = formatInternational(phoneUtil, exampleNumberMobile)
+        val fixedLineInternational = formatInternational(phoneUtil, exampleNumberFixedLine)
 
-        // Get a formatted example number
-        val exampleNumberMobile = PhoneNumberUtil.getInstance().getExampleNumberForType(region, PhoneNumberType.MOBILE) ?: Phonenumber.PhoneNumber()
-        val exampleNumberFixedLine = PhoneNumberUtil.getInstance().getExampleNumberForType(region, PhoneNumberType.FIXED_LINE) ?: Phonenumber.PhoneNumber()
-        itemMap["exampleNumberMobileNational"] = formatNational(exampleNumberMobile).toString()
-        itemMap["exampleNumberFixedLineNational"] = formatNational(exampleNumberFixedLine).toString()
-        itemMap["phoneMaskMobileNational"] = maskNumber(formatNational(exampleNumberMobile).toString(), phoneCode)
-        itemMap["phoneMaskFixedLineNational"] = maskNumber(formatNational(exampleNumberFixedLine).toString(), phoneCode)
-        itemMap["exampleNumberMobileInternational"] = formatInternational(exampleNumberMobile).toString()
-        itemMap["exampleNumberFixedLineInternational"] = formatInternational(exampleNumberFixedLine).toString()
-        itemMap["phoneMaskMobileInternational"] = maskNumber(formatInternational(exampleNumberMobile).toString(), phoneCode)
-        itemMap["phoneMaskFixedLineInternational"] = maskNumber(formatInternational(exampleNumberFixedLine).toString(), phoneCode)
+        itemMap["exampleNumberMobileNational"] = mobileNational
+        itemMap["exampleNumberFixedLineNational"] = fixedLineNational
+        itemMap["phoneMaskMobileNational"] = maskNumber(mobileNational)
+        itemMap["phoneMaskFixedLineNational"] = maskNumber(fixedLineNational)
+        itemMap["exampleNumberMobileInternational"] = mobileInternational
+        itemMap["exampleNumberFixedLineInternational"] = fixedLineInternational
+        itemMap["phoneMaskMobileInternational"] = maskNumber(mobileInternational)
+        itemMap["phoneMaskFixedLineInternational"] = maskNumber(fixedLineInternational)
         itemMap["countryName"] = Locale("",region).displayCountry
 
-                // Save this map into the return map
+        // Save this map into the return map
         regionsMap[region] = itemMap
       }
       Handler(Looper.getMainLooper()).post(Runnable {
@@ -105,9 +111,9 @@ public class FlutterLibphonenumberPlugin : FlutterPlugin, MethodCallHandler {
   }
 
   // Masks a phone number by replacing all digits with 0s
-  private fun maskNumber(phoneNumber: String, phoneCode: String) = phoneNumber.replace(Regex("""[\d]"""), "0")
-  private fun formatNational(phoneNumber: Phonenumber.PhoneNumber) = PhoneNumberUtil.getInstance().format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.NATIONAL)
-  private fun formatInternational(phoneNumber: Phonenumber.PhoneNumber) = PhoneNumberUtil.getInstance().format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL)
+  private fun maskNumber(phoneNumber: String) = phoneNumber.replace(DIGIT_REGEX, "0")
+  private fun formatNational(util: PhoneNumberUtil, phoneNumber: Phonenumber.PhoneNumber) = util.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.NATIONAL)
+  private fun formatInternational(util: PhoneNumberUtil, phoneNumber: Phonenumber.PhoneNumber) = util.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL)
 
   private fun parseStringAndRegion(string: String, region: String?,
                                    util: PhoneNumberUtil): HashMap<String, String>? {
