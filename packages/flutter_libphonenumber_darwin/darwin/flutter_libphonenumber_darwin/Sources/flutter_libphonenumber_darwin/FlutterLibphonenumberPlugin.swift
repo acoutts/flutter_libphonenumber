@@ -11,7 +11,7 @@ import PhoneNumberKit
 // Ported from https://github.com/emostar/flutter-libphonenumber
 
 
-public class SwiftFlutterLibphonenumberPlugin: NSObject, FlutterPlugin {
+public class FlutterLibphonenumberPlugin: NSObject, FlutterPlugin {
     let dispQueue = DispatchQueue(label: "com.couttsconsulting.flutter_libphonenumber")
     
     
@@ -22,7 +22,7 @@ public class SwiftFlutterLibphonenumberPlugin: NSObject, FlutterPlugin {
           let messenger = registrar.messenger
         #endif
         let channel = FlutterMethodChannel(name: "com.couttsconsulting/flutter_libphonenumber_darwin", binaryMessenger: messenger)
-        let instance = SwiftFlutterLibphonenumberPlugin()
+        let instance = FlutterLibphonenumberPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     

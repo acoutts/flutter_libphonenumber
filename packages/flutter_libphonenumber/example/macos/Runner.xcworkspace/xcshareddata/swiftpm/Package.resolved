@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "phonenumberkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/marmelroy/PhoneNumberKit",
+      "state" : {
+        "revision" : "f158939f66f4ef94512b7e6cd1e56057070a05e4",
+        "version" : "4.2.1"
+      }
+    }
+  ],
+  "version" : 2
+}

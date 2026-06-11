@@ -1,3 +1,9 @@
+## [2.2.0] - 2026.06.11
+
+- Add Swift Package Manager support while retaining CocoaPods compatibility. Requires Flutter 3.41+ when building with Swift Package Manager enabled.
+- Raise iOS deployment target to 13.0, matching the current Flutter plugin template
+- Remove obsolete `VALID_ARCHS` setting from the podspec which broke arm64 simulator builds when linting
+
 ## [2.1.0] - 2025.12.06
 
 - Bump PhoneNumberKit to 4.2.1

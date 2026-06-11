@@ -30,7 +30,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_libphonenumber_android: ^2.0.0
-  flutter_libphonenumber_darwin: ^2.1.0
+  flutter_libphonenumber_darwin: ^2.2.0
   flutter_libphonenumber_platform_interface: ^2.1.0
   flutter_libphonenumber_web: ^1.3.0
 

@@ -2,11 +2,11 @@ name: flutter_libphonenumber_darwin
 description: iOS and macOS implementation of the flutter_libphonenumber plugin.
 repository: https://github.com/acoutts/flutter_libphonenumber/tree/main/packages/flutter_libphonenumber_darwin
 issue_tracker: https://github.com/acoutts/flutter_libphonenumber/issues
-version: 2.1.0
+version: 2.2.0
 
 environment:
   sdk: ^3.9.2
-  flutter: ">=3.0.0"
+  flutter: ">=3.41.0"
 
 resolution: workspace
 
