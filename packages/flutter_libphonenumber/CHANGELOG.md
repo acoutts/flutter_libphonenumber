@@ -1,3 +1,9 @@
+## [2.8.1] - 2026.06.11
+
+- Bump flutter_libphonenumber_android to 2.0.1: reduces repeated work in getAllSupportedRegions (#100 @higorlapacw)
+- Fix example app Android build on current Android Gradle Plugin: remove the legacy manifest package attribute and fully-qualify the MainActivity name
+- Example app: bump Java compatibility to 17 to match the plugins, add an integration test covering getAllSupportedRegions
+
 ## [2.8.0] - 2026.06.11
 
 - Bump flutter_libphonenumber_darwin to 2.2.0: adds Swift Package Manager support while retaining CocoaPods compatibility (#98). Building with Swift Package Manager enabled requires Flutter 3.41+, and the iOS deployment target is now 13.0.

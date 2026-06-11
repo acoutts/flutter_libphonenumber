@@ -1,3 +1,7 @@
+## [2.0.1] - 2026.06.11
+
+- Reduce repeated work in getAllSupportedRegions: cache the digit regex used for masking, reuse a single PhoneNumberUtil instance, and format each example number once (#100 @higorlapacw)
+
 ## [2.0.0] - 2025.12.06
 
 - Bump gradle configs for latest flutter stable 3.38.4
