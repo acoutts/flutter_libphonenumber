@@ -1,3 +1,7 @@
+## [2.8.0] - 2026.06.11
+
+- Bump flutter_libphonenumber_darwin to 2.2.0: adds Swift Package Manager support while retaining CocoaPods compatibility (#98). Building with Swift Package Manager enabled requires Flutter 3.41+, and the iOS deployment target is now 13.0.
+
 ## [2.7.0] - 2025.12.06
 
 - Migrate example app to declarative gradle plugins
