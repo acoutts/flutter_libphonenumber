@@ -1,11 +1,10 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.couttsconsulting.flutter_libphonenumber_example">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
    <application
         android:label="flutter_libphonenumber_example"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:name=".MainActivity"
+            android:name="com.couttsconsulting.flutter_libphonenumber_example.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
