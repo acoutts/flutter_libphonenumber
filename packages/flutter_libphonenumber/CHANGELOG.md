@@ -1,3 +1,8 @@
+## [2.8.3] - 2026.06.12
+
+- Bump flutter_libphonenumber_android to 2.1.0: ready for Flutter's Built-in Kotlin cutover — the Kotlin Gradle Plugin is now applied only on AGP <9 hosts where Flutter doesn't manage Kotlin itself. Flutter <3.44 remains supported. Flutter 3.44's KGP warning may still name the plugin; this is a false positive of Flutter's text-based detection.
+- Example app: migrate off the Kotlin Gradle Plugin per the Flutter 3.44 Built-in Kotlin guide (building the example now requires Flutter 3.44+)
+
 ## [2.8.1] - 2026.06.11
 
 - Bump flutter_libphonenumber_android to 2.0.1: reduces repeated work in getAllSupportedRegions (#100 @higorlapacw)

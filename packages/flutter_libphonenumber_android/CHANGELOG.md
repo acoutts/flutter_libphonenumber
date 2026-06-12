@@ -1,3 +1,9 @@
+## [2.1.0] - 2026.06.12
+
+- Ready for Flutter's Built-in Kotlin cutover: the Kotlin Gradle Plugin is now applied conditionally — only on AGP <9, where the host's Flutter does not manage Kotlin itself — following the official Flutter migration guide for plugin authors. Flutter versions older than 3.44 remain supported.
+- Note: Flutter 3.44 may still print "Your app uses the following plugins that apply Kotlin Gradle Plugin (KGP): flutter_libphonenumber_android". This is a false positive: Flutter's detection is a textual scan that cannot see the AGP version conditional. The plugin no longer applies KGP on hosts where Built-in Kotlin is available, so it will keep building after Flutter's cutover.
+- Example app: migrate off the Kotlin Gradle Plugin and bump Java/Kotlin compatibility to 17 (building the example now requires Flutter 3.44+; the plugin itself is unaffected).
+
 ## [2.0.1] - 2026.06.11
 
 - Reduce repeated work in getAllSupportedRegions: cache the digit regex used for masking, reuse a single PhoneNumberUtil instance, and format each example number once (#100 @higorlapacw)
