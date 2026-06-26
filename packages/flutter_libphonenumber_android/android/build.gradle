@@ -23,12 +23,12 @@ rootProject.allprojects {
 
 apply plugin: 'com.android.library'
 
-// Apply the Kotlin plugin only on AGP <9: AGP >=9 has built-in Kotlin and
-// Flutter >=3.44 manages Kotlin for plugin projects. On older hosts
-// (Flutter <3.44) the plugin still applies it itself.
-// https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-plugin-authors
+// Apply the Kotlin plugin unless AGP >=9 has built-in Kotlin enabled.
+// Flutter >=3.44 may set android.builtInKotlin=false during migration,
+// in which case we must still apply it ourselves even on AGP >=9.
 def agpMajor = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')[0] as int
-if (agpMajor < 9) {
+def builtInKotlin = project.findProperty('android.builtInKotlin')
+if (agpMajor < 9 || builtInKotlin == 'false') {
     apply plugin: 'kotlin-android'
 }
 
@@ -55,9 +55,11 @@ android {
     }
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+plugins.withId("org.jetbrains.kotlin.android") {
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        }
     }
 }
 
