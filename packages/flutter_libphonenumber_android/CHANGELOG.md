@@ -1,3 +1,11 @@
+## [2.1.1] - 2026.07.14
+
+- Fix Android build failure `Could not find method kotlin()` on AGP 9 hosts where `android.builtInKotlin=false` — the state Flutter 3.44's migrator writes into every app's `gradle.properties` (#101, #102 — thanks @proninyaroslav for the diagnosis and initial fix).
+- The Kotlin Gradle Plugin is now applied whenever AGP has not registered its built-in `kotlin` extension, instead of keying off the AGP version. This is correct on AGP 8 (KGP applied as before), AGP 9 with the built-in Kotlin opt-out (KGP applied), AGP 9/10 with built-in Kotlin active (KGP skipped; `jvmTarget` follows `compileOptions.targetCompatibility`), and is immune to stale `android.builtInKotlin=false` flags once AGP 10 removes the opt-out.
+- The `kotlin { compilerOptions { jvmTarget } }` block now only runs when the external Kotlin Gradle Plugin is actually applied.
+- Build script is now AGP 9 new-DSL-safe: removed the redundant Kotlin `sourceSets` entry and switched to `=`-style assignments.
+- Note: Flutter 3.44 still prints "Your app uses the following plugins that apply Kotlin Gradle Plugin (KGP): flutter_libphonenumber_android". This remains a false positive of Flutter's textual build-script scan and is unavoidable while this plugin supports Flutter <3.44. The plugin does not apply KGP on hosts where built-in Kotlin is active.
+
 ## [2.1.0] - 2026.06.12
 
 - Ready for Flutter's Built-in Kotlin cutover: the Kotlin Gradle Plugin is now applied conditionally — only on AGP <9, where the host's Flutter does not manage Kotlin itself — following the official Flutter migration guide for plugin authors. Flutter versions older than 3.44 remain supported.

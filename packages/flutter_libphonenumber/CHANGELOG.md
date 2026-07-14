@@ -1,3 +1,8 @@
+## [2.8.4] - 2026.07.14
+
+- Bump flutter_libphonenumber_android to 2.1.1: fixes the Android build failure `Could not find method kotlin()` on AGP 9 with `android.builtInKotlin=false` (the state Flutter 3.44's migrator writes into apps) (#101, #102 — thanks @proninyaroslav). If your build broke on AGP 9, run `flutter pub upgrade` to pick up the fix.
+- Example app: buildable on pre-3.44 Flutter again (explicitly applies the Kotlin Gradle Plugin).
+
 ## [2.8.3] - 2026.06.12
 
 - Bump flutter_libphonenumber_android to 2.1.0: ready for Flutter's Built-in Kotlin cutover — the Kotlin Gradle Plugin is now applied only on AGP <9 hosts where Flutter doesn't manage Kotlin itself. Flutter <3.44 remains supported. Flutter 3.44's KGP warning may still name the plugin; this is a false positive of Flutter's text-based detection.
