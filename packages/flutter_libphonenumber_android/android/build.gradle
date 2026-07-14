@@ -1,5 +1,5 @@
-group 'com.couttsconsulting.flutter_libphonenumber'
-version '1.0-SNAPSHOT'
+group = 'com.couttsconsulting.flutter_libphonenumber'
+version = '1.0-SNAPSHOT'
 
 buildscript {
     ext.kotlin_version = '2.2.21'
@@ -23,30 +23,40 @@ rootProject.allprojects {
 
 apply plugin: 'com.android.library'
 
-// Apply the Kotlin plugin unless AGP >=9 has built-in Kotlin enabled.
-// Flutter >=3.44 may set android.builtInKotlin=false during migration,
-// in which case we must still apply it ourselves even on AGP >=9.
-def agpMajor = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')[0] as int
-def builtInKotlin = project.findProperty('android.builtInKotlin')
-if (agpMajor < 9 || builtInKotlin == 'false') {
+// Apply the Kotlin Gradle Plugin only when nothing else already provides Kotlin
+// support (i.e. no 'kotlin' project extension is registered). Something else can
+// provide it in two ways:
+//  - AGP >=9 built-in Kotlin registers a 'kotlin' extension itself (in which case
+//    applying external KGP on top can fail with "Cannot add extension with name
+//    'kotlin'"). This is how AGP 10 will behave unconditionally.
+//  - A host pre-applies KGP to this project before this script evaluates.
+// Otherwise (AGP <9, and AGP 9 hosts where the extension is absent at this point
+// -- including android.builtInKotlin=false, which the Flutter 3.44 migrator
+// writes into every app's gradle.properties) we apply KGP ourselves, exactly as
+// this plugin always did.
+// This condition intentionally avoids parsing AGP versions or gradle.properties
+// flags: the opt-out flags go stale on AGP 10, where the opt-out is removed.
+// Note: Flutter >=3.44 textually detects the apply line below and therefore skips
+// its own KGP auto-apply for this project (and lists this plugin in its KGP
+// warning -- a false positive); that is fine because we self-apply whenever
+// Kotlin support is actually missing.
+// https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-plugin-authors
+if (project.extensions.findByName('kotlin') == null) {
     apply plugin: 'kotlin-android'
 }
 
 android {
     if (project.android.hasProperty("namespace")) {
-        namespace("com.couttsconsulting.flutter_libphonenumber")
+        namespace = "com.couttsconsulting.flutter_libphonenumber"
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     compileSdk = flutter.compileSdkVersion
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
     defaultConfig {
         minSdk = flutter.minSdkVersion
     }
@@ -55,7 +65,10 @@ android {
     }
 }
 
-plugins.withId("org.jetbrains.kotlin.android") {
+// Only runs when the external Kotlin Gradle Plugin was actually applied. Under
+// AGP built-in Kotlin this block is inert and jvmTarget defaults to
+// android.compileOptions.targetCompatibility (17).
+plugins.withId('org.jetbrains.kotlin.android') {
     kotlin {
         compilerOptions {
             jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
