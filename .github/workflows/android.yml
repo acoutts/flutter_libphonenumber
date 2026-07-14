@@ -1,0 +1,77 @@
+name: Android builds
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Pre-3.44 Flutter (no KGP auto-apply): the plugin must self-apply KGP. AGP 8.
+          - name: agp8-flutter-3.41
+            channel: stable
+            flutter-version: 3.41.9
+            example-dir: packages/flutter_libphonenumber/example
+            builtin-kotlin: false
+            experimental: false
+          # Current stable, AGP 8 legacy path.
+          - name: agp8-flutter-3.44
+            channel: stable
+            flutter-version: 3.44.1
+            example-dir: packages/flutter_libphonenumber/example
+            builtin-kotlin: false
+            experimental: false
+          # THE regression cell: AGP 9 + android.builtInKotlin=false (issue #101 / PR #102).
+          - name: agp9-optout-flutter-3.44
+            channel: stable
+            flutter-version: 3.44.1
+            example-dir: packages/flutter_libphonenumber_android/example
+            builtin-kotlin: false
+            experimental: false
+          # AGP 9 with built-in Kotlin enabled. Needs the master channel until the
+          # gated KGP auto-apply fix (flutter/flutter#188543) reaches stable, so
+          # this cell is allowed to fail.
+          - name: agp9-builtin-kotlin-flutter-master
+            channel: master
+            flutter-version: ''
+            example-dir: packages/flutter_libphonenumber_android/example
+            builtin-kotlin: true
+            experimental: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ matrix.channel }}
+          flutter-version: ${{ matrix.flutter-version }}
+          cache: true
+
+      - name: Switch example to AGP built-in Kotlin (AGP 9 default state)
+        if: matrix.builtin-kotlin
+        working-directory: ${{ matrix.example-dir }}/android
+        run: |
+          sed -i '/android\.builtInKotlin/d;/android\.newDsl/d;/added automatically by Flutter migrator/d' gradle.properties
+          # Only strip the *applied* KGP from the app; the apply-false declaration in
+          # settings.gradle stays so built-in Kotlin upgrades to that KGP version
+          # (Flutter master requires >= 2.2.20; AGP 9's bundled KGP is 2.2.10).
+          sed -i '/id "org.jetbrains.kotlin.android"/d' app/build.gradle
+          echo "--- mutated gradle.properties ---"; cat gradle.properties
+          echo "--- mutated app/build.gradle plugins ---"; head -5 app/build.gradle
+
+      - name: Build debug APK
+        working-directory: ${{ matrix.example-dir }}
+        run: |
+          flutter pub get
+          flutter build apk --debug
